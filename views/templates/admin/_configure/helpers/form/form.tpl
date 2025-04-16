@@ -80,7 +80,7 @@
 								<i class="icon-remove text-danger"></i>
 							</button>
 							{if (version_compare($smarty.const._PS_VERSION_, '1.7.0.0', '>='))}
-								<img src="../img/tmp/product_mini_{$product.id_image|intval}.jpg" />{$product.name|escape:'html':'UTF-8'}
+								<img width="45" height="45" src="{$product.path_image}" />{$product.name|escape:'html':'UTF-8'}
 							{else}
 								<img src="../img/tmp/product_mini_{$product.id|intval}_{$id_shop|intval}.jpg" />{$product.name|escape:'html':'UTF-8'}
 							{/if}

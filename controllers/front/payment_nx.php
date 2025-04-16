@@ -59,12 +59,15 @@ class paylinepayment_nxModuleFrontController extends ModuleFrontController
 
         list($paymentRequest, $paymentRequestParams) = PaylinePaymentGateway::createPaymentRequest($this->context, PaylinePaymentGateway::RECURRING_PAYMENT_METHOD);
 
+        $contextLocale = Tools::getContextLocale($this->context);
+        $currency = $this->context->currency->iso_code;
+
         $this->context->smarty->assign(array(
             'payline_token' => $paymentRequest['token'],
             'payline_title' => $recurringTitle,
             'payline_subtitle' => $recurringSubTitle,
-            'payline_first_amount' => Tools::displayPrice($paymentRequestParams['recurring']['firstAmount']/100),
-            'payline_next_amount' => Tools::displayPrice($paymentRequestParams['recurring']['amount']/100),
+            'payline_first_amount' => $contextLocale->formatPrice($paymentRequestParams['recurring']['firstAmount']/100, $currency),
+            'payline_next_amount' => $contextLocale->formatPrice($paymentRequestParams['recurring']['amount']/100, $currency),
             'payline_billing_left' => ((int)$paymentRequestParams['recurring']['billingLeft'] - 1),
             'payline_ux_mode' => Configuration::get('PAYLINE_RECURRING_UX'),
             'payline_cart_total' => $cart->getOrderTotal(),

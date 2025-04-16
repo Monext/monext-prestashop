@@ -81,16 +81,6 @@ class ComposerStaticInitd5173cd3022b6b748bb5b4953ffbf7b3
         ),
     );
 
-    public static $prefixesPsr0 = array (
-        'D' => 
-        array (
-            'Dubture' => 
-            array (
-                0 => __DIR__ . '/..' . '/ddtraceweb/monolog-parser/src',
-            ),
-        ),
-    );
-
     public static $classMap = array (
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
@@ -106,7 +96,6 @@ class ComposerStaticInitd5173cd3022b6b748bb5b4953ffbf7b3
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInitd5173cd3022b6b748bb5b4953ffbf7b3::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInitd5173cd3022b6b748bb5b4953ffbf7b3::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitd5173cd3022b6b748bb5b4953ffbf7b3::$prefixesPsr0;
             $loader->classMap = ComposerStaticInitd5173cd3022b6b748bb5b4953ffbf7b3::$classMap;
 
         }, null, ClassLoader::class);

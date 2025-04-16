@@ -7,6 +7,9 @@
 *
 *}
 
+{include file="modules/payline/views/templates/front/1.7/widget_js_customization.tpl" payline_widget_customization=$payline_widget_customization }
+
+
 <script>
   function waitForElement(selector, callback) {
     const observer = new MutationObserver((mutations, observer) => {
@@ -24,11 +27,6 @@
   }
 
   function onDidShowState(event) {
-
-    const ctaLabel = "{$payline_widget_customization.cta_label.1|strip_tags|escape:'js'}";
-    const textUnderCta = "{$payline_widget_customization.text_under_cta.1|strip_tags|escape:'js'}";
-
-
       if ( event.state !== 'PAYMENT_METHODS_LIST' ) {
           return;
       }
@@ -133,20 +131,7 @@
       });
     });
 
-    if (ctaLabel !== "") {
-        document.querySelectorAll('.PaylineWidget .pl-pay-btn, .PaylineWidget .pl-btn').forEach(paylineCTA => {
-            paylineCTA.innerHTML = ctaLabel.replace("[[amount]]", Payline.Api.getContextInfo("PaylineFormattedAmount"));
-        });
-    }
-
-    if (textUnderCta) {
-        document.querySelectorAll('.PaylineWidget .pl-pay-btn, .PaylineWidget .pl-btn').forEach(function(btn) {
-            const p = document.createElement('p');
-            p.innerHTML = textUnderCta;
-            p.classList.add('pl-text-under-cta');
-            btn.parentNode.insertBefore(p, btn.nextSibling);
-        });
-    }
+    customizeWidget();
   }
 
   function onFinalStateHasBeenReached (e) {
@@ -162,75 +147,9 @@
       }, 0);
     }
   }
-
-
 </script>
 
-<style type="text/css">
-    #PaylineWidget .pl-text-under-cta { text-align: center; margin-top: 26px; }
-
-{if $payline_widget_customization.cta_bg_color == 'hexadecimal'}
-    #PaylineWidget .pl-pay-btn { background-color: {{$payline_widget_customization.cta_bg_color_hexadecimal}}; }
-{elseif $payline_widget_customization.cta_bg_color}
-    #PaylineWidget .pl-pay-btn { background-color: {{$payline_widget_customization.cta_bg_color}}; }
-{/if}
-
-{if $payline_widget_customization.cta_bg_color_hover_darker }
-    #PaylineWidget .pl-pay-btn:hover { background-color: {{$payline_widget_customization.cta_bg_color_hover_darker}}; }
-{/if}
-
-{if $payline_widget_customization.cta_bg_color_hover_lighter }
-    #PaylineWidget .pl-pay-btn:hover { background-color: {{$payline_widget_customization.cta_bg_color_hover_lighter}}; }
-{/if}
-
-{if $payline_widget_customization.cta_bg_color_hover_lighter === '' && $payline_widget_customization.cta_bg_color_hover_darker === ''}
-    #PaylineWidget .pl-pay-btn:hover { background-color: #1c7b27; }
-{/if}
-
-{if $payline_widget_customization.cta_text_color }
-    #PaylineWidget .pl-pay-btn { color: {{$payline_widget_customization.cta_text_color}}; }
-{/if}
-
-{assign var="fontSize" value=""}
-    {if $payline_widget_customization.font_size == 'small'}
-        {assign var="fontSize" value="14px"}
-    {elseif $payline_widget_customization.font_size == 'average'}
-        {assign var="fontSize" value="20px"}
-    {elseif $payline_widget_customization.font_size == 'big'}
-        {assign var="fontSize" value="24px"}
-{/if}
-
-{if $fontSize }
-    #PaylineWidget .pl-pay-btn { font-size: {{$fontSize}}; }
-{/if}
-
-{assign var="borderRadius" value=""}
-{if $payline_widget_customization.border_radius == 'none'}
-    {assign var="borderRadius" value="0"}
-{elseif $payline_widget_customization.border_radius == 'small'}
-    {assign var="borderRadius" value="6px"}
-{elseif $payline_widget_customization.border_radius == 'average'}
-    {assign var="borderRadius" value="8px"}
-{elseif $payline_widget_customization.border_radius == 'big'}
-    {assign var="borderRadius" value="24px"}
-{/if}
-{if $borderRadius }
-    #PaylineWidget .pl-pay-btn { border-radius: {{$borderRadius}}; }
-{/if}
-
-{assign var="widgetBgColor" value=""}
-{if $payline_widget_customization.bg_color == 'lighter'}
-    {assign var="widgetBgColor" value="#fefefe"}
-{elseif $payline_widget_customization.bg_color == 'darker'}
-    {assign var="widgetBgColor" value="#dfdfdf"}
-{/if}
-
-{if $widgetBgColor }
-    #PaylineWidget.PaylineWidget.pl-layout-tab .pl-paymentMethods { background-color: {{$widgetBgColor}}; }
-    #PaylineWidget.PaylineWidget.pl-container-default .pl-pmContainer { background-color: {{$widgetBgColor}}; }
-    #PaylineWidget.PaylineWidget.pl-layout-tab .pl-tab.pl-active { background-color: {{$widgetBgColor}}; }
-{/if}
-</style>
+{include file="modules/payline/views/templates/front/1.7/widget_css_customization.tpl" payline_widget_customization=$payline_widget_customization }
 
 <section id="content" data-js-selector="{$jsSelector}">
       <div

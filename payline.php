@@ -172,7 +172,7 @@ class payline extends PaymentModule
             `transaction_id` varchar(50) NOT NULL,
             `additional_data` TEXT,
             `date_add` datetime NOT NULL,
-            UNIQUE `token` (`token`),
+            UNIQUE `token` (`token`)
         ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8';
 
         foreach ($sql as $query) {
@@ -1027,6 +1027,7 @@ class payline extends PaymentModule
                         'payline_assets' => PaylinePaymentGateway::getAssetsToRegister(),
                         'payline_title' => $webCashTitle,
                         'payline_subtitle' => $webCashSubTitle,
+                        'payline_widget_customization' => $this->getWidgetCustomizations()
                     ));
                     $webCash->setAction('javascript:Payline.Api.init()');
                     $webCash->setAdditionalInformation($this->fetch('module:payline/views/templates/front/1.7/lightbox.tpl'));
@@ -1044,45 +1045,6 @@ class payline extends PaymentModule
                 list($paymentRequest, $paymentRequestParams) = PaylinePaymentGateway::createPaymentRequest($this->context, PaylinePaymentGateway::WEB_PAYMENT_METHOD);
                 if (!empty($paymentRequest['token'])) {
 
-                    $widgetCustomization =[];
-                    if(Configuration::get('PAYLINE_WEB_WIDGET_CUSTOM')) {
-                        $widgetCustomization = array(
-                            'cta_label' => $this->getConfigLangValue('PAYLINE_WEB_WIDGET_CTA_LABEL'),
-                            'cta_bg_color' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR'),
-                            'cta_bg_color_hexadecimal' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HEXADECIMAL'),
-                            'cta_bg_color_hover_darker' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER_DARKER'),
-                            'cta_bg_color_hover_lighter' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER_LIGHTER'),
-                            'cta_text_color' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_TEXT_COLOR'),
-                            'font_size' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_FONT_SIZE'),
-                            'border_radius' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_BORDER_RADIUS'),
-                            'bg_color' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_BG_COLOR'),
-                            'text_under_cta' => $this->getConfigLangValue('PAYLINE_WEB_WIDGET_TEXT_UNDER_CTA'),
-                        );
-
-                        // Déterminer la couleur de base à utiliser entre cta_bg_color et cta_bg_color_hexadecimal
-                        $baseColor = !empty($widgetCustomization['cta_bg_color_hexadecimal'])
-                            ? $widgetCustomization['cta_bg_color_hexadecimal']
-                            : $widgetCustomization['cta_bg_color'];
-
-                        if (!empty($baseColor)) {
-                            if (!empty($widgetCustomization['cta_bg_color_hover_darker'])) {
-                                $widgetCustomization['cta_bg_color_hover_darker'] = $this->changeColor(
-                                    $baseColor,
-                                    $widgetCustomization['cta_bg_color_hover_darker'],
-                                    false
-                                );
-                            }
-
-                            if (!empty($widgetCustomization['cta_bg_color_hover_lighter'])) {
-                                $widgetCustomization['cta_bg_color_hover_lighter'] = $this->changeColor(
-                                    $baseColor,
-                                    $widgetCustomization['cta_bg_color_hover_lighter'],
-                                    false
-                                );
-                            }
-                        }
-                    }
-
                     $this->smarty->assign(array(
                         'payline_title' => $webCashTitle,
                         'payline_subtitle' => $webCashSubTitle,
@@ -1090,7 +1052,7 @@ class payline extends PaymentModule
                         'payline_assets' => PaylinePaymentGateway::getAssetsToRegister(),
                         'payline_ux_mode' => Configuration::get('PAYLINE_WEB_CASH_UX'),
                         'jsSelector' => 'paylineWidgetColumn',
-                        'payline_widget_customization' => $widgetCustomization
+                        'payline_widget_customization' => $this->getWidgetCustomizations()
                     ));
 
                     $webCash->setAdditionalInformation($this->fetch('module:payline/views/templates/front/1.7/payment.tpl'));
@@ -2460,6 +2422,10 @@ class payline extends PaymentModule
                 ),
             );
         } elseif ($tabName == 'subscribe-payment') {
+            Media::addJsDef([
+                'admin_base_link' => $this->context->link->getAdminBaseLink() . basename(_PS_ADMIN_DIR_),
+            ]);
+
             $subscribeProductList = array();
             $subscribeProductListId = $this->getSubscribeProductList();
             if (!empty($subscribeProductListId)) {
@@ -2472,7 +2438,7 @@ class payline extends PaymentModule
                         $subscribeProductList[] = array(
                             'id' => (int)$product->id,
                             'name' => $product->name . " (ref: " . $product->reference . ")",
-                            'id_image' => $product->getCoverWs(),
+                            'path_image' => $this->context->link->getImageLink($product->reference, $product->getCoverWs(), 'small_default'),
                         );
                     }
                 }
@@ -3750,5 +3716,48 @@ class payline extends PaymentModule
         $newHex = sprintf("#%02x%02x%02x", $r, $g, $b);
 
         return $newHex;
+    }
+
+    protected function getWidgetCustomizations()
+    {
+        $widgetCustomization = [];
+        if(Configuration::get('PAYLINE_WEB_WIDGET_CUSTOM')) {
+            $widgetCustomization = array(
+                'cta_label' => Configuration::get('PAYLINE_WEB_WIDGET_CTA_LABEL', $this->context->language->id),
+                'cta_bg_color' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR'),
+                'cta_bg_color_hexadecimal' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HEXADECIMAL'),
+                'cta_bg_color_hover_darker' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER_DARKER'),
+                'cta_bg_color_hover_lighter' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER_LIGHTER'),
+                'cta_text_color' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_TEXT_COLOR'),
+                'font_size' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_FONT_SIZE'),
+                'border_radius' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_BORDER_RADIUS'),
+                'bg_color' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_BG_COLOR'),
+                'text_under_cta' => Configuration::get('PAYLINE_WEB_WIDGET_TEXT_UNDER_CTA', $this->context->language->id)
+            );
+
+            // Déterminer la couleur de base à utiliser entre cta_bg_color et cta_bg_color_hexadecimal
+            $baseColor = !empty($widgetCustomization['cta_bg_color_hexadecimal'])
+                ? $widgetCustomization['cta_bg_color_hexadecimal']
+                : $widgetCustomization['cta_bg_color'];
+
+            if (!empty($baseColor)) {
+                if (!empty($widgetCustomization['cta_bg_color_hover_darker'])) {
+                    $widgetCustomization['cta_bg_color_hover_darker'] = $this->changeColor(
+                        $baseColor,
+                        $widgetCustomization['cta_bg_color_hover_darker'],
+                        false
+                    );
+                }
+
+                if (!empty($widgetCustomization['cta_bg_color_hover_lighter'])) {
+                    $widgetCustomization['cta_bg_color_hover_lighter'] = $this->changeColor(
+                        $baseColor,
+                        $widgetCustomization['cta_bg_color_hover_lighter'],
+                        false
+                    );
+                }
+            }
+        }
+        return $widgetCustomization;
     }
 }
