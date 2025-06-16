@@ -50,12 +50,8 @@ If you already use 1.7.* version of our module, uninstall it (save your access k
 
 See https://addons.prestashop.com/fr/content/21-howto
 
-Manual process
-* Download <b>payline-prestashop-master.zip</b> archive from GitHub.</li>
-* Unzip it
-* Rename the <b>payline-prestashop-master</b> root folder to <b>payline</b>. Save changes.
-* Use modified archive to install extension through your Prestashop back office.
-
+Download this archive: https://github.com/Monext/monext-prestashop/releases/download/2.3.8/monext-prestashop-2.3.8.zip
+Install extension through your Prestashop back office.
 
 
 ## Configuration
