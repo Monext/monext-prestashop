@@ -8,7 +8,7 @@
 *}
 
 <div id="payline-order-slip-alert" class="alert alert-warning" style="display: none">
-	{l s='In order to refund the customer via Payline, you must check the “[1]“ option' sprintf=['[1]' => {l s='Generate a credit slip' mod='payline'}] mod='payline'}
+	{l s='In order to refund the customer via Monext, you must check the “[1]“ option' sprintf=['[1]' => {l s='Generate a credit slip' mod='payline'}] mod='payline'}
 </div>
 
 {if isset($billingListRec)}
@@ -112,7 +112,7 @@
 {/if}
 
 <div class="panel">
-	<div class="panel-heading"><i class="icon-money"></i> {l s='Payline information' mod='payline'}</div>
+	<div class="panel-heading"><i class="icon-money"></i> {l s='Monext information' mod='payline'}</div>
 	{if $allowRefund}
 		<div class="well">
 			<a href="{$link->getAdminLink('AdminOrders')|escape:'html':'UTF-8'}&vieworder&id_order={$id_order|intval}&paylineProcessFullRefund=1" class="btn btn-default"><i class="icon-exchange"></i>&nbsp;&nbsp;{l s='Full refund' mod='payline'}</a>

@@ -123,8 +123,8 @@ class payline extends PaymentModule
         $this->bootstrap = true;
 
         parent::__construct();
-        $this->displayName = 'Payline';
-        $this->description = $this->l('Pay with secure payline gateway');
+        $this->displayName = 'Monext';
+        $this->description = $this->l('Pay with secure Monext gateway');
         $this->confirmUninstall = $this->l('Do you really want to remove the module?');
         $this->limited_countries = array();
         $this->limited_currencies = array();
@@ -468,14 +468,14 @@ class payline extends PaymentModule
                 } else {
                     // Refund NOK
                     $errors = PaylinePaymentGateway::getErrorResponse($refund);
-                    $this->context->controller->errors[] = sprintf($this->l('Unable to process the refund, Payline reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
+                    $this->context->controller->errors[] = sprintf($this->l('Unable to process the refund, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
                 }
             } else {
                 $errors = PaylinePaymentGateway::getErrorResponse($transaction);
-                $this->context->controller->errors[] = sprintf($this->l('Unable to process the refund, Payline reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
+                $this->context->controller->errors[] = sprintf($this->l('Unable to process the refund, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
             }
         } else {
-            $this->context->controller->errors[] = $this->l('Unable to find any Payline transaction ID on this order');
+            $this->context->controller->errors[] = $this->l('Unable to find any Monext transaction ID on this order');
         }
     }
 
@@ -507,11 +507,11 @@ class payline extends PaymentModule
             } else {
                 // Capture NOK
                 $errors = PaylinePaymentGateway::getErrorResponse($capture);
-                $this->context->controller->errors[] = sprintf($this->l('Unable to process the capture, Payline reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
+                $this->context->controller->errors[] = sprintf($this->l('Unable to process the capture, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
             }
         } else {
             $errors = PaylinePaymentGateway::getErrorResponse($transaction);
-            $this->context->controller->errors[] = sprintf($this->l('Unable to process the capture, Payline reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
+            $this->context->controller->errors[] = sprintf($this->l('Unable to process the capture, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
         }
     }
 
@@ -541,11 +541,11 @@ class payline extends PaymentModule
             } else {
                 // Reset NOK
                 $errors = PaylinePaymentGateway::getErrorResponse($capture);
-                $this->context->controller->errors[] = sprintf($this->l('Unable to process the reset, Payline reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
+                $this->context->controller->errors[] = sprintf($this->l('Unable to process the reset, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
             }
         } else {
             $errors = PaylinePaymentGateway::getErrorResponse($transaction);
-            $this->context->controller->errors[] = sprintf($this->l('Unable to process the reset, Payline reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
+            $this->context->controller->errors[] = sprintf($this->l('Unable to process the reset, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
         }
     }
 
@@ -831,7 +831,7 @@ class payline extends PaymentModule
                     } else {
                         // Refund NOK
                         $errors = PaylinePaymentGateway::getErrorResponse($refund);
-                        $this->context->controller->errors[] = sprintf($this->l('Unable to process the refund, Payline reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
+                        $this->context->controller->errors[] = sprintf($this->l('Unable to process the refund, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
                     }
                 }
             }
@@ -890,18 +890,18 @@ class payline extends PaymentModule
                         } else {
                             // Refund NOK
                             $errors = PaylinePaymentGateway::getErrorResponse($refund);
-                            $errorsMessage = sprintf($this->l('Unable to process the refund, Payline reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
+                            $errorsMessage = sprintf($this->l('Unable to process the refund, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
                             $this->context->controller->errors[] = $errorsMessage;
                             throw new Exception($errorsMessage);
                         }
                     } else {
                         $errors = PaylinePaymentGateway::getErrorResponse($transaction);
-                        $errorsMessage = sprintf($this->l('Unable to process the refund, Payline reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
+                        $errorsMessage = sprintf($this->l('Unable to process the refund, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
                         $this->context->controller->errors[] = $errorsMessage;
                         throw new Exception($errorsMessage);
                     }
                 } else {
-                    $errorsMessage = $this->l('Unable to find any Payline transaction ID on this order');
+                    $errorsMessage = $this->l('Unable to find any Monext transaction ID on this order');
                     $this->context->controller->errors[] = $errorsMessage;
                     throw new Exception($errorsMessage);
                 }
@@ -1441,7 +1441,7 @@ class payline extends PaymentModule
                         $paymentReturn = '';
 
                         $this->context->controller->errors[] = $this->l('Your cart contains mixed products (recurring products and classic products).');
-                        $this->context->controller->errors[] = $this->l('In order to be able to pay with Payline, please remove these products:');
+                        $this->context->controller->errors[] = $this->l('In order to be able to pay with Monext, please remove these products:');
                         foreach ($breakingProductList as $productName) {
                             $this->context->controller->errors[] = $productName;
                         }
@@ -1579,7 +1579,7 @@ class payline extends PaymentModule
 
         // Add error messages if fields are empty
         if (Configuration::get('PAYLINE_MERCHANT_ID') && Configuration::get('PAYLINE_ACCESS_KEY') && !$paylineCheckCredentials) {
-            $this->context->controller->errors[] = $this->l('Payline credentials are invalid, please fix them before continue.');
+            $this->context->controller->errors[] = $this->l('Monext credentials are invalid, please fix them before continue.');
         }
 
         // Assign the first POS by default
@@ -1856,7 +1856,7 @@ class payline extends PaymentModule
             return $subscribeDays;
         } elseif ($listName === 'widget-cta-bg-color') {
             return array(
-                array('value' => '', 'name' => $this->l('Payline default')),
+                array('value' => '', 'name' => $this->l('Monext default')),
                 array('value' => '#000000', 'name' => $this->l('Black')),
                 array('value' => '#d64c1d', 'name' => $this->l('Red')),
                 array('value' => '#00786c', 'name' => $this->l('Green')),
@@ -1873,20 +1873,20 @@ class payline extends PaymentModule
             );
         } elseif ($listName === 'widget-cta-color') {
             return array(
-                array('value' => '', 'name' => $this->l('Payline default')),
+                array('value' => '', 'name' => $this->l('Monext default')),
                 array('value' => '#000000', 'name' => $this->l('Black')),
                 array('value' => '#FFFFFF', 'name' => $this->l('White'))
             );
         } elseif ($listName === 'widget-cta-font-size') {
             return array(
-                array('value' => '', 'name' => $this->l('Payline default')),
+                array('value' => '', 'name' => $this->l('Monext default')),
                 array('value' => 'small', 'name' => $this->l('Small')),
                 array('value' => 'average', 'name' => $this->l('Average')),
                 array('value' => 'big', 'name' => $this->l('Big'))
             );
         } elseif ($listName === 'widget-cta-border-radius') {
             return array(
-                array('value' => '', 'name' => $this->l('Payline default')),
+                array('value' => '', 'name' => $this->l('Monext default')),
                 array('value' => 'none', 'name' => $this->l('None')),
                 array('value' => 'small', 'name' => $this->l('Small')),
                 array('value' => 'average', 'name' => $this->l('Average')),
@@ -1894,7 +1894,7 @@ class payline extends PaymentModule
             );
         } elseif ($listName === 'widget-container-bg-color') {
             return array(
-                array('value' => '', 'name' => $this->l('Payline default')),
+                array('value' => '', 'name' => $this->l('Monext default')),
                 array('value' => 'lighter', 'name' => $this->l('Lighter')),
                 array('value' => 'darker', 'name' => $this->l('Darker'))
             );
@@ -3261,6 +3261,8 @@ class payline extends PaymentModule
                     // Invalid Cart ID
                     $errorCode = payline::INVALID_CART_ID;
                 }
+            } else {
+                //TODO: Le retour est KO, il faut quand même créé la commande etn statut annulé
             }
         }
 
