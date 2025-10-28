@@ -16,10 +16,13 @@ class PaylineWallet
      */
     public static function insert($idCustomer, $walletId)
     {
-        return Db::getInstance()->execute('
+        if(!empty($idCustomer)){
+            return Db::getInstance()->execute('
             INSERT IGNORE INTO `'._DB_PREFIX_.'payline_wallet_id` (`id_customer`, `wallet_id`, `date_add`)
             VALUES('.$idCustomer .',"'. $walletId.'", NOW())
             ');
+        }
+        return false;
     }
 
     /**

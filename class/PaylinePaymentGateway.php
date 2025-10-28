@@ -490,10 +490,11 @@ class PaylinePaymentGateway
         }
         $params['billingAddress']['title'] = ($params['buyer']['title'])?:4;
         // Set buyer wallet id
-        if (($paymentMethod == self::WEB_PAYMENT_METHOD && Configuration::get('PAYLINE_WEB_CASH_BY_WALLET'))
-            || ($paymentMethod == self::RECURRING_PAYMENT_METHOD && Configuration::get('PAYLINE_RECURRING_BY_WALLET'))
+        if ((!empty($context->customer->id) &&
+            ($paymentMethod == self::WEB_PAYMENT_METHOD && Configuration::get('PAYLINE_WEB_CASH_BY_WALLET'))
+            || ($paymentMethod == self::RECURRING_PAYMENT_METHOD && Configuration::get('PAYLINE_RECURRING_BY_WALLET')))
         ) {
-            $walletId = (PaylineWallet::getWalletByIdCustomer($context->customer->id))?:PaylineWallet::generateWalletId($context->customer->id);
+            $walletId = (PaylineWallet::getWalletByIdCustomer($context->customer->id)) ?: PaylineWallet::generateWalletId($context->customer->id);
             $params['buyer']['walletId'] = $walletId;
         }
         // Customization
