@@ -7,15 +7,9 @@
     #PaylineWidget .pl-pay-btn { background-color: {{$payline_widget_customization.cta_bg_color}}; }
 {/if}
 
-{if $payline_widget_customization.cta_bg_color_hover_darker }
-    #PaylineWidget .pl-pay-btn:hover { background-color: {{$payline_widget_customization.cta_bg_color_hover_darker}}; }
-{/if}
-
-{if $payline_widget_customization.cta_bg_color_hover_lighter }
-    #PaylineWidget .pl-pay-btn:hover { background-color: {{$payline_widget_customization.cta_bg_color_hover_lighter}}; }
-{/if}
-
-{if $payline_widget_customization.cta_bg_color_hover_lighter === '' && $payline_widget_customization.cta_bg_color_hover_darker === ''}
+{if $payline_widget_customization.cta_bg_color_hover }
+    #PaylineWidget .pl-pay-btn:hover { background-color: {{$payline_widget_customization.cta_bg_color_hover}}; }
+{else }
     #PaylineWidget .pl-pay-btn:hover { background-color: #1c7b27; }
 {/if}
 
@@ -46,7 +40,7 @@
 {elseif $payline_widget_customization.border_radius == 'big'}
     {assign var="borderRadius" value="24px"}
 {/if}
-{if $borderRadius }
+{if $borderRadius!=='' }
     #PaylineWidget .pl-pay-btn { border-radius: {{$borderRadius}}; }
 {/if}
 

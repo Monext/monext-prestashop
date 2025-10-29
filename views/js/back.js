@@ -212,8 +212,10 @@ $(document).ready(function() {
     $(document).on('change', 'select#PAYLINE_WEB_CASH_UX', function() {
         if ($(this).val() == 'redirect') {
             $('#web-payment-configuration div.payline-redirect-only').removeClass('hidden');
+            $('.widget_customization_head').hide();
         } else {
             $('#web-payment-configuration div.payline-redirect-only').addClass('hidden');
+            $('.widget_customization_head').show();
         }
         toggleWidgetCustomizationGroup();
     });
@@ -298,8 +300,7 @@ $(document).ready(function() {
     const previewTextUnderCta = document.querySelector('#paylineCtaPreviewContainer p');
     const ctaBgColorSelect = document.getElementById("PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR");
     const ctaBgColorHexadecimalSelect = document.querySelector('input[name="PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HEXADECIMAL"]');
-    const ctaHoverDarkerSelect = document.getElementById("PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER_DARKER");
-    const ctaHoverLighterSelect = document.getElementById("PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER_LIGHTER");
+    const ctaHoverSelect = document.getElementById("PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER");
     const ctaColorSelect = document.getElementById("PAYLINE_WEB_WIDGET_CSS_CTA_TEXT_COLOR");
     const ctaFontSizeSelect = document.getElementById("PAYLINE_WEB_WIDGET_CSS_FONT_SIZE");
     const ctaBorderRadiusSelect = document.getElementById("PAYLINE_WEB_WIDGET_CSS_BORDER_RADIUS");
@@ -334,52 +335,38 @@ $(document).ready(function() {
         })
     })
 
-    //--> Prevent click on preview Button
     if (previewButton) {
+
+        //--> Prevent click on preview Button
         previewButton.addEventListener('click', e => {
             e.preventDefault();
             return false;
         })
-    }
 
-    //--> Couleur du hover
-    if (previewButton) {
+        //--> Couleur du hover
         previewButton.addEventListener('mouseover', function () {
-            let hoverCtaBgColor = '#1c7b27';
-            let isLighter = true;
+            let hoverCtaBgColor = getCtaBgColor();
             let amount = 0;
-
-            //--> Darker version
-            if (ctaHoverDarkerSelect) {
-                const darkerAmountValue = ctaHoverDarkerSelect.value.trim();
-                if (darkerAmountValue > 0) {
-                    amount = parseInt(darkerAmountValue);
+            if (ctaHoverSelect) {
+                const hoverAmountValue = ctaHoverSelect.value.trim();
+                if (hoverAmountValue) {
+                    amount = parseInt(hoverAmountValue);
                     hoverCtaBgColor = getCtaBgColor();
-                    isLighter = false;
-                }
-
-            }
-
-            //--> Lighter version
-            if (ctaHoverLighterSelect) {
-                const lighterAmountValue = ctaHoverLighterSelect.value.trim();
-                if (lighterAmountValue > 0) {
-                    amount = parseInt(lighterAmountValue);
-                    hoverCtaBgColor = getCtaBgColor();
-                    isLighter = true;
                 }
             }
 
-
-            previewButton.style.backgroundColor = adjustHexColor(hoverCtaBgColor, amount, isLighter); // couleur de hover
+            previewButton.style.backgroundColor = adjustHexColor(hoverCtaBgColor, amount); // couleur de hover
         });
 
         previewButton.addEventListener('mouseout', function () {
             previewButton.style.backgroundColor = getCtaBgColor(); // couleur normale
         });
+
+        previewButton.style.textDecoration = 'none';
     }
 
-    function adjustHexColor(hex, amount, lighten) {
+    function adjustHexColor(hex, amount) {
+
         hex = hex.replace(/^#/, '');
         if (hex.length === 3) {
             hex = hex.split('').map(x => x + x).join('');
@@ -388,13 +375,7 @@ $(document).ready(function() {
         let r = (num >> 16) & 0xFF;
         let g = (num >> 8) & 0xFF;
         let b = num & 0xFF;
-
-        if (lighten) {
-            amount = 1 + (amount / 100);
-        } else {
-            amount = 1 - (amount / 100);
-        }
-
+        amount = 1 - (amount / 100);
 
         r = Math.min(255, Math.round(r * amount));
         g = Math.min(255, Math.round(g * amount));

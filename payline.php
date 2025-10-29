@@ -1836,10 +1836,13 @@ class payline extends PaymentModule
             );
         } elseif ($listName === 'widget-cta-bg-hover') {
             return array(
+                array('value' => '+30', 'name' => $this->l('30%') . ' ' . $this->l('darker')),
+                array('value' => '+20', 'name' => $this->l('20%') . ' ' . $this->l('darker')),
+                array('value' => '+10', 'name' => $this->l('10%') . ' ' . $this->l('darker')),
                 array('value' => '', 'name' => $this->l('No')),
-                array('value' => '10', 'name' => $this->l('10%')),
-                array('value' => '20', 'name' => $this->l('20%')),
-                array('value' => '30', 'name' => $this->l('30%'))
+                array('value' => '-10', 'name' => $this->l('10%') . ' ' . $this->l('lighter')),
+                array('value' => '-20', 'name' => $this->l('20%') . ' ' . $this->l('lighter')),
+                array('value' => '-30', 'name' => $this->l('30%') . ' ' . $this->l('lighter')),
             );
         } elseif ($listName === 'widget-cta-color') {
             return array(
@@ -2152,12 +2155,15 @@ class payline extends PaymentModule
                             ),
                         ),
                         array(
+                            'form_group_class' => 'widget_customization_head',
                             'type' => 'html',
                             'name' => '
                             <h2>' . $this->l('Widget configuration') . '</h2>',
+                            'desc' => $this->l('Not available on "redirection" user experience mode'),
                         ),
 
                         array(
+                            'form_group_class' => 'widget_customization_head',
                             'type' => 'switch',
                             'label' => $this->l('Customisation'),
                             'name' => 'PAYLINE_WEB_WIDGET_CUSTOM',
@@ -2211,24 +2217,13 @@ class payline extends PaymentModule
                         array(
                             'form_group_class' => 'widget_customization',
                             'type' => 'select',
-                            'name' => 'PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER_DARKER',
-                            'label' => $this->l('CTA hover darkey'),
+                            'name' => 'PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER',
+                            'label' => $this->l('CTA hover'),
                             'options' => array(
                                 'query' => $this->getConfigSelectList('widget-cta-bg-hover', PaylinePaymentGateway::WEB_PAYMENT_METHOD),
                                 'id' => 'value',
                                 'name' => 'name',
-                            ),
-                        ),
-                        array(
-                            'form_group_class' => 'widget_customization',
-                            'type' => 'select',
-                            'name' => 'PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER_LIGHTER',
-                            'label' => $this->l('CTA hover lighter'),
-                            'options' => array(
-                                'query' => $this->getConfigSelectList('widget-cta-bg-hover', PaylinePaymentGateway::WEB_PAYMENT_METHOD),
-                                'id' => 'value',
-                                'name' => 'name',
-                            ),
+                            )
                         ),
                         array(
                             'form_group_class' => 'widget_customization',
@@ -2777,8 +2772,7 @@ class payline extends PaymentModule
                 'PAYLINE_WEB_WIDGET_CTA_LABEL' => $this->getConfigLangValue('PAYLINE_WEB_WIDGET_CTA_LABEL'),
                 'PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR'),
                 'PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HEXADECIMAL' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HEXADECIMAL'),
-                'PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER_DARKER' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER_DARKER'),
-                'PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER_LIGHTER' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER_LIGHTER'),
+                'PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER', null, null, null, '-30'),
                 'PAYLINE_WEB_WIDGET_CSS_CTA_TEXT_COLOR' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_TEXT_COLOR'),
                 'PAYLINE_WEB_WIDGET_CSS_FONT_SIZE' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_FONT_SIZE'),
                 'PAYLINE_WEB_WIDGET_CSS_BORDER_RADIUS' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_BORDER_RADIUS'),
@@ -3703,8 +3697,10 @@ class payline extends PaymentModule
         return false;
     }
 
-    protected function changeColor($hex, $strenght, $lighter)
+    protected function changeColor($hex, $strenght)
     {
+        $strenght = (integer)$strenght;
+
         $hex = ltrim($hex, '#');
 
         if (strlen($hex) == 3) {
@@ -3715,7 +3711,7 @@ class payline extends PaymentModule
         $g = hexdec(substr($hex, 2, 2));
         $b = hexdec(substr($hex, 4, 2));
 
-        $factor = $lighter ? 1 + ($strenght / 100) : 1 - ($strenght / 100);
+        $factor = 1 - ($strenght / 100);
 
         $r = max(0, min(255, intval($r * $factor)));
         $g = max(0, min(255, intval($g * $factor)));
@@ -3734,8 +3730,7 @@ class payline extends PaymentModule
                 'cta_label' => Configuration::get('PAYLINE_WEB_WIDGET_CTA_LABEL', $this->context->language->id),
                 'cta_bg_color' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR'),
                 'cta_bg_color_hexadecimal' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HEXADECIMAL'),
-                'cta_bg_color_hover_darker' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER_DARKER'),
-                'cta_bg_color_hover_lighter' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER_LIGHTER'),
+                'cta_bg_color_hover' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER'),
                 'cta_text_color' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_TEXT_COLOR'),
                 'font_size' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_FONT_SIZE'),
                 'border_radius' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_BORDER_RADIUS'),
@@ -3748,23 +3743,16 @@ class payline extends PaymentModule
                 ? $widgetCustomization['cta_bg_color_hexadecimal']
                 : $widgetCustomization['cta_bg_color'];
 
-            if (!empty($baseColor)) {
-                if (!empty($widgetCustomization['cta_bg_color_hover_darker'])) {
-                    $widgetCustomization['cta_bg_color_hover_darker'] = $this->changeColor(
-                        $baseColor,
-                        $widgetCustomization['cta_bg_color_hover_darker'],
-                        false
-                    );
-                }
-
-                if (!empty($widgetCustomization['cta_bg_color_hover_lighter'])) {
-                    $widgetCustomization['cta_bg_color_hover_lighter'] = $this->changeColor(
-                        $baseColor,
-                        $widgetCustomization['cta_bg_color_hover_lighter'],
-                        false
-                    );
-                }
+            if(empty($baseColor)) {
+                $baseColor= '#26a434';
             }
+
+
+            $widgetCustomization['cta_bg_color_hover'] = $this->changeColor(
+                $baseColor,
+                $widgetCustomization['cta_bg_color_hover']
+            );
+
         }
         return $widgetCustomization;
     }
