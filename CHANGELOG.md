@@ -1,5 +1,16 @@
 ## Changelog
 
+###  2.3.12 - 2025-11-05
+* Compatibility with prestashop 9
+* Fix crash with use of wallet for guest
+* Update Monext state attributes
+* Improve widget UX personalization
+* Add missing logos
+* Finalize Monext rebranding
+
+#### Environment (Development, QA validation)
+* Prestashop version: 8.1.3, 9.0.0
+
 ###  2.3.11 - 2025-10-28
 * Add missing logos
 * Add lock on notification
@@ -14,7 +25,7 @@
 * Ad capture on events
 * Store payment transaction in DB
 * Add user widget customisation
-* Improve widget customisation in checkout
+* Improve widget customization in checkout
 
 #### Environment (Development, QA validation)
 * Prestashop version: 8.2.1

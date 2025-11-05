@@ -10,7 +10,7 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-function upgrade_module_2_3_11(payline $module)
+function upgrade_module_2_3_12(payline $module)
 {
     $module->createCustomOrderState();
     return true;
