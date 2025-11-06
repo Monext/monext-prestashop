@@ -123,15 +123,17 @@
 			<thead>
 				<th><span class="title_box">{l s='Date' mod='payline'}</span></th>
 				<th><span class="title_box">{l s='Transaction #' mod='payline'}</span></th>
+				<th><span class="title_box">{l s='Amount' mod='payline'}</span></th>
 				<th><span class="title_box">{l s='Type' mod='payline'}</span></th>
 				<th><span class="title_box">{l s='Status' mod='payline'}</span></th>
 				<th><span class="title_box">{l s='Action' mod='payline'}</span></th>
 			</thead>
 			<tbody>
-		{foreach from=$transactionsList item=associatedTransaction}
+			{foreach from=$transactionsList item=associatedTransaction}
 			<tr id="payline-transaction-{$associatedTransaction.transactionId|escape:'html':'UTF-8'}">
 				<td>{$associatedTransaction.date|escape:'html':'UTF-8'}</td>
 				<td>{$associatedTransaction.transactionId|escape:'html':'UTF-8'}</td>
+				<td>{displayPrice price=($associatedTransaction.amount/100)}</td>
 				<td>{$associatedTransaction.type|escape:'html':'UTF-8'}</td>
 				<td>
 					<span class="badge badge-{if $associatedTransaction.status == 'OK'}success{else}danger{/if}">{$associatedTransaction.status|escape:'html':'UTF-8'}</span>

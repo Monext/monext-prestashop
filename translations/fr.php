@@ -18,6 +18,7 @@ $_MODULE['<{payline}prestashop>payline_67e58f8e43b0e9cfbfe1b47ebfda1bb9'] = 'Imp
 $_MODULE['<{payline}prestashop>payline_d9929cf580fefc617ae99f1764d7449b'] = 'Reset depuis le BackOffice PrestaShop';
 $_MODULE['<{payline}prestashop>payline_19f2783285fca5c2b9bd65f172602288'] = 'Impossible de traiter la réinitialisation, Monext a signalé l\'erreur suivante : « %s » (code %s)';
 $_MODULE['<{payline}prestashop>payline_8b96e09d8ec234382491ba1f46883968'] = 'Échéance %s/%s payée';
+$_MODULE['<{payline}prestashop>payline_3f3a9d0ec68c0cbaf6cb0b03ab01aed9'] = 'La transaction Monext avait déjà été remboursée';
 $_MODULE['<{payline}prestashop>payline_f62a27f530dc99c202cfc9f09fa334a2'] = 'Remboursement partiel depuis le BackOffice PrestaShop';
 $_MODULE['<{payline}prestashop>payline_c6d666b841922ea4737805c73b1e7c55'] = 'La commande a été partiellement remboursée avec succès';
 $_MODULE['<{payline}prestashop>payline_a0e34976c480bf253e300a9e38088741'] = 'Paiement simple';

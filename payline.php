@@ -378,6 +378,7 @@ class payline extends PaymentModule
      */
     public function hookDisplayBackOfficeHeader()
     {
+
         if (Tools::getValue('configure') == $this->name || Tools::getValue('module_name') == $this->name) {
             $this->context->controller->addJqueryUi('ui.sortable');
             $this->context->controller->addJS($this->_path.'views/js/back.js');
@@ -434,18 +435,33 @@ class payline extends PaymentModule
      */
     protected function processFullOrderRefund(Order $order)
     {
-        // Check if transaction ID is the same
-        $idTransaction = null;
-        $orderPayments = OrderPayment::getByOrderReference($order->reference);
-        if (sizeof($orderPayments)) {
-            // Retrieve transaction ID
-            $paylineTransaction = current($orderPayments );
-            $idTransaction = $paylineTransaction->transaction_id;
+        try {
+            // Check if transaction ID is the same
+            $orderPayments = OrderPayment::getByOrderReference($order->reference);
+            if (sizeof($orderPayments)) {
+                // Retrieve transaction ID
+                $paylineTransaction = current($orderPayments );
+                $idTransaction = $paylineTransaction->transaction_id;
 
-            $transaction = PaylinePaymentGateway::getTransactionInformations($idTransaction);
-            if (PaylinePaymentGateway::isValidResponse($transaction)) {
-                $refund = PaylinePaymentGateway::refundTransaction($idTransaction, null, $this->l('Manual refund from PrestaShop BackOffice'));
-                if (PaylinePaymentGateway::isValidResponse($refund)) {
+                $transaction = PaylinePaymentGateway::getTransactionInformations($idTransaction);
+                if (PaylinePaymentGateway::isValidResponse($transaction)) {
+
+                    $amountToRefund = $transaction['payment']['amount'];
+                    $remainingRefundAmount = $this->getRemainingRefundAmountFromTransaction($transaction);
+                    if($remainingRefundAmount<$amountToRefund) {
+                        $amountToRefund = $remainingRefundAmount;
+                    }
+
+                    if($amountToRefund) {
+                        $refund = PaylinePaymentGateway::refundTransaction($idTransaction, $amountToRefund/100, $this->l('Manual full refund from PrestaShop BackOffice'));
+                        if (!PaylinePaymentGateway::isValidResponse($refund)) {
+                            // Refund NOK
+                            $errors = PaylinePaymentGateway::getErrorResponse($refund);
+                            $errorsMessage = sprintf($this->l('Unable to process the refund, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
+                            throw new Exception($errorsMessage);
+                        }
+                    }
+
                     $orderSlipDetailsList = array();
                     $products = $order->getProducts(false, false, true, false);
                     foreach ($products as $product) {
@@ -474,16 +490,27 @@ class payline extends PaymentModule
 
                     Tools::redirectAdmin($this->context->link->getAdminLink('AdminOrders') . '&id_order=' . $order->id . '&vieworder&paylineFullRefundOK=1');
                 } else {
-                    // Refund NOK
-                    $errors = PaylinePaymentGateway::getErrorResponse($refund);
-                    $this->context->controller->errors[] = sprintf($this->l('Unable to process the refund, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
+                    $errors = PaylinePaymentGateway::getErrorResponse($transaction);
+                    $errorsMessage = sprintf($this->l('Unable to process the refund, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
+                    throw new Exception($errorsMessage);
                 }
             } else {
-                $errors = PaylinePaymentGateway::getErrorResponse($transaction);
-                $this->context->controller->errors[] = sprintf($this->l('Unable to process the refund, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
+                $errorsMessage =  $this->l('Unable to find any Monext transaction ID on this order');
+                throw new Exception($errorsMessage);
             }
-        } else {
-            $this->context->controller->errors[] = $this->l('Unable to find any Monext transaction ID on this order');
+        } catch (Exception $e) {
+
+            //Gestion d'erreur dans un hook
+            $container = PrestaShop\PrestaShop\Adapter\SymfonyContainer::getInstance();
+            $request = $container->get('request_stack')->getCurrentRequest();
+            if ($request && $request->hasSession()) {
+                $request->getSession()
+                    ->getFlashBag()
+                    ->add('error', $e->getMessage());
+            }
+
+            $orderViewUrl = $this->context->link->getAdminLink('AdminOrders', true, [], ['id_order' => $order->id, 'vieworder' => 1]);
+            Tools::redirectAdmin($orderViewUrl);
         }
     }
 
@@ -732,7 +759,9 @@ class payline extends PaymentModule
                     'allowCapture' => $allowCapture,
                     'allowRefund' => $allowRefund,
                     'allowReset' => $allowReset,
+                    'currency ' => $this->context->currency->iso_code,
                 ));
+
                 if ($this->prestaVersionCompare()) {
                     $output .= $this->context->smarty->fetch($this->local_path.'views/templates/hook/admin_order.tpl');
                 } else {
@@ -801,9 +830,21 @@ class payline extends PaymentModule
 
                 $transaction = PaylinePaymentGateway::getTransactionInformations($idTransaction);
                 if (PaylinePaymentGateway::isValidResponse($transaction)) {
-                    $refund = PaylinePaymentGateway::refundTransaction($idTransaction, null, $this->l('Manual refund from PrestaShop BackOffice'));
+
+                    $refundIsOk = false;
+                    $remainingRefundAmount = $this->getRemainingRefundAmountFromTransaction($transaction);
+                    if($remainingRefundAmount>0) {
+                        $refund = PaylinePaymentGateway::refundTransaction($idTransaction, $remainingRefundAmount/100, $this->l('Manual refund from PrestaShop BackOffice'));
+                        $refundIsOk = PaylinePaymentGateway::isValidResponse($refund);
+                        $refundMessage = $this->l('Manual refund from PrestaShop BackOffice');
+                    } else {
+                        $refundIsOk = true;
+                        $refundMessage = $this->l('The Monext transaction had already been refunded');
+                    }
+
+
                     $this->order_already_refund = true;
-                    if (PaylinePaymentGateway::isValidResponse($refund)) {
+                    if ($refundIsOk) {
                         $order_detail_list = $order->getOrderDetailList();
                         foreach ($order_detail_list as $order_detail) {
                             $order_detail = new OrderDetail((int)$order_detail['id_order_detail']);
@@ -811,35 +852,13 @@ class payline extends PaymentModule
                             $order_detail->save();
                         }
 
-                        $customer = new Customer($order->id_customer);
-                        $customerMessage = new CustomerMessage();
-                        $idCustomerThread = CustomerThread::getIdCustomerThreadByEmailAndIdOrder($customer->email, $order->id);
-
-                        if (!$idCustomerThread) {
-                            $customerThread = new CustomerThread();
-                            $customerThread->id_contact = 0;
-                            $customerThread->id_customer = (int) $order->id_customer;
-                            $customerThread->id_shop = (int) $this->context->shop->id;
-                            $customerThread->id_order = (int) $order->id;
-                            $customerThread->id_lang = (int) $this->context->language->id;
-                            $customerThread->email = $customer->email;
-                            $customerThread->status = 'open';
-                            $customerThread->token = Tools::passwdGen(12);
-                            $customerThread->add();
-                        } else {
-                            $customerThread = new CustomerThread((int) $idCustomerThread);
-                            $customerThread->status = 'open';
-                            $customerThread->update();
-                        }
-
-                        $customerMessage->id_customer_thread = $customerThread->id;
-                        $customerMessage->id_employee = $this->context->employee->id;
-                        $customerMessage->message = $this->l('Manual refund from PrestaShop BackOffice');
-                        $customerMessage->add();
+                        $this->addMessageToOrder($order, $refundMessage);
                     } else {
                         // Refund NOK
                         $errors = PaylinePaymentGateway::getErrorResponse($refund);
-                        $this->context->controller->errors[] = sprintf($this->l('Unable to process the refund, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
+                        $errorMessage = sprintf($this->l('Unable to process the refund, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
+                        $this->context->controller->errors[] = $errorMessage;
+                        throw new Exception($errorMessage);
                     }
                 }
             }
@@ -881,27 +900,40 @@ class payline extends PaymentModule
                     // Get transaction informations
                     $transaction = PaylinePaymentGateway::getTransactionInformations($idTransaction);
                     if (PaylinePaymentGateway::isValidResponse($transaction)) {
-                        $refund = PaylinePaymentGateway::refundTransaction($idTransaction, $amountToRefund, $this->l('Manual partial refund from PrestaShop BackOffice'));
-                        if (PaylinePaymentGateway::isValidResponse($refund)) {
-                            // Refund OK
-                            $orderInvoice = new OrderInvoice($order->invoice_number);
-                            if (!Validate::isLoadedObject($orderInvoice)) {
-                                $orderInvoice = null;
-                            }
-
-                            // Wait 1s because Payline API may take some time to be updated after a refund
-                            sleep(1);
-
-                            // Partial refund OK, show confirmation message.
-                            // Unshowed msg, override by src/PrestaShopBundle/Controller/Admin/Sell/Order/OrderController.php:603
-                            $this->context->controller->confirmations[] = $this->l('Order was successfully partially refunded');
-                        } else {
-                            // Refund NOK
-                            $errors = PaylinePaymentGateway::getErrorResponse($refund);
-                            $errorsMessage = sprintf($this->l('Unable to process the refund, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
-                            $this->context->controller->errors[] = $errorsMessage;
-                            throw new Exception($errorsMessage);
+                        $remainingRefundAmount = $this->getRemainingRefundAmountFromTransaction($transaction);
+                        if($remainingRefundAmount<$amountToRefund) {
+                            $amountToRefund = $remainingRefundAmount;
                         }
+
+                        if($amountToRefund) {
+                            $refund = PaylinePaymentGateway::refundTransaction($idTransaction, $amountToRefund, $this->l('Manual partial refund from PrestaShop BackOffice'));
+                            if (!PaylinePaymentGateway::isValidResponse($refund)) {
+                                // Refund NOK
+                                $errors = PaylinePaymentGateway::getErrorResponse($refund);
+                                $errorsMessage = sprintf($this->l('Unable to process the refund, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
+                                $this->context->controller->errors[] = $errorsMessage;
+                                throw new Exception($errorsMessage);
+                            }
+                        }
+
+                        // Refund OK
+                        $orderInvoice = new OrderInvoice($order->invoice_number);
+                        if (!Validate::isLoadedObject($orderInvoice)) {
+                            $orderInvoice = null;
+                        }
+
+                        // Wait 1s because Payline API may take some time to be updated after a refund
+                        sleep(1);
+
+                        $confirmMessage = $this->l('Order was successfully partially refunded');
+                        if($amountToRefund<=0) {
+                            $confirmMessage = $this->l('The Monext transaction had already been refunded');
+                            $this->addMessageToOrder($order, $confirmMessage);
+                        }
+
+                        // Partial refund OK, show confirmation message.
+                        // Unshowed msg, override by src/PrestaShopBundle/Controller/Admin/Sell/Order/OrderController.php:603
+                        $this->context->controller->confirmations[] = $confirmMessage;
                     } else {
                         $errors = PaylinePaymentGateway::getErrorResponse($transaction);
                         $errorsMessage = sprintf($this->l('Unable to process the refund, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
@@ -915,7 +947,16 @@ class payline extends PaymentModule
                 }
             }
         } catch (Exception $e) {
-            $this->context->container->get('session')->getFlashBag()->add('error', $e->getMessage());
+
+            //Gestion d'erreur dans un hook
+            $container = PrestaShop\PrestaShop\Adapter\SymfonyContainer::getInstance();
+            $request = $container->get('request_stack')->getCurrentRequest();
+            if ($request && $request->hasSession()) {
+                $request->getSession()
+                    ->getFlashBag()
+                    ->add('error', $e->getMessage());
+            }
+
             $orderViewUrl = $this->context->link->getAdminLink('AdminOrders', true, [], ['id_order' => $order->id, 'vieworder' => 1]);
             Tools::redirectAdmin($orderViewUrl);
         }
@@ -3755,5 +3796,61 @@ class payline extends PaymentModule
 
         }
         return $widgetCustomization;
+    }
+
+    /**
+     * @param array $transaction
+     * @return mixed
+     */
+    public function getRemainingRefundAmountFromTransaction(array $transaction): mixed
+    {
+        $remainingRefundAmount = $transaction['payment']['amount'];
+        if (!empty($transaction["associatedTransactionsList"]["associatedTransactions"])
+            //Mix data in associatedTransactions, Grrr :-(
+            && empty($transaction["associatedTransactionsList"]["associatedTransactions"]["transactionId"])
+        ) {
+            foreach ($transaction['associatedTransactionsList']['associatedTransactions'] as $associatedTransaction) {
+                if ($associatedTransaction['status'] == 'OK' && $associatedTransaction['type'] == 'REFUND') {
+                    $remainingRefundAmount -= $associatedTransaction['amount'];
+                }
+            }
+        }
+        return $remainingRefundAmount;
+    }
+
+    /**
+     * @param Order $order
+     * @param string $refundMessage
+     * @return void
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
+    protected function addMessageToOrder(Order $order, string $refundMessage): void
+    {
+        $customer = new Customer($order->id_customer);
+        $customerMessage = new CustomerMessage();
+        $idCustomerThread = CustomerThread::getIdCustomerThreadByEmailAndIdOrder($customer->email, $order->id);
+
+        if (!$idCustomerThread) {
+            $customerThread = new CustomerThread();
+            $customerThread->id_contact = 0;
+            $customerThread->id_customer = (int)$order->id_customer;
+            $customerThread->id_shop = (int)$this->context->shop->id;
+            $customerThread->id_order = (int)$order->id;
+            $customerThread->id_lang = (int)$this->context->language->id;
+            $customerThread->email = $customer->email;
+            $customerThread->status = 'open';
+            $customerThread->token = Tools::passwdGen(12);
+            $customerThread->add();
+        } else {
+            $customerThread = new CustomerThread((int)$idCustomerThread);
+            $customerThread->status = 'open';
+            $customerThread->update();
+        }
+
+        $customerMessage->id_customer_thread = $customerThread->id;
+        $customerMessage->id_employee = $this->context->employee->id;
+        $customerMessage->message = $refundMessage;
+        $customerMessage->add();
     }
 }
