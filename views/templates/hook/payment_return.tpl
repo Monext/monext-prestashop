@@ -11,7 +11,7 @@
 	<strong>{l s='Thank you, your order is complete.' mod='payline'}</strong>
 </p>
 <p>
-	{l s='Payline transaction ID: %s' sprintf=[$payline_transaction_id] mod='payline'}
+	{l s='Monext transaction ID: %s' sprintf=[$payline_transaction_id] mod='payline'}
 </p>
 <p>
 	{l s='For any questions or for further information, please get in touch our customer service' mod='payline'}.

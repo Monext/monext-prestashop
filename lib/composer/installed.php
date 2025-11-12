@@ -10,15 +10,6 @@
         'dev' => true,
     ),
     'versions' => array(
-        'ddtraceweb/monolog-parser' => array(
-            'pretty_version' => '1.3.1',
-            'version' => '1.3.1.0',
-            'reference' => 'd6715cb28700d691b20d713626856aacd3d5606c',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../ddtraceweb/monolog-parser',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
         'monext/monext-php' => array(
             'pretty_version' => '25.9',
             'version' => '25.9.0.0',

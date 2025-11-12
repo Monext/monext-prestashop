@@ -138,7 +138,7 @@ class paylineSubscriptionsModuleFrontController extends ModuleFrontController
                             'billingRecord' => $billingRecord,
                             'subscriptionStartDate' => Tools::displayDate($order->date_add),
                             'subscriptionEndDate' => Tools::displayDate($subscriptionEndDate),
-                            'subscriptionAmount' => Tools::displayPrice($order->getTotalPaid()),
+                            'subscriptionAmount' => Tools::getContextLocale($this->context)->formatPrice($order->getTotalPaid(), $this->context->currency->iso_code),
                             'subscriptionEnabled' => empty($paymentRecord['isDisabled']),
                             'subscriptionDisableDate' => (!empty($subscriptionDisableDate) ? Tools::displayDate($subscriptionDisableDate, true, true) : ''),
                             'cancelSubscriptionLink' => $this->context->link->getModuleLink('payline', 'subscriptions', array('cancelSubscriptionId' => $paymentRecordId), true),

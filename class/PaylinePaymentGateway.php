@@ -490,10 +490,11 @@ class PaylinePaymentGateway
         }
         $params['billingAddress']['title'] = ($params['buyer']['title'])?:4;
         // Set buyer wallet id
-        if (($paymentMethod == self::WEB_PAYMENT_METHOD && Configuration::get('PAYLINE_WEB_CASH_BY_WALLET'))
-            || ($paymentMethod == self::RECURRING_PAYMENT_METHOD && Configuration::get('PAYLINE_RECURRING_BY_WALLET'))
+        if ((!empty($context->customer->id) &&
+            ($paymentMethod == self::WEB_PAYMENT_METHOD && Configuration::get('PAYLINE_WEB_CASH_BY_WALLET'))
+            || ($paymentMethod == self::RECURRING_PAYMENT_METHOD && Configuration::get('PAYLINE_RECURRING_BY_WALLET')))
         ) {
-            $walletId = (PaylineWallet::getWalletByIdCustomer($context->customer->id))?:PaylineWallet::generateWalletId($context->customer->id);
+            $walletId = (PaylineWallet::getWalletByIdCustomer($context->customer->id)) ?: PaylineWallet::generateWalletId($context->customer->id);
             $params['buyer']['walletId'] = $walletId;
         }
         // Customization
@@ -564,7 +565,7 @@ class PaylinePaymentGateway
         $result = $instance->doWebPayment($params);
 
         if ($error = self::getErrorResponse($result)) {
-            $instance->getLogger()->addError(__FUNCTION__ , $error);
+            $instance->getLogger()->error(__FUNCTION__ , $error);
             return array(null, $params);
         }
 
@@ -602,7 +603,7 @@ class PaylinePaymentGateway
         $result = $instance->doRecurrentWalletPayment($params);
 
         if ($error = self::getErrorResponse($result)) {
-            $instance->getLogger()->addError(__FUNCTION__ , $error);
+            $instance->getLogger()->error(__FUNCTION__ , $error);
         }
 
         return $result;
@@ -792,7 +793,7 @@ class PaylinePaymentGateway
         }
 
         if ($error = self::getErrorResponse($result)) {
-            self::getInstance()->getLogger()->addError(json_encode($error));
+            self::getInstance()->getLogger()->error(json_encode($error));
         }
 
         $result['formatedPrivateDataList'] = array();
@@ -928,7 +929,7 @@ class PaylinePaymentGateway
         $result = $instance->getTransactionDetails($params);
 
         if ($error = self::getErrorResponse($result)) {
-            $instance->getLogger()->addError(__FUNCTION__ , $error);
+            $instance->getLogger()->error(__FUNCTION__ , $error);
         } else {
             // Loop into result, format and sort some fields
             self::formatAndSortResult($result);
@@ -977,7 +978,7 @@ class PaylinePaymentGateway
         $result = $instance->disablePaymentRecord($params);
 
         if ($error = self::getErrorResponse($result)) {
-            $instance->getLogger()->addError(__FUNCTION__ , $error);
+            $instance->getLogger()->error(__FUNCTION__ , $error);
         }
 
         return $result;
@@ -1047,7 +1048,7 @@ class PaylinePaymentGateway
         }
 
         if ($error = self::getErrorResponse($result)) {
-            $instance->getLogger()->addError(__FUNCTION__ , $error);
+            $instance->getLogger()->error(__FUNCTION__ , $error);
         }
 
         return $result;
@@ -1084,7 +1085,7 @@ class PaylinePaymentGateway
         $result = $instance->doRefund($params);
 
         if ($error = self::getErrorResponse($result)) {
-            $instance->getLogger()->addError(__FUNCTION__ , $error);
+            $instance->getLogger()->error(__FUNCTION__ , $error);
         }
 
         return $result;
@@ -1112,7 +1113,7 @@ class PaylinePaymentGateway
         $result = $instance->doReset($params);
 
         if ($error = self::getErrorResponse($result)) {
-            $instance->getLogger()->addError(__FUNCTION__ , $error);
+            $instance->getLogger()->error(__FUNCTION__ , $error);
         }
 
         return $result;

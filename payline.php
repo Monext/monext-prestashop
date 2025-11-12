@@ -4,7 +4,7 @@
  *
  * @author    Monext <support@payline.com>
  * @copyright Monext - http://www.payline.com
- * @version   2.3.11
+ * @version   2.3.12
  */
 
 use PrestaShop\PrestaShop\Core\Domain\Order\Exception\DuplicateOrderCartException;
@@ -34,6 +34,8 @@ class payline extends PaymentModule
             'send_email' => true,
             'color' => '#dfe0ff',
             'hidden' => false,
+            'module_name' => 'payline',
+            'unremovable' => true,
             'delivery' => false,
             'logable' => true,
             'invoice' => true,
@@ -47,6 +49,8 @@ class payline extends PaymentModule
             'send_email' => false,
             'color' => '#4169e1',
             'hidden' => false,
+            'module_name' => 'payline',
+            'unremovable' => true,
             'delivery' => false,
             'logable' => true,
             'invoice' => false,
@@ -54,12 +58,14 @@ class payline extends PaymentModule
         ),
         'PAYLINE_ID_ORDER_STATE_NX' => array(
             'name' => array(
-                'en' => 'Partially paid with Payline',
-                'fr' => 'Payé partiellement via Payline',
+                'en' => 'REC/NX payment by Monext',
+                'fr' => 'Paiement REC/NX par Monext',
             ),
             'send_email' => false,
             'color' => '#bbddee',
             'hidden' => false,
+            'module_name' => 'payline',
+            'unremovable' => true,
             'delivery' => false,
             'logable' => true,
             'invoice' => true,
@@ -73,6 +79,8 @@ class payline extends PaymentModule
             'send_email' => false,
             'color' => '#ffcdcf',
             'hidden' => false,
+            'module_name' => 'payline',
+            'unremovable' => true,
             'delivery' => false,
             'logable' => true,
             'invoice' => true,
@@ -110,7 +118,7 @@ class payline extends PaymentModule
         $this->name = 'payline';
         $this->tab = 'payments_gateways';
         $this->module_key = '';
-        $this->version = '2.3.11';
+        $this->version = '2.3.12';
         $this->ps_versions_compliancy = array('min' => '1.7.1.0', 'max' => _PS_VERSION_);
         $this->author = 'Monext';
 
@@ -123,8 +131,8 @@ class payline extends PaymentModule
         $this->bootstrap = true;
 
         parent::__construct();
-        $this->displayName = 'Payline';
-        $this->description = $this->l('Pay with secure payline gateway');
+        $this->displayName = 'Monext';
+        $this->description = $this->l('Pay with secure Monext gateway');
         $this->confirmUninstall = $this->l('Do you really want to remove the module?');
         $this->limited_countries = array();
         $this->limited_currencies = array();
@@ -172,7 +180,7 @@ class payline extends PaymentModule
             `transaction_id` varchar(50) NOT NULL,
             `additional_data` TEXT,
             `date_add` datetime NOT NULL,
-            UNIQUE `token` (`token`),
+            UNIQUE `token` (`token`)
         ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8';
 
         foreach ($sql as $query) {
@@ -468,14 +476,14 @@ class payline extends PaymentModule
                 } else {
                     // Refund NOK
                     $errors = PaylinePaymentGateway::getErrorResponse($refund);
-                    $this->context->controller->errors[] = sprintf($this->l('Unable to process the refund, Payline reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
+                    $this->context->controller->errors[] = sprintf($this->l('Unable to process the refund, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
                 }
             } else {
                 $errors = PaylinePaymentGateway::getErrorResponse($transaction);
-                $this->context->controller->errors[] = sprintf($this->l('Unable to process the refund, Payline reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
+                $this->context->controller->errors[] = sprintf($this->l('Unable to process the refund, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
             }
         } else {
-            $this->context->controller->errors[] = $this->l('Unable to find any Payline transaction ID on this order');
+            $this->context->controller->errors[] = $this->l('Unable to find any Monext transaction ID on this order');
         }
     }
 
@@ -507,11 +515,11 @@ class payline extends PaymentModule
             } else {
                 // Capture NOK
                 $errors = PaylinePaymentGateway::getErrorResponse($capture);
-                $this->context->controller->errors[] = sprintf($this->l('Unable to process the capture, Payline reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
+                $this->context->controller->errors[] = sprintf($this->l('Unable to process the capture, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
             }
         } else {
             $errors = PaylinePaymentGateway::getErrorResponse($transaction);
-            $this->context->controller->errors[] = sprintf($this->l('Unable to process the capture, Payline reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
+            $this->context->controller->errors[] = sprintf($this->l('Unable to process the capture, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
         }
     }
 
@@ -541,11 +549,11 @@ class payline extends PaymentModule
             } else {
                 // Reset NOK
                 $errors = PaylinePaymentGateway::getErrorResponse($capture);
-                $this->context->controller->errors[] = sprintf($this->l('Unable to process the reset, Payline reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
+                $this->context->controller->errors[] = sprintf($this->l('Unable to process the reset, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
             }
         } else {
             $errors = PaylinePaymentGateway::getErrorResponse($transaction);
-            $this->context->controller->errors[] = sprintf($this->l('Unable to process the reset, Payline reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
+            $this->context->controller->errors[] = sprintf($this->l('Unable to process the reset, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
         }
     }
 
@@ -831,7 +839,7 @@ class payline extends PaymentModule
                     } else {
                         // Refund NOK
                         $errors = PaylinePaymentGateway::getErrorResponse($refund);
-                        $this->context->controller->errors[] = sprintf($this->l('Unable to process the refund, Payline reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
+                        $this->context->controller->errors[] = sprintf($this->l('Unable to process the refund, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
                     }
                 }
             }
@@ -890,18 +898,18 @@ class payline extends PaymentModule
                         } else {
                             // Refund NOK
                             $errors = PaylinePaymentGateway::getErrorResponse($refund);
-                            $errorsMessage = sprintf($this->l('Unable to process the refund, Payline reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
+                            $errorsMessage = sprintf($this->l('Unable to process the refund, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
                             $this->context->controller->errors[] = $errorsMessage;
                             throw new Exception($errorsMessage);
                         }
                     } else {
                         $errors = PaylinePaymentGateway::getErrorResponse($transaction);
-                        $errorsMessage = sprintf($this->l('Unable to process the refund, Payline reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
+                        $errorsMessage = sprintf($this->l('Unable to process the refund, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
                         $this->context->controller->errors[] = $errorsMessage;
                         throw new Exception($errorsMessage);
                     }
                 } else {
-                    $errorsMessage = $this->l('Unable to find any Payline transaction ID on this order');
+                    $errorsMessage = $this->l('Unable to find any Monext transaction ID on this order');
                     $this->context->controller->errors[] = $errorsMessage;
                     throw new Exception($errorsMessage);
                 }
@@ -1027,6 +1035,7 @@ class payline extends PaymentModule
                         'payline_assets' => PaylinePaymentGateway::getAssetsToRegister(),
                         'payline_title' => $webCashTitle,
                         'payline_subtitle' => $webCashSubTitle,
+                        'payline_widget_customization' => $this->getWidgetCustomizations()
                     ));
                     $webCash->setAction('javascript:Payline.Api.init()');
                     $webCash->setAdditionalInformation($this->fetch('module:payline/views/templates/front/1.7/lightbox.tpl'));
@@ -1044,45 +1053,6 @@ class payline extends PaymentModule
                 list($paymentRequest, $paymentRequestParams) = PaylinePaymentGateway::createPaymentRequest($this->context, PaylinePaymentGateway::WEB_PAYMENT_METHOD);
                 if (!empty($paymentRequest['token'])) {
 
-                    $widgetCustomization =[];
-                    if(Configuration::get('PAYLINE_WEB_WIDGET_CUSTOM')) {
-                        $widgetCustomization = array(
-                            'cta_label' => $this->getConfigLangValue('PAYLINE_WEB_WIDGET_CTA_LABEL'),
-                            'cta_bg_color' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR'),
-                            'cta_bg_color_hexadecimal' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HEXADECIMAL'),
-                            'cta_bg_color_hover_darker' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER_DARKER'),
-                            'cta_bg_color_hover_lighter' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER_LIGHTER'),
-                            'cta_text_color' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_TEXT_COLOR'),
-                            'font_size' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_FONT_SIZE'),
-                            'border_radius' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_BORDER_RADIUS'),
-                            'bg_color' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_BG_COLOR'),
-                            'text_under_cta' => $this->getConfigLangValue('PAYLINE_WEB_WIDGET_TEXT_UNDER_CTA'),
-                        );
-
-                        // Déterminer la couleur de base à utiliser entre cta_bg_color et cta_bg_color_hexadecimal
-                        $baseColor = !empty($widgetCustomization['cta_bg_color_hexadecimal'])
-                            ? $widgetCustomization['cta_bg_color_hexadecimal']
-                            : $widgetCustomization['cta_bg_color'];
-
-                        if (!empty($baseColor)) {
-                            if (!empty($widgetCustomization['cta_bg_color_hover_darker'])) {
-                                $widgetCustomization['cta_bg_color_hover_darker'] = $this->changeColor(
-                                    $baseColor,
-                                    $widgetCustomization['cta_bg_color_hover_darker'],
-                                    false
-                                );
-                            }
-
-                            if (!empty($widgetCustomization['cta_bg_color_hover_lighter'])) {
-                                $widgetCustomization['cta_bg_color_hover_lighter'] = $this->changeColor(
-                                    $baseColor,
-                                    $widgetCustomization['cta_bg_color_hover_lighter'],
-                                    false
-                                );
-                            }
-                        }
-                    }
-
                     $this->smarty->assign(array(
                         'payline_title' => $webCashTitle,
                         'payline_subtitle' => $webCashSubTitle,
@@ -1090,7 +1060,7 @@ class payline extends PaymentModule
                         'payline_assets' => PaylinePaymentGateway::getAssetsToRegister(),
                         'payline_ux_mode' => Configuration::get('PAYLINE_WEB_CASH_UX'),
                         'jsSelector' => 'paylineWidgetColumn',
-                        'payline_widget_customization' => $widgetCustomization
+                        'payline_widget_customization' => $this->getWidgetCustomizations()
                     ));
 
                     $webCash->setAdditionalInformation($this->fetch('module:payline/views/templates/front/1.7/payment.tpl'));
@@ -1441,7 +1411,7 @@ class payline extends PaymentModule
                         $paymentReturn = '';
 
                         $this->context->controller->errors[] = $this->l('Your cart contains mixed products (recurring products and classic products).');
-                        $this->context->controller->errors[] = $this->l('In order to be able to pay with Payline, please remove these products:');
+                        $this->context->controller->errors[] = $this->l('In order to be able to pay with Monext, please remove these products:');
                         foreach ($breakingProductList as $productName) {
                             $this->context->controller->errors[] = $productName;
                         }
@@ -1579,7 +1549,7 @@ class payline extends PaymentModule
 
         // Add error messages if fields are empty
         if (Configuration::get('PAYLINE_MERCHANT_ID') && Configuration::get('PAYLINE_ACCESS_KEY') && !$paylineCheckCredentials) {
-            $this->context->controller->errors[] = $this->l('Payline credentials are invalid, please fix them before continue.');
+            $this->context->controller->errors[] = $this->l('Monext credentials are invalid, please fix them before continue.');
         }
 
         // Assign the first POS by default
@@ -1856,7 +1826,7 @@ class payline extends PaymentModule
             return $subscribeDays;
         } elseif ($listName === 'widget-cta-bg-color') {
             return array(
-                array('value' => '', 'name' => $this->l('Payline default')),
+                array('value' => '', 'name' => $this->l('Monext default')),
                 array('value' => '#000000', 'name' => $this->l('Black')),
                 array('value' => '#d64c1d', 'name' => $this->l('Red')),
                 array('value' => '#00786c', 'name' => $this->l('Green')),
@@ -1866,27 +1836,30 @@ class payline extends PaymentModule
             );
         } elseif ($listName === 'widget-cta-bg-hover') {
             return array(
+                array('value' => '+30', 'name' => $this->l('30%') . ' ' . $this->l('darker')),
+                array('value' => '+20', 'name' => $this->l('20%') . ' ' . $this->l('darker')),
+                array('value' => '+10', 'name' => $this->l('10%') . ' ' . $this->l('darker')),
                 array('value' => '', 'name' => $this->l('No')),
-                array('value' => '10', 'name' => $this->l('10%')),
-                array('value' => '20', 'name' => $this->l('20%')),
-                array('value' => '30', 'name' => $this->l('30%'))
+                array('value' => '-10', 'name' => $this->l('10%') . ' ' . $this->l('lighter')),
+                array('value' => '-20', 'name' => $this->l('20%') . ' ' . $this->l('lighter')),
+                array('value' => '-30', 'name' => $this->l('30%') . ' ' . $this->l('lighter')),
             );
         } elseif ($listName === 'widget-cta-color') {
             return array(
-                array('value' => '', 'name' => $this->l('Payline default')),
+                array('value' => '', 'name' => $this->l('Monext default')),
                 array('value' => '#000000', 'name' => $this->l('Black')),
                 array('value' => '#FFFFFF', 'name' => $this->l('White'))
             );
         } elseif ($listName === 'widget-cta-font-size') {
             return array(
-                array('value' => '', 'name' => $this->l('Payline default')),
+                array('value' => '', 'name' => $this->l('Monext default')),
                 array('value' => 'small', 'name' => $this->l('Small')),
                 array('value' => 'average', 'name' => $this->l('Average')),
                 array('value' => 'big', 'name' => $this->l('Big'))
             );
         } elseif ($listName === 'widget-cta-border-radius') {
             return array(
-                array('value' => '', 'name' => $this->l('Payline default')),
+                array('value' => '', 'name' => $this->l('Monext default')),
                 array('value' => 'none', 'name' => $this->l('None')),
                 array('value' => 'small', 'name' => $this->l('Small')),
                 array('value' => 'average', 'name' => $this->l('Average')),
@@ -1894,7 +1867,7 @@ class payline extends PaymentModule
             );
         } elseif ($listName === 'widget-container-bg-color') {
             return array(
-                array('value' => '', 'name' => $this->l('Payline default')),
+                array('value' => '', 'name' => $this->l('Monext default')),
                 array('value' => 'lighter', 'name' => $this->l('Lighter')),
                 array('value' => 'darker', 'name' => $this->l('Darker'))
             );
@@ -2182,12 +2155,15 @@ class payline extends PaymentModule
                             ),
                         ),
                         array(
+                            'form_group_class' => 'widget_customization_head',
                             'type' => 'html',
                             'name' => '
                             <h2>' . $this->l('Widget configuration') . '</h2>',
+                            'desc' => $this->l('Not available on "redirection" user experience mode'),
                         ),
 
                         array(
+                            'form_group_class' => 'widget_customization_head',
                             'type' => 'switch',
                             'label' => $this->l('Customisation'),
                             'name' => 'PAYLINE_WEB_WIDGET_CUSTOM',
@@ -2241,24 +2217,13 @@ class payline extends PaymentModule
                         array(
                             'form_group_class' => 'widget_customization',
                             'type' => 'select',
-                            'name' => 'PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER_DARKER',
-                            'label' => $this->l('CTA hover darkey'),
+                            'name' => 'PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER',
+                            'label' => $this->l('CTA hover'),
                             'options' => array(
                                 'query' => $this->getConfigSelectList('widget-cta-bg-hover', PaylinePaymentGateway::WEB_PAYMENT_METHOD),
                                 'id' => 'value',
                                 'name' => 'name',
-                            ),
-                        ),
-                        array(
-                            'form_group_class' => 'widget_customization',
-                            'type' => 'select',
-                            'name' => 'PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER_LIGHTER',
-                            'label' => $this->l('CTA hover lighter'),
-                            'options' => array(
-                                'query' => $this->getConfigSelectList('widget-cta-bg-hover', PaylinePaymentGateway::WEB_PAYMENT_METHOD),
-                                'id' => 'value',
-                                'name' => 'name',
-                            ),
+                            )
                         ),
                         array(
                             'form_group_class' => 'widget_customization',
@@ -2460,6 +2425,10 @@ class payline extends PaymentModule
                 ),
             );
         } elseif ($tabName == 'subscribe-payment') {
+            Media::addJsDef([
+                'admin_base_link' => $this->context->link->getAdminBaseLink() . basename(_PS_ADMIN_DIR_),
+            ]);
+
             $subscribeProductList = array();
             $subscribeProductListId = $this->getSubscribeProductList();
             if (!empty($subscribeProductListId)) {
@@ -2472,7 +2441,7 @@ class payline extends PaymentModule
                         $subscribeProductList[] = array(
                             'id' => (int)$product->id,
                             'name' => $product->name . " (ref: " . $product->reference . ")",
-                            'id_image' => $product->getCoverWs(),
+                            'path_image' => $this->context->link->getImageLink($product->reference, $product->getCoverWs(), 'small_default'),
                         );
                     }
                 }
@@ -2803,8 +2772,7 @@ class payline extends PaymentModule
                 'PAYLINE_WEB_WIDGET_CTA_LABEL' => $this->getConfigLangValue('PAYLINE_WEB_WIDGET_CTA_LABEL'),
                 'PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR'),
                 'PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HEXADECIMAL' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HEXADECIMAL'),
-                'PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER_DARKER' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER_DARKER'),
-                'PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER_LIGHTER' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER_LIGHTER'),
+                'PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER', null, null, null, '-30'),
                 'PAYLINE_WEB_WIDGET_CSS_CTA_TEXT_COLOR' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_TEXT_COLOR'),
                 'PAYLINE_WEB_WIDGET_CSS_FONT_SIZE' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_FONT_SIZE'),
                 'PAYLINE_WEB_WIDGET_CSS_BORDER_RADIUS' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_BORDER_RADIUS'),
@@ -3261,6 +3229,8 @@ class payline extends PaymentModule
                     // Invalid Cart ID
                     $errorCode = payline::INVALID_CART_ID;
                 }
+            } else {
+                //TODO: Le retour est KO, il faut quand même créé la commande etn statut annulé
             }
         }
 
@@ -3727,8 +3697,10 @@ class payline extends PaymentModule
         return false;
     }
 
-    protected function changeColor($hex, $strenght, $lighter)
+    protected function changeColor($hex, $strenght)
     {
+        $strenght = (integer)$strenght;
+
         $hex = ltrim($hex, '#');
 
         if (strlen($hex) == 3) {
@@ -3739,7 +3711,7 @@ class payline extends PaymentModule
         $g = hexdec(substr($hex, 2, 2));
         $b = hexdec(substr($hex, 4, 2));
 
-        $factor = $lighter ? 1 + ($strenght / 100) : 1 - ($strenght / 100);
+        $factor = 1 - ($strenght / 100);
 
         $r = max(0, min(255, intval($r * $factor)));
         $g = max(0, min(255, intval($g * $factor)));
@@ -3748,5 +3720,40 @@ class payline extends PaymentModule
         $newHex = sprintf("#%02x%02x%02x", $r, $g, $b);
 
         return $newHex;
+    }
+
+    protected function getWidgetCustomizations()
+    {
+        $widgetCustomization = [];
+        if(Configuration::get('PAYLINE_WEB_WIDGET_CUSTOM')) {
+            $widgetCustomization = array(
+                'cta_label' => Configuration::get('PAYLINE_WEB_WIDGET_CTA_LABEL', $this->context->language->id),
+                'cta_bg_color' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR'),
+                'cta_bg_color_hexadecimal' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HEXADECIMAL'),
+                'cta_bg_color_hover' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER'),
+                'cta_text_color' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_CTA_TEXT_COLOR'),
+                'font_size' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_FONT_SIZE'),
+                'border_radius' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_BORDER_RADIUS'),
+                'bg_color' => Configuration::get('PAYLINE_WEB_WIDGET_CSS_BG_COLOR'),
+                'text_under_cta' => Configuration::get('PAYLINE_WEB_WIDGET_TEXT_UNDER_CTA', $this->context->language->id)
+            );
+
+            // Déterminer la couleur de base à utiliser entre cta_bg_color et cta_bg_color_hexadecimal
+            $baseColor = !empty($widgetCustomization['cta_bg_color_hexadecimal'])
+                ? $widgetCustomization['cta_bg_color_hexadecimal']
+                : $widgetCustomization['cta_bg_color'];
+
+            if(empty($baseColor)) {
+                $baseColor= '#26a434';
+            }
+
+
+            $widgetCustomization['cta_bg_color_hover'] = $this->changeColor(
+                $baseColor,
+                $widgetCustomization['cta_bg_color_hover']
+            );
+
+        }
+        return $widgetCustomization;
     }
 }

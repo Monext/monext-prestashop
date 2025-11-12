@@ -5,21 +5,36 @@
  * @copyright Monext - http://www.payline.com
  */
 
+let myExtraParams = {};
+
 function payline_initProductsAutocomplete()
 {
-    const autocompleteInput = $('#product_autocomplete_input');
-    const token = autocompleteInput.attr('data-token');
-    autocompleteInput.autocomplete('index.php?controller=AdminProducts&ajax=1&action=productsList&forceJson=1&token='+ token, {
-        // Use ?forceJson=1 to get image link in the returned values
+      const autocompleteInput = $('#product_autocomplete_input');
+
+      myExtraParams = {
+        search_phrase: () => {
+          return autocompleteInput.val();
+        },
+        token: () => {
+          return autocompleteInput.attr('data-token');
+        }
+      };
+
+      const ajaxUrl = window.admin_base_link + "/sell/orders/products/search";
+
+      autocompleteInput.autocomplete(ajaxUrl, {
         minLength: 2,
         minChars: 1,
         // Disable to prevent json to be displayed as autocompletion
         autoFill: true,
-        max: 20,
+        max: 10,
         matchContains: true,
         mustMatch: false,
         scroll: false,
         cacheLength: 0,
+        extraParams : {
+          ...myExtraParams
+        },
         parse: function(data) {
             var parsed = [];
             if (payline_isPrestaShop16) {
@@ -35,14 +50,25 @@ function payline_initProductsAutocomplete()
                     }
                 }
             } else {
-                var rows = JSON.parse(data);
-                for (var index in rows) {
-                    var row = rows[index];
-                    parsed[parsed.length] = {
-                        data: row,
-                        value: row.name,
-                        result: row
-                    };
+                let rows = [];
+                if(data.products){
+                  rows = data.products
+                }
+
+                const excludedProductsID = payline_getProductsIds().split(',').filter(item => item !== '').map(item => parseInt(item, 10));
+                const filtredRows = rows.filter(row => !excludedProductsID.includes(row.productId));
+
+                for (var index in filtredRows) {
+                  var row = filtredRows[index];
+
+                  //--> Add image link, not present in data
+                  row.image = '/' + row.productId + '-small_default/' + formatFileName(row.name) + '.jpg';
+
+                  parsed[parsed.length] = {
+                    data: row,
+                    value: row.name,
+                    result: row
+                  };
                 }
             }
             return parsed;
@@ -57,10 +83,11 @@ function payline_initProductsAutocomplete()
     }).result(payline_addProduct);
 
     $('#product_autocomplete_input').setOptions({
-        extraParams: {
-            excludeIds: payline_getProductsIds(),
-            exclude_packs : 0
-        },
+      extraParams: {
+        ...myExtraParams,
+        excludeIds: payline_getProductsIds(),
+        exclude_packs : 0
+      },
     });
 };
 
@@ -84,7 +111,7 @@ function payline_addProduct(event, data, formatted)
         var productName = data[0];
         var productImage = '../img/tmp/product_mini_' + productId + '_' + payline_idShop + '.jpg';
     } else {
-        var productId = data.id;
+        var productId = data.productId;
         var productName = data.name;
         var productImage = data.image;
     }
@@ -99,10 +126,11 @@ function payline_addProduct(event, data, formatted)
     $inputProducts.val($inputProducts.val() + productId + ',');
     $('#product_autocomplete_input').val('');
     $('#product_autocomplete_input').setOptions({
-        extraParams: {
-        	excludeIds : payline_getProductsIds(),
-        	exclude_packs : 0
-        }
+      extraParams: {
+        ...myExtraParams,
+        excludeIds : payline_getProductsIds(),
+        exclude_packs : 0
+      }
     });
 };
 
@@ -113,7 +141,7 @@ function payline_delProduct(id)
 
     // Cut hidden fields in array
     var inputCut = input.value.split(',');
-    var nameCut = name.value.split('¤');;
+    var nameCut = name.value.split('¤');
 
     if (inputCut.length != nameCut.length) {
         return jAlert('Bad size');
@@ -143,10 +171,11 @@ function payline_delProduct(id)
     $("#PAYLINE_SUBSCRIBE_PLIST-PRODUCT-" + id).remove();
 
     $('#product_autocomplete_input').setOptions({
-        extraParams: {
-        	excludeIds : payline_getProductsIds(),
-        	exclude_packs : 0
-        }
+      extraParams: {
+        ...myExtraParams,
+        excludeIds : payline_getProductsIds(),
+        exclude_packs : 0
+      }
     });
 };
 
@@ -157,6 +186,16 @@ function toggleWidgetCustomizationGroup()
     } else {
         $('#web-payment-configuration div.widget_customization').addClass('hidden');
     }
+}
+
+function formatFileName(input) {
+  return input
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, '')
+    .trim()
+    .replace(/\s+/g, '-');
 }
 
 // AdminModules
@@ -173,8 +212,10 @@ $(document).ready(function() {
     $(document).on('change', 'select#PAYLINE_WEB_CASH_UX', function() {
         if ($(this).val() == 'redirect') {
             $('#web-payment-configuration div.payline-redirect-only').removeClass('hidden');
+            $('.widget_customization_head').hide();
         } else {
             $('#web-payment-configuration div.payline-redirect-only').addClass('hidden');
+            $('.widget_customization_head').show();
         }
         toggleWidgetCustomizationGroup();
     });
@@ -228,7 +269,7 @@ $(document).ready(function() {
         success: (data) => {
           $('#log_display').html("");
 
-          data.forEach((logLine) => {
+            data.message.forEach((logLine) => {
             let html = "<p>" + logLine.date + " - " + logLine.logger + " " + logLine.level + " : " + logLine.message;
 
             if (logLine['context'].length !== 0) {
@@ -241,6 +282,9 @@ $(document).ready(function() {
             $('#log_display').append(html);
           })
         },
+          error: (xhr, textstatus ,error) => {
+            $('#log_display').html("<p>Cannot show this log file, because : " + textstatus + "</p>");
+          }
       });
     });
 
@@ -254,22 +298,26 @@ $(document).ready(function() {
     const previewContainer = document.getElementById("paylineCtaPreviewContainer");
     const previewButton = document.getElementById('paylineCtaPreview');
     const previewTextUnderCta = document.querySelector('#paylineCtaPreviewContainer p');
-    const inputCtaText = document.getElementById("PAYLINE_WEB_WIDGET_CTA_LABEL_1");
     const ctaBgColorSelect = document.getElementById("PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR");
     const ctaBgColorHexadecimalSelect = document.querySelector('input[name="PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HEXADECIMAL"]');
-    const ctaHoverDarkerSelect = document.getElementById("PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER_DARKER");
-    const ctaHoverLighterSelect = document.getElementById("PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER_LIGHTER");
+    const ctaHoverSelect = document.getElementById("PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER");
     const ctaColorSelect = document.getElementById("PAYLINE_WEB_WIDGET_CSS_CTA_TEXT_COLOR");
     const ctaFontSizeSelect = document.getElementById("PAYLINE_WEB_WIDGET_CSS_FONT_SIZE");
     const ctaBorderRadiusSelect = document.getElementById("PAYLINE_WEB_WIDGET_CSS_BORDER_RADIUS");
-    const ctaTextUnder = document.getElementById("PAYLINE_WEB_WIDGET_TEXT_UNDER_CTA_1");
     const widgetContainerBgColorSelect = document.getElementById("PAYLINE_WEB_WIDGET_CSS_BG_COLOR");
+    
+    //--> Champs multilingues
+    const inputCtaText = document.querySelectorAll("[id^='PAYLINE_WEB_WIDGET_CTA_LABEL_']");
+    const ctaTextUnder = document.querySelectorAll("[id^='PAYLINE_WEB_WIDGET_TEXT_UNDER_CTA_']");
 
+    const MLElements = [];
+    inputCtaText.forEach(element => MLElements.push(element));
+    ctaTextUnder.forEach(element => MLElements.push(element));
 
     const eventsListeners = [
         {
             type: 'blur',
-            elements: [inputCtaText, ctaTextUnder]
+            elements: MLElements
         },
         {
             type: 'change',
@@ -287,52 +335,38 @@ $(document).ready(function() {
         })
     })
 
-    //--> Prevent click on preview Button
     if (previewButton) {
+
+        //--> Prevent click on preview Button
         previewButton.addEventListener('click', e => {
             e.preventDefault();
             return false;
         })
-    }
 
-    //--> Couleur du hover
-    if (previewButton) {
+        //--> Couleur du hover
         previewButton.addEventListener('mouseover', function () {
-            let hoverCtaBgColor = '#1c7b27';
-            let isLighter = true;
+            let hoverCtaBgColor = getCtaBgColor();
             let amount = 0;
-
-            //--> Darker version
-            if (ctaHoverDarkerSelect) {
-                const darkerAmountValue = ctaHoverDarkerSelect.value.trim();
-                if (darkerAmountValue > 0) {
-                    amount = parseInt(darkerAmountValue);
+            if (ctaHoverSelect) {
+                const hoverAmountValue = ctaHoverSelect.value.trim();
+                if (hoverAmountValue) {
+                    amount = parseInt(hoverAmountValue);
                     hoverCtaBgColor = getCtaBgColor();
-                    isLighter = false;
-                }
-
-            }
-
-            //--> Lighter version
-            if (ctaHoverLighterSelect) {
-                const lighterAmountValue = ctaHoverLighterSelect.value.trim();
-                if (lighterAmountValue > 0) {
-                    amount = parseInt(lighterAmountValue);
-                    hoverCtaBgColor = getCtaBgColor();
-                    isLighter = true;
                 }
             }
 
-
-            previewButton.style.backgroundColor = adjustHexColor(hoverCtaBgColor, amount, isLighter); // couleur de hover
+            previewButton.style.backgroundColor = adjustHexColor(hoverCtaBgColor, amount); // couleur de hover
         });
 
         previewButton.addEventListener('mouseout', function () {
             previewButton.style.backgroundColor = getCtaBgColor(); // couleur normale
         });
+
+        previewButton.style.textDecoration = 'none';
     }
 
-    function adjustHexColor(hex, amount, lighten) {
+    function adjustHexColor(hex, amount) {
+
         hex = hex.replace(/^#/, '');
         if (hex.length === 3) {
             hex = hex.split('').map(x => x + x).join('');
@@ -341,13 +375,7 @@ $(document).ready(function() {
         let r = (num >> 16) & 0xFF;
         let g = (num >> 8) & 0xFF;
         let b = num & 0xFF;
-
-        if (lighten) {
-            amount = 1 + (amount / 100);
-        } else {
-            amount = 1 - (amount / 100);
-        }
-
+        amount = 1 - (amount / 100);
 
         r = Math.min(255, Math.round(r * amount));
         g = Math.min(255, Math.round(g * amount));
@@ -365,9 +393,35 @@ $(document).ready(function() {
         return colorFromHex || colorFromSelect || defaultColor;
     }
 
+    //--> Update on language change
+    var originalHideOtherLanguage = window.hideOtherLanguage;
+
+    window.hideOtherLanguage = function() {
+        if (typeof originalHideOtherLanguage === 'function') {
+            originalHideOtherLanguage.apply(this, arguments);
+            updateWidgetPreview();
+        }
+    };
+
+    function isVisible(el) {
+        return !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
+    }
+
+    function getMlFieldValue(fieldElements) {
+        let retVal = '';
+        Array.from(fieldElements).forEach(element => {
+            if ( isVisible(element) ) {
+                const elementValue = element.value.trim();
+                if (elementValue) {
+                    retVal = elementValue;
+                }
+            }
+        })
+        return retVal;
+    }
+
     //--> Preview du bouton
     function updateWidgetPreview() {
-
         if (!previewContainer || !previewButton) {
             return;
         }
@@ -376,9 +430,9 @@ $(document).ready(function() {
         let buttonText = "Payer par carte";
 
         if (inputCtaText) {
-            const newValue = inputCtaText.value.trim().replace('[[amount]]', '155.25 EUR');
-            if (newValue) {
-                buttonText = newValue;
+            const newTextCta = getMlFieldValue(inputCtaText).replace('[[amount]]', '155.25 EUR');
+            if (newTextCta) {
+                buttonText = newTextCta;
             }
         }
         previewButton.innerText = buttonText;
@@ -386,10 +440,7 @@ $(document).ready(function() {
         //--> Test under CTA
         let textUnderCta = '';
         if (ctaTextUnder) {
-            const newTextUnderCta = ctaTextUnder.value.trim().replace('[[amount]]', '155.25 EUR');
-            if (newTextUnderCta) {
-                textUnderCta = newTextUnderCta;
-            }
+            textUnderCta = getMlFieldValue(ctaTextUnder);
         }
         previewTextUnderCta.innerText = textUnderCta;
 
