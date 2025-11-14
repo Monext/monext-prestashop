@@ -470,7 +470,7 @@ class PaylinePaymentGateway
             // URL
             'notificationURL' => $context->link->getModuleLink('payline', 'notification', array(), true),
             'returnURL' => $context->link->getModuleLink('payline', 'validation', array(), true),
-            'cancelURL' => $context->link->getPageLink('order'),
+            'cancelURL' => $context->link->getModuleLink('payline', 'validation', array(), true),
         );
         // Set mobile phone for buyer (check shipping first, then billing)
         if (!empty($params['shippingAddress']['mobilePhone'])) {
