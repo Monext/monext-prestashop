@@ -1289,7 +1289,7 @@ class PaylinePaymentGateway
         $result = $instance->manageWebWallet($params);
 
         if ($error = self::getErrorResponse($result)) {
-            $instance->getLogger()->addError(__FUNCTION__ , $error);
+            $instance->getLogger()->error(__FUNCTION__ , $error);
         }
 
         return $result;
