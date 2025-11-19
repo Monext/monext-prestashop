@@ -128,7 +128,7 @@
             }
 
             //--> Init payment buttons state
-            setPaylineWidgetState();
+          setPaylineWidgetState();
 
             //--> Add event listener to agreements
             Array.from(agreements).forEach(agreement => {
@@ -145,7 +145,7 @@
 
             //--> Remove event listener to agreements
             Array.from(agreements).forEach(agreement => {
-                agreement.removeEventListener('change', setPaylineWidgetState);
+              agreement.removeEventListener('change', setPaylineWidgetState);
             });
             wasPaylineBefore = false;
             }
