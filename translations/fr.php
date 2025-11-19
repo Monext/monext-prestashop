@@ -227,6 +227,7 @@ $_MODULE['<{payline}prestashop>subscriptions_d79cf3f429596f77db95c65074663a54'] 
 $_MODULE['<{payline}prestashop>subscriptions_44749712dbec183e983dcd78a7736c41'] = 'Date';
 $_MODULE['<{payline}prestashop>subscriptions_d02bbc3cb147c272b0445ac5ca7d1a36'] = 'Etat de la commande';
 $_MODULE['<{payline}prestashop>payment_nx_de58f2537bc7462529df701ef30bee7f'] = 'Total à payer maintenant :';
+$_MODULE['<{payline}prestashop>payment_809e9087b6b24abd1c47cd1801257498'] = 'Vous devez accepter les CGVs avant de procéder au paiement';
 $_MODULE['<{payline}prestashop>payment_sub_error_a147cdaee475e8a111bd5b116247eff0'] = 'Votre panier contient des produits qui ne sont pas disponibles par abonnement.';
 $_MODULE['<{payline}prestashop>payment_sub_error_650ff588ba495a7ee46cc718e42e79a2'] = 'Pour pouvoir payer avec Monext, veuillez supprimer ces produits :';
 $_MODULE['<{payline}prestashop>payment_nx_560ccb8a84bfc2cf70bd0ae4698b4d3e'] = 'Total à payer :';

@@ -64,7 +64,7 @@
 
       //--> Disable attribute does nothing on images. Here it's just for CSS
       paylinePaymentsButton.push(amazonPaymentButton);
-      setPaylinePaymentButtonsState();
+      setPaylineWidgetState();
     });
 
     let paymentConfirmationOriginalVisibity = '';
@@ -84,15 +84,25 @@
       return isChecked;
     }
 
-    const setPaylinePaymentButtonsState = () => {
+    const setPaylineWidgetState = () => {
       const acceptedAgreements = areAggreementsAccepted();
-      paylinePaymentsButton.forEach(button => {
-        if (!acceptedAgreements) {
-          button.setAttribute('disabled', 'disabled');
+      const widgetContainer = document.querySelector('[data-js-selector="{$jsSelector}"]');
+      const notVisibleMessage = document.querySelector('[data-js-selector="{$jsSelector}-not-visible"]');
+      if (!acceptedAgreements) {
+            if (widgetContainer) {
+                widgetContainer.style.display = 'none';
+            }
+            if (notVisibleMessage) {
+              notVisibleMessage.style.display = '';
+            }
         } else {
-          button.removeAttribute('disabled');
+            if (widgetContainer) {
+                widgetContainer.style.display = '';
+            }
+            if (notVisibleMessage) {
+              notVisibleMessage.style.display = 'none';
+            }
         }
-      });
     }
 
     Array.from(document.querySelectorAll('.payment-options input[type="radio"]')).forEach(paymentMethodRadio => {
@@ -106,11 +116,11 @@
           }
 
           //--> Init payment buttons state
-          setPaylinePaymentButtonsState();
+          setPaylineWidgetState();
 
           //--> Add event listener to agreements
           Array.from(agreements).forEach(agreement => {
-            agreement.addEventListener('change', setPaylinePaymentButtonsState);
+            agreement.addEventListener('change', setPaylineWidgetState);
           });
         } else {
           //--> Clean up
@@ -123,7 +133,7 @@
 
             //--> Remove event listener to agreements
             Array.from(agreements).forEach(agreement => {
-              agreement.removeEventListener('change', setPaylinePaymentButtonsState);
+              agreement.removeEventListener('change', setPaylineWidgetState);
             });
             wasPaylineBefore = false;
           }
@@ -163,6 +173,10 @@
       >
       </div>
 </section>
+
+<p data-js-selector="{$jsSelector}-not-visible">
+{l s='Please accept the Terms and Conditions to proceed with payment.' mod='payline'}
+</p>
 
 {foreach from=$payline_assets item=paylineAssetsUrls key=assetType}
   {foreach from=$paylineAssetsUrls item=paylineAssetsUrl}
