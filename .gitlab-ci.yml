@@ -1,0 +1,47 @@
+stages:
+  - test
+
+phpunit:
+  stage: test
+  image: php:${PHP_VERSION}-cli
+  # run the job in parallel for each PHP version
+  parallel:
+    matrix:
+      - PHP_VERSION: "7.4"
+      - PHP_VERSION: "8.0"
+      - PHP_VERSION: "8.1"
+      - PHP_VERSION: "8.2"
+      - PHP_VERSION: "8.3"
+      - PHP_VERSION: "8.4"
+
+  variables:
+    # put composer cache inside project to improve portability on shared runners
+    COMPOSER_CACHE_DIR: "$CI_PROJECT_DIR/.composer/cache"
+
+  cache:
+    key: "${CI_JOB_NAME}-${PHP_VERSION}-${CI_COMMIT_REF_SLUG}"
+    paths:
+      - lib/
+      - .composer/cache/
+
+  before_script:
+    # install system deps and PHP extensions commonly used by PHPUnit/WordPress/WooCommerce projects
+    - apt-get update -yqq
+    - apt-get install -y --no-install-recommends git unzip libicu-dev libonig-dev libzip-dev zlib1g-dev libxml2-dev curl
+    - docker-php-ext-configure zip --with-libzip || true
+    # install soap as well (nécessaire pour monext/payline-sdk)
+    - docker-php-ext-install -j$(nproc) intl mbstring xml zip soap || true
+    - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    - composer --version
+    - composer install --prefer-dist --no-progress --no-interaction
+
+  script:
+    # run your unit tests; the job (and pipeline) will fail if phpunit exits non-zero
+    - ./lib/bin/phpunit --colors=always
+
+  rules:
+    # Run pipeline when a Merge Request is created/updated (GitLab MR ~ GitHub PR)
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: on_success
+    # never run by default for other pipeline sources (adjust if you want pushes too)
+    - when: never
