@@ -13,7 +13,7 @@
     if (textUnderCta) {
         document.querySelectorAll('.PaylineWidget .pl-pay-btn, .PaylineWidget .pl-btn').forEach(function(btn) {
             const p = document.createElement('p');
-            p.innerHTML = textUnderCta;
+            p.innerHTML = textUnderCta.replace("[[amount]]", Payline.Api.getContextInfo("PaylineFormattedAmount"));
             p.classList.add('pl-text-under-cta');
             btn.parentNode.insertBefore(p, btn.nextSibling);
         });

@@ -442,7 +442,7 @@ $(document).ready(function() {
         if (ctaTextUnder) {
             textUnderCta = getMlFieldValue(ctaTextUnder);
         }
-        previewTextUnderCta.innerText = textUnderCta;
+        previewTextUnderCta.innerText = textUnderCta.replace('[[amount]]', '155.25 EUR');
 
         //--> Cta BG Color
         previewButton.style.backgroundColor = getCtaBgColor();
