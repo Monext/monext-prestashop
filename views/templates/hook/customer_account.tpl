@@ -7,17 +7,18 @@
 *
 *}
 
-<li>
-	<a href="{$subscriptionControllerLink|escape:'html':'UTF-8'}">
-		<i class="icon-refresh"></i>
-		<span>{l s='Subscriptions' mod='payline'}</span>
-	</a>
-</li>
+<a class="col-lg-4 col-md-6 col-sm-6 col-xs-12 {if $page.page_name == 'module-payline-subscriptions'} active{/if}" id="payline-subscriptions-link" href="{$subscriptionControllerLink}">
+	<span class="link-item">
+		<i class="material-icons">subscriptions</i>
+		{l s='Subscriptions' mod='payline'}
+	</span>
+</a>
+
 {if $walletIsEnable}
-<li>
-  <a href="{$walletControllerLink|escape:'html':'UTF-8'}">
-    <i class="account_balance_wallet"></i>
-    <span>{l s='My wallet' mod='payline'}</span>
-  </a>
-</li>
+<a class="col-lg-4 col-md-6 col-sm-6 col-xs-12 {if $page.page_name == 'module-payline-wallet'} active{/if}" id="payline-wallet-link" href="{$walletControllerLink}">
+	<span class="link-item">
+		<i class="material-icons">account_balance_wallet</i>
+		{l s='My wallet' mod='payline'}
+	</span>
+</a>
 {/if}

@@ -645,16 +645,19 @@ class payline extends PaymentModule
     public function hookDisplayCustomerAccount($params)
     {
         $output = '';
-
+        $themeName = $this->context->shop->theme->getName();
+        
         $this->context->smarty->assign(array(
             'subscriptionControllerLink' => $this->context->link->getModuleLink('payline', 'subscriptions', array(), true),
             'walletControllerLink' => $this->context->link->getModuleLink('payline', 'wallet', array(), true),
             'walletIsEnable' => Configuration::get('PAYLINE_WEB_CASH_BY_WALLET'),
         ));
-        if ($this->prestaVersionCompare()) {
-            $output .= $this->context->smarty->fetch($this->local_path.'views/templates/hook/1.7/customer_account.tpl');
+      
+        /* @TODO Best solution for the moment, update when it will be available */
+        if ($themeName === 'hummingbird') {
+            $output .= $this->context->smarty->fetch($this->local_path.'views/templates/hook/hummingbird/customer_account.tpl');
         } else {
-            $output .= $this->display(__FILE__, 'customer_account.tpl');
+            $output .= $this->context->smarty->fetch($this->local_path.'views/templates/hook/customer_account.tpl');
         }
 
         return $output;
