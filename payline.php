@@ -4,7 +4,7 @@
  *
  * @author    Monext <support@payline.com>
  * @copyright Monext - http://www.payline.com
- * @version   2.3.12
+ * @version   2.3.13
  */
 
 use PrestaShop\PrestaShop\Core\Domain\Order\Exception\DuplicateOrderCartException;
@@ -18,6 +18,7 @@ require_once(_PS_ROOT_DIR_ . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARAT
 require_once(_PS_ROOT_DIR_ . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'payline' . DIRECTORY_SEPARATOR . 'class' . DIRECTORY_SEPARATOR . 'PaylinePaymentGateway.php');
 require_once(_PS_ROOT_DIR_ . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'payline' . DIRECTORY_SEPARATOR . 'class' . DIRECTORY_SEPARATOR . 'PaylineWallet.php');
 require_once(_PS_ROOT_DIR_ . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'payline' . DIRECTORY_SEPARATOR . 'class' . DIRECTORY_SEPARATOR . 'PaylinePayment.php');
+require_once(_PS_ROOT_DIR_ . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'payline' . DIRECTORY_SEPARATOR . 'class' . DIRECTORY_SEPARATOR . 'PaylineCallbacks.php');
 
 class payline extends PaymentModule
 {
@@ -118,7 +119,7 @@ class payline extends PaymentModule
         $this->name = 'payline';
         $this->tab = 'payments_gateways';
         $this->module_key = '';
-        $this->version = '2.3.12';
+        $this->version = '2.3.13';
         $this->ps_versions_compliancy = array('min' => '1.7.1.0', 'max' => _PS_VERSION_);
         $this->author = 'Monext';
 
@@ -378,6 +379,7 @@ class payline extends PaymentModule
      */
     public function hookDisplayBackOfficeHeader()
     {
+
         if (Tools::getValue('configure') == $this->name || Tools::getValue('module_name') == $this->name) {
             $this->context->controller->addJqueryUi('ui.sortable');
             $this->context->controller->addJS($this->_path.'views/js/back.js');
@@ -434,18 +436,33 @@ class payline extends PaymentModule
      */
     protected function processFullOrderRefund(Order $order)
     {
-        // Check if transaction ID is the same
-        $idTransaction = null;
-        $orderPayments = OrderPayment::getByOrderReference($order->reference);
-        if (sizeof($orderPayments)) {
-            // Retrieve transaction ID
-            $paylineTransaction = current($orderPayments );
-            $idTransaction = $paylineTransaction->transaction_id;
+        try {
+            // Check if transaction ID is the same
+            $orderPayments = OrderPayment::getByOrderReference($order->reference);
+            if (sizeof($orderPayments)) {
+                // Retrieve transaction ID
+                $paylineTransaction = current($orderPayments );
+                $idTransaction = $paylineTransaction->transaction_id;
 
-            $transaction = PaylinePaymentGateway::getTransactionInformations($idTransaction);
-            if (PaylinePaymentGateway::isValidResponse($transaction)) {
-                $refund = PaylinePaymentGateway::refundTransaction($idTransaction, null, $this->l('Manual refund from PrestaShop BackOffice'));
-                if (PaylinePaymentGateway::isValidResponse($refund)) {
+                $transaction = PaylinePaymentGateway::getTransactionInformations($idTransaction);
+                if (PaylinePaymentGateway::isValidResponse($transaction)) {
+
+                    $amountToRefund = $transaction['payment']['amount'];
+                    $remainingRefundAmount = $this->getRemainingRefundAmountFromTransaction($transaction);
+                    if($remainingRefundAmount<$amountToRefund) {
+                        $amountToRefund = $remainingRefundAmount;
+                    }
+
+                    if($amountToRefund) {
+                        $refund = PaylinePaymentGateway::refundTransaction($idTransaction, $amountToRefund/100, $this->l('Manual full refund from PrestaShop BackOffice'));
+                        if (!PaylinePaymentGateway::isValidResponse($refund)) {
+                            // Refund NOK
+                            $errors = PaylinePaymentGateway::getErrorResponse($refund);
+                            $errorsMessage = sprintf($this->l('Unable to process the refund, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
+                            throw new Exception($errorsMessage);
+                        }
+                    }
+
                     $orderSlipDetailsList = array();
                     $products = $order->getProducts(false, false, true, false);
                     foreach ($products as $product) {
@@ -474,16 +491,27 @@ class payline extends PaymentModule
 
                     Tools::redirectAdmin($this->context->link->getAdminLink('AdminOrders') . '&id_order=' . $order->id . '&vieworder&paylineFullRefundOK=1');
                 } else {
-                    // Refund NOK
-                    $errors = PaylinePaymentGateway::getErrorResponse($refund);
-                    $this->context->controller->errors[] = sprintf($this->l('Unable to process the refund, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
+                    $errors = PaylinePaymentGateway::getErrorResponse($transaction);
+                    $errorsMessage = sprintf($this->l('Unable to process the refund, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
+                    throw new Exception($errorsMessage);
                 }
             } else {
-                $errors = PaylinePaymentGateway::getErrorResponse($transaction);
-                $this->context->controller->errors[] = sprintf($this->l('Unable to process the refund, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
+                $errorsMessage =  $this->l('Unable to find any Monext transaction ID on this order');
+                throw new Exception($errorsMessage);
             }
-        } else {
-            $this->context->controller->errors[] = $this->l('Unable to find any Monext transaction ID on this order');
+        } catch (Exception $e) {
+
+            //Gestion d'erreur dans un hook
+            $container = PrestaShop\PrestaShop\Adapter\SymfonyContainer::getInstance();
+            $request = $container->get('request_stack')->getCurrentRequest();
+            if ($request && $request->hasSession()) {
+                $request->getSession()
+                    ->getFlashBag()
+                    ->add('error', $e->getMessage());
+            }
+
+            $orderViewUrl = $this->context->link->getAdminLink('AdminOrders', true, [], ['id_order' => $order->id, 'vieworder' => 1]);
+            Tools::redirectAdmin($orderViewUrl);
         }
     }
 
@@ -732,7 +760,9 @@ class payline extends PaymentModule
                     'allowCapture' => $allowCapture,
                     'allowRefund' => $allowRefund,
                     'allowReset' => $allowReset,
+                    'currency ' => $this->context->currency->iso_code,
                 ));
+
                 if ($this->prestaVersionCompare()) {
                     $output .= $this->context->smarty->fetch($this->local_path.'views/templates/hook/admin_order.tpl');
                 } else {
@@ -801,9 +831,21 @@ class payline extends PaymentModule
 
                 $transaction = PaylinePaymentGateway::getTransactionInformations($idTransaction);
                 if (PaylinePaymentGateway::isValidResponse($transaction)) {
-                    $refund = PaylinePaymentGateway::refundTransaction($idTransaction, null, $this->l('Manual refund from PrestaShop BackOffice'));
+
+                    $refundIsOk = false;
+                    $remainingRefundAmount = $this->getRemainingRefundAmountFromTransaction($transaction);
+                    if($remainingRefundAmount>0) {
+                        $refund = PaylinePaymentGateway::refundTransaction($idTransaction, $remainingRefundAmount/100, $this->l('Manual refund from PrestaShop BackOffice'));
+                        $refundIsOk = PaylinePaymentGateway::isValidResponse($refund);
+                        $refundMessage = $this->l('Manual refund from PrestaShop BackOffice');
+                    } else {
+                        $refundIsOk = true;
+                        $refundMessage = $this->l('The Monext transaction had already been refunded');
+                    }
+
+
                     $this->order_already_refund = true;
-                    if (PaylinePaymentGateway::isValidResponse($refund)) {
+                    if ($refundIsOk) {
                         $order_detail_list = $order->getOrderDetailList();
                         foreach ($order_detail_list as $order_detail) {
                             $order_detail = new OrderDetail((int)$order_detail['id_order_detail']);
@@ -811,35 +853,13 @@ class payline extends PaymentModule
                             $order_detail->save();
                         }
 
-                        $customer = new Customer($order->id_customer);
-                        $customerMessage = new CustomerMessage();
-                        $idCustomerThread = CustomerThread::getIdCustomerThreadByEmailAndIdOrder($customer->email, $order->id);
-
-                        if (!$idCustomerThread) {
-                            $customerThread = new CustomerThread();
-                            $customerThread->id_contact = 0;
-                            $customerThread->id_customer = (int) $order->id_customer;
-                            $customerThread->id_shop = (int) $this->context->shop->id;
-                            $customerThread->id_order = (int) $order->id;
-                            $customerThread->id_lang = (int) $this->context->language->id;
-                            $customerThread->email = $customer->email;
-                            $customerThread->status = 'open';
-                            $customerThread->token = Tools::passwdGen(12);
-                            $customerThread->add();
-                        } else {
-                            $customerThread = new CustomerThread((int) $idCustomerThread);
-                            $customerThread->status = 'open';
-                            $customerThread->update();
-                        }
-
-                        $customerMessage->id_customer_thread = $customerThread->id;
-                        $customerMessage->id_employee = $this->context->employee->id;
-                        $customerMessage->message = $this->l('Manual refund from PrestaShop BackOffice');
-                        $customerMessage->add();
+                        $this->addMessageToOrder($order, $refundMessage);
                     } else {
                         // Refund NOK
                         $errors = PaylinePaymentGateway::getErrorResponse($refund);
-                        $this->context->controller->errors[] = sprintf($this->l('Unable to process the refund, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
+                        $errorMessage = sprintf($this->l('Unable to process the refund, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
+                        $this->context->controller->errors[] = $errorMessage;
+                        throw new Exception($errorMessage);
                     }
                 }
             }
@@ -881,27 +901,40 @@ class payline extends PaymentModule
                     // Get transaction informations
                     $transaction = PaylinePaymentGateway::getTransactionInformations($idTransaction);
                     if (PaylinePaymentGateway::isValidResponse($transaction)) {
-                        $refund = PaylinePaymentGateway::refundTransaction($idTransaction, $amountToRefund, $this->l('Manual partial refund from PrestaShop BackOffice'));
-                        if (PaylinePaymentGateway::isValidResponse($refund)) {
-                            // Refund OK
-                            $orderInvoice = new OrderInvoice($order->invoice_number);
-                            if (!Validate::isLoadedObject($orderInvoice)) {
-                                $orderInvoice = null;
-                            }
-
-                            // Wait 1s because Payline API may take some time to be updated after a refund
-                            sleep(1);
-
-                            // Partial refund OK, show confirmation message.
-                            // Unshowed msg, override by src/PrestaShopBundle/Controller/Admin/Sell/Order/OrderController.php:603
-                            $this->context->controller->confirmations[] = $this->l('Order was successfully partially refunded');
-                        } else {
-                            // Refund NOK
-                            $errors = PaylinePaymentGateway::getErrorResponse($refund);
-                            $errorsMessage = sprintf($this->l('Unable to process the refund, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
-                            $this->context->controller->errors[] = $errorsMessage;
-                            throw new Exception($errorsMessage);
+                        $remainingRefundAmount = $this->getRemainingRefundAmountFromTransaction($transaction);
+                        if($remainingRefundAmount<$amountToRefund) {
+                            $amountToRefund = $remainingRefundAmount;
                         }
+
+                        if($amountToRefund) {
+                            $refund = PaylinePaymentGateway::refundTransaction($idTransaction, $amountToRefund, $this->l('Manual partial refund from PrestaShop BackOffice'));
+                            if (!PaylinePaymentGateway::isValidResponse($refund)) {
+                                // Refund NOK
+                                $errors = PaylinePaymentGateway::getErrorResponse($refund);
+                                $errorsMessage = sprintf($this->l('Unable to process the refund, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
+                                $this->context->controller->errors[] = $errorsMessage;
+                                throw new Exception($errorsMessage);
+                            }
+                        }
+
+                        // Refund OK
+                        $orderInvoice = new OrderInvoice($order->invoice_number);
+                        if (!Validate::isLoadedObject($orderInvoice)) {
+                            $orderInvoice = null;
+                        }
+
+                        // Wait 1s because Payline API may take some time to be updated after a refund
+                        sleep(1);
+
+                        $confirmMessage = $this->l('Order was successfully partially refunded');
+                        if($amountToRefund<=0) {
+                            $confirmMessage = $this->l('The Monext transaction had already been refunded');
+                            $this->addMessageToOrder($order, $confirmMessage);
+                        }
+
+                        // Partial refund OK, show confirmation message.
+                        // Unshowed msg, override by src/PrestaShopBundle/Controller/Admin/Sell/Order/OrderController.php:603
+                        $this->context->controller->confirmations[] = $confirmMessage;
                     } else {
                         $errors = PaylinePaymentGateway::getErrorResponse($transaction);
                         $errorsMessage = sprintf($this->l('Unable to process the refund, Monext reported the following error: “%s“ (code %s)'), $errors['longMessage'], $errors['code']);
@@ -915,7 +948,16 @@ class payline extends PaymentModule
                 }
             }
         } catch (Exception $e) {
-            $this->context->container->get('session')->getFlashBag()->add('error', $e->getMessage());
+
+            //Gestion d'erreur dans un hook
+            $container = PrestaShop\PrestaShop\Adapter\SymfonyContainer::getInstance();
+            $request = $container->get('request_stack')->getCurrentRequest();
+            if ($request && $request->hasSession()) {
+                $request->getSession()
+                    ->getFlashBag()
+                    ->add('error', $e->getMessage());
+            }
+
             $orderViewUrl = $this->context->link->getAdminLink('AdminOrders', true, [], ['id_order' => $order->id, 'vieworder' => 1]);
             Tools::redirectAdmin($orderViewUrl);
         }
@@ -2975,715 +3017,6 @@ class payline extends PaymentModule
         }
     }
 
-
-
-
-
-    /**
-     * Process payment validation (customer shop return)
-     * @param Cart $cart
-     * @param array $paymentInfos
-     * @param string $token
-     * @param string $paymentRecordId
-     * @since 2.0.0
-     * @return array
-     */
-    protected function createOrder(Cart $cart, $paymentInfos, $token, $paymentRecordId = null)
-    {
-        $amountPaid = ($paymentInfos['payment']['amount'] / 100);
-        // Set right order state depending on defined payment action
-        if ($paymentInfos['payment']['action'] == 100) {
-            $idOrderState = (int)Configuration::get('PAYLINE_ID_STATE_AUTOR');
-        } else {
-            if (PaylinePaymentGateway::isValidResponse($paymentInfos, PaylinePaymentGateway::$approvedResponseCode)) {
-                // Transaction accepted
-                $idOrderState = (int)Configuration::get('PS_OS_PAYMENT');
-            } else if (PaylinePaymentGateway::isValidResponse($paymentInfos, PaylinePaymentGateway::$pendingResponseCode)) {
-                // Transaction is pending
-                $idOrderState = (int)Configuration::get('PAYLINE_ID_STATE_PENDING');
-            }
-        }
-        $paymentMethod = 'Payline';
-        $orderMessage = 'Transaction #' . $paymentInfos['transaction']['id'];
-        $extraVars = array(
-            'transaction_id' => $paymentInfos['transaction']['id'],
-        );
-        $idCurrency = (int)$cart->id_currency;
-        $secureKey = $paymentInfos['formatedPrivateDataList']['secure_key'];
-
-        // Always clean Cart::orderExists cache before trying to create the order
-        if (class_exists('Cache', false) && method_exists('Cache', 'clean')) {
-            Cache::clean('Cart::orderExists_' . $cart->id);
-        }
-
-        $validateOrderResult = false;
-        $order = null;
-        $errorMessage = null;
-        $errorCode = null;
-        $orderExists = $cart->OrderExists();
-
-        $checkAmountToPay = true;
-        $fixOrderPayment = false;
-        $totalAmountPaid = Tools::ps_round((float)$amountPaid, 2);
-
-        if ($paymentInfos['payment']['mode'] == 'NX'
-            || $paymentInfos['payment']['mode'] == 'REC'
-        ) {
-            $checkAmountToPay = false;
-            $idOrderState = (int)Configuration::get('PAYLINE_ID_ORDER_STATE_NX');
-
-            // Fake $amountPaid in order to create the order without payment error, we will fix the order payment after order creation
-            $amountPaid = $cart->getOrderTotal();
-
-        } else {
-            // Web payment
-            $totalAmountToPay = (float)Tools::ps_round((float)$cart->getOrderTotal(true, Cart::BOTH), 2);
-        }
-
-
-
-        // Unset pl_try cookie value
-        if (isset($this->context->cookie->pl_try)) {
-            unset($this->context->cookie->pl_try);
-        }
-
-        if (!$orderExists) {
-            // Validate the order
-            try {
-                $validateOrderResult = $this->validateOrder(
-                    $cart->id,
-                    $idOrderState,
-                    $amountPaid,
-                    $paymentMethod,
-                    $orderMessage,
-                    $extraVars,
-                    $idCurrency,
-                    false,
-                    $secureKey
-                );
-
-                if ($validateOrderResult) {
-                    $order = new Order($this->currentOrder);
-                    if (Validate::isLoadedObject($order)) {
-
-                        $idOrderErrorState = Configuration::get('PS_OS_ERROR');
-                        if($order->getCurrentState() == $idOrderErrorState) {
-                            throw new Exception('payline::createOrder - order is in error state');
-                        }
-
-                        // Save token and payment record id (if defined) for later usage
-                        PaylineToken::insert($order, $cart, $token, $paymentRecordId, $paymentInfos['transaction']['id']);
-
-                        if ($fixOrderPayment) {
-                            // We need to fix the total paid real amount here
-                            $order->total_paid_real = 0;
-                            $order->save();
-                            // Remove the previous order payment
-                            $orderPayments = OrderPayment::getByOrderReference($order->reference);
-                            foreach ($orderPayments as $orderPayment) {
-                                $orderPayment->delete();
-                            }
-                            // Add the fixed order payment
-                            $this->addOrderPaymentToOrder($order, $totalAmountPaid, $paymentInfos['transaction']['id']);
-                        }
-                    }
-                }
-            } catch (Exception $e) {
-                $errorCode = self::ORDER_CREATION_ERROR;
-                if(!empty($paymentInfos['transaction']['id'])) {
-                    $idTransaction = $paymentInfos['transaction']['id'];
-                    $reset = PaylinePaymentGateway::resetTransaction($idTransaction, $this->l('Automatic reset on error order creation'));
-                    if (PaylinePaymentGateway::isValidResponse($reset)) {
-                        //TODO: Add message
-
-                    } else {
-                        $refund = PaylinePaymentGateway::refundTransaction($idTransaction, null, $this->l('Automatic refund on error order creation'));
-                        if (PaylinePaymentGateway::isValidResponse($refund)) {
-                            //TODO: Add message
-                        }
-                    }
-                }
-
-                $result = $cart->duplicate();
-                if (false === $result || !isset($result['cart'])) {
-                    throw new DuplicateOrderCartException(sprintf('Cannot duplicate cart from order "%s"', $order->reference));
-                } else {
-                    $this->context->cart = $result['cart'];
-                    $this->context->cookie->id_cart = $result['cart']->id;
-                    $this->context->cookie->write();
-                }
-
-                $validateOrderResult = false;
-                $errorMessage = $e->getMessage();
-                PrestaShopLogger::addLog('payline::createOrder - Failed to create order: ' . $errorMessage, 1, null, 'Cart', $cart->id);
-            } catch (DuplicateOrderCartException $e) {
-                $errorMessage = $e->getMessage();
-                //TODO: Add message
-            }
-        } elseif ($cart->secure_key == $paymentInfos['formatedPrivateDataList']['secure_key']) {
-            // Secure key is OK
-            $idOrder = Order::getOrderByCartId($cart->id);
-            $order = new Order($idOrder);
-            // Retrieve order
-            if (Validate::isLoadedObject($order)) {
-                // Save token for later usage (if needed)
-                PaylineToken::insert($order, $cart, $token, $paymentRecordId, $paymentInfos['transaction']['id']);
-
-                // Check if transaction ID is the same
-                $orderPayments = OrderPayment::getByOrderReference($order->reference);
-                $sameTransactionID = false;
-                foreach ($orderPayments as $orderPayment) {
-                    if ($orderPayment->transaction_id == $paymentInfos['transaction']['id']) {
-                        $sameTransactionID = true;
-                    }
-                }
-                if (!$sameTransactionID) {
-                    // Order already exists, but it looks to be a new transaction - What should we do ?
-                    if ($paymentInfos['payment']['mode'] == 'NX') {
-                        // New recurring payment, add a new transaction to the current order
-                        $this->addOrderPaymentToOrder($order, $totalAmountPaid, $paymentInfos['transaction']['id']);
-                    } else {
-                        $order = null;
-                    }
-                }
-            } else {
-                // Unable to retrieve order ?
-                PrestaShopLogger::addLog('payline::createOrder - Unable to retrieve order', 1, null, 'Cart', $cart->id);
-            }
-            $validateOrderResult = true;
-        } elseif ($cart->secure_key != $paymentInfos['formatedPrivateDataList']['secure_key']) {
-            // Order already exists for this cart and secure key is different
-            // Secure key is NOK
-            PrestaShopLogger::addLog('payline::createOrder - Secure key is different', 1, null, 'Cart', $cart->id);
-            $validateOrderResult = false;
-        }
-
-        return array($order, $validateOrderResult, $errorMessage, $errorCode);
-    }
-
-
-    /**
-     * @param $token
-     * @return false|string
-     */
-    protected function acquireLockForToken($token) {
-        if(!$token) {
-            return false;
-        }
-
-        $lockId = 'payline_'.sha1($token);
-        if(!Db::getInstance()->execute('SELECT GET_LOCK("'.$lockId.'", 10)', false)) {
-            PrestaShopLogger::addLog('payline::cannot acquire lock for token: ' . $token, 1);
-            return false;
-        }
-        return $lockId;
-    }
-
-
-    /**
-     * @param $lockId
-     * @return bool
-     *
-     */
-    protected function releaseLockForToken($lockId) {
-        if ($lockId) {
-            return Db::getInstance()->execute('SELECT RELEASE_LOCK("'.$lockId.'")', false);
-        }
-        return false;
-    }
-
-
-    /**
-     * Process payment validation (customer shop return)
-     * @param string $token
-     * @since 2.0.0
-     * @return void
-     */
-    public function processCustomerPaymentReturn($token)
-    {
-        $paymentInfos = PaylinePaymentGateway::getWebPaymentDetails($token);
-        $errorCode = null;
-        $order = null;
-
-        $lockId = $this->acquireLockForToken($token);
-        if(!$lockId) {
-            return;
-        }
-
-        // Check if id_cart and secure_key are the same
-        if (isset($paymentInfos['formatedPrivateDataList']) && is_array($paymentInfos['formatedPrivateDataList'])
-            && isset($paymentInfos['formatedPrivateDataList']['id_cart'])
-            && isset($paymentInfos['formatedPrivateDataList']['secure_key'])
-        ) {
-            if (PaylinePaymentGateway::isValidResponse($paymentInfos, PaylinePaymentGateway::$approvedResponseCode)
-                || PaylinePaymentGateway::isValidResponse($paymentInfos, PaylinePaymentGateway::$pendingResponseCode)) {
-                // Transaction approved or pending
-
-                // OK we can process the order via customer return
-                $idCart = (int)$paymentInfos['formatedPrivateDataList']['id_cart'];
-                // Check if cart exists
-                $cart = new Cart($idCart);
-                if (Validate::isLoadedObject($cart)) {
-                      list($order, $validateOrderResult, $errorMessage, $errorCode) = $this->createOrder($cart, $paymentInfos, $token);
-                } else {
-                    // Invalid Cart ID
-                    $errorCode = payline::INVALID_CART_ID;
-                }
-            } else {
-                //TODO: Le retour est KO, il faut quand même créé la commande etn statut annulé
-            }
-        }
-
-        // Order has been created, redirect customer to confirmation page
-        if (empty($errorCode) && isset($order) && $order instanceof Order && Validate::isLoadedObject($order)) {
-            Tools::redirect('index.php?controller=order-confirmation&id_cart='.$idCart.'&id_module='.$this->id.'&id_order='.$this->currentOrder.'&key='.$this->context->customer->secure_key);
-        }
-
-        $urlParams = array(
-            'paylineError' => $paymentInfos['result']['shortMessage'],
-            'paylinetoken' => $token,
-        );
-        if (isset($errorCode)) {
-            $urlParams['paylineErrorCode'] = $errorCode;
-        }
-
-        // Refused payment, or any other error case (customer case)
-        if (!empty($paymentInfos['formatedPrivateDataList']['payment_method']) && $paymentInfos['formatedPrivateDataList']['payment_method'] == PaylinePaymentGateway::SUBSCRIBE_PAYMENT_METHOD) {
-            Tools::redirect($this->context->link->getPageLink('order', true, $this->context->language->id, $urlParams));
-        } else {
-            Tools::redirect($this->context->link->getPageLink('order', true, $this->context->language->id, $urlParams));
-        }
-
-        $this->releaseLockForToken($lockId);
-    }
-
-    /**
-     * Process payment from notification
-     * @param string $token
-     * @since 2.0.0
-     * @return void
-     */
-    public function processNotification($token)
-    {
-        $lockId = $this->acquireLockForToken($token);
-        if(!$lockId) {
-            return;
-        }
-
-        $validateOrderResult = false;
-        $paymentInfos = PaylinePaymentGateway::getWebPaymentDetails($token);
-        // Check if id_cart and secure_key are the same
-        if (isset($paymentInfos['formatedPrivateDataList']) && is_array($paymentInfos['formatedPrivateDataList'])
-            && isset($paymentInfos['formatedPrivateDataList']['id_cart'])
-        ) {
-            if (PaylinePaymentGateway::isValidResponse($paymentInfos, PaylinePaymentGateway::$approvedResponseCode) || PaylinePaymentGateway::isValidResponse($paymentInfos, PaylinePaymentGateway::$pendingResponseCode)) {
-                // Transaction approved or pending
-                // OK we can process the order via customer return
-                $idCart = (int)$paymentInfos['formatedPrivateDataList']['id_cart'];
-                // Check if cart exists
-                $cart = new Cart($idCart);
-                if (!Validate::isLoadedObject($cart)) {
-                    $this->displayNotificationMessageAndStop(array(
-                        'result' => $validateOrderResult,
-                        'error' => 'Invalid Cart ID #'.$idCart.' - Cart does not exists',
-                    ), $lockId);
-                }
-
-                // Create the recurrent wallet payment
-                if (!empty($paymentInfos['formatedPrivateDataList']['payment_method'])
-                    && $paymentInfos['formatedPrivateDataList']['payment_method'] == PaylinePaymentGateway::SUBSCRIBE_PAYMENT_METHOD) {
-                    $subscriptionRequest = PaylinePaymentGateway::createSubscriptionRequest($paymentInfos);
-                    if (PaylinePaymentGateway::isValidResponse($subscriptionRequest, array('02500', '02501'))) {
-                        // Create the order
-                        list($order, $validateOrderResult, $errorMessage, $errorCode) = $this->createOrder($cart, $paymentInfos, $token, $subscriptionRequest['paymentRecordId']);
-                    } else {
-                        // Unable to create subscription
-                        $errorCode = payline::SUBSCRIPTION_ERROR;
-                        // Cancel the previous transaction
-                        $cancelTransactionResult = PaylinePaymentGateway::cancelTransaction($paymentInfos, $this->l('Error: automatic cancel (cannot create subscription)'));
-                        $this->displayNotificationMessageAndStop(array(
-                            'result' => $validateOrderResult,
-                            'error' => 'Unable to create subscription',
-                            'errorCode' => $subscriptionRequest['result']['code'],
-                        ), $lockId);
-                    }
-                } else {
-                    // Create the order
-                    list($order, $validateOrderResult, $errorMessage, $errorCode) = $this->createOrder($cart, $paymentInfos, $token);
-                }
-            } else {
-                // Refused payment, or any other error case (customer case)
-                $this->displayNotificationMessageAndStop(array(
-                    'result' => $validateOrderResult,
-                    'error' => 'Transaction was not approved, or any other error case (customer case)',
-                    'errorCode' => $paymentInfos['result']['code'],
-                ), $lockId);
-            }
-            if (ob_get_length() > 0) {
-                ob_clean();
-            }
-            $this->displayNotificationMessageAndStop(array('result' => $validateOrderResult), $lockId);
-        }
-
-        $this->releaseLockForToken($lockId);
-    }
-
-
-    protected function displayNotificationMessageAndStop($message, $lockId) {
-        $this->releaseLockForToken($lockId);
-        die(json_encode($message));
-    }
-
-
-
-    /**
-     * Process order update from transaction notification
-     * @param string $idTransaction
-     * @since 2.0.0
-     * @return void
-     */
-    public function processTransactionNotification($idTransaction)
-    {
-        $validateOrderResult = false;
-        $transaction = PaylinePaymentGateway::getTransactionInformations($idTransaction);
-        // Wait for a transaction into pending state
-        if (PaylinePaymentGateway::isValidResponse($transaction, PaylinePaymentGateway::$pendingResponseCode)) {
-            if (isset($transaction['formatedPrivateDataList']) && is_array($transaction['formatedPrivateDataList'])
-                && isset($transaction['formatedPrivateDataList']['id_cart'])
-                && isset($transaction['formatedPrivateDataList']['id_customer'])
-                && isset($transaction['formatedPrivateDataList']['secure_key'])
-            ) {
-                // OK we can process the order via customer return
-                $idCart = (int)$transaction['formatedPrivateDataList']['id_cart'];
-                // Check if cart exists
-                $cart = new Cart($idCart);
-                if (!Validate::isLoadedObject($cart)) {
-                    die(json_encode(array(
-                        'result' => $validateOrderResult,
-                        'error' => 'Invalid Cart ID #'.$idCart.' - Cart does not exists',
-                    )));
-                }
-                // Check secure_key and id_customer on the cart, compare it to the transaction
-                if ($cart->secure_key != $transaction['formatedPrivateDataList']['secure_key'] || $cart->id_customer != $transaction['formatedPrivateDataList']['id_customer']) {
-                    die(json_encode(array(
-                        'result' => $validateOrderResult,
-                        'error' => 'Transaction is not linked to the right Customer for Cart ID #'.$idCart,
-                    )));
-                }
-                // Check that the transaction have at least one statusHistoryList items
-                if (!isset($transaction['statusHistoryList']) || !is_array($transaction['statusHistoryList']) || !sizeof($transaction['statusHistoryList'])) {
-                    die(json_encode(array(
-                        'result' => $validateOrderResult,
-                        'error' => 'Transaction does not contains any statusHistoryList item',
-                    )));
-                }
-                // Check that the transaction have at least one statusHistory items
-                if (!isset($transaction['statusHistoryList']['statusHistory']) || !is_array($transaction['statusHistoryList']['statusHistory']) || !sizeof($transaction['statusHistoryList']['statusHistory'])) {
-                    die(json_encode(array(
-                        'result' => $validateOrderResult,
-                        'error' => 'Transaction does not contains any statusHistory item',
-                    )));
-                }
-
-                // Always clean Cart::orderExists cache before trying to create the order
-                if (class_exists('Cache', false) && method_exists('Cache', 'clean')) {
-                    Cache::clean('Cart::orderExists_' . $cart->id);
-                }
-                $orderExists = $cart->OrderExists();
-                if (!$orderExists) {
-                    // There is no order for this cart
-                    die(json_encode(array(
-                        'result' => $validateOrderResult,
-                        'error' => 'Invalid Cart ID #'.$idCart.' - Order does not exists',
-                    )));
-                }
-
-                // Retrieve order
-                $idOrder = Order::getOrderByCartId($cart->id);
-                $order = new Order($idOrder);
-                if (Validate::isLoadedObject($order)) {
-                    $statusHistoryList = $transaction['statusHistoryList']['statusHistory'];
-
-                    // Retrieve the latest status (already sorted by date into PaylinePaymentGateway)
-                    $statusHistory = current($statusHistoryList);
-                    if ($statusHistory['status'] == 'ACCEPTED') {
-                        // Transaction accepted
-                        if (!$order->hasBeenPaid()) {
-                            // Change order state if order has not already been paid
-                            $validateOrderResult = true;
-
-                            $history = new OrderHistory();
-                            $history->id_order = (int)$order->id;
-                            $history->changeIdOrderState(_PS_OS_PAYMENT_, (int)$order->id);
-                            $history->addWithemail();
-                        }
-                    } elseif ($statusHistory['status'] == 'ON_HOLD_PARTNER') {
-                        // We are still waiting for the transaction validation, nothing to do here
-                    } else {
-                        // Transaction refused
-                        if ($order->getCurrentState() != _PS_OS_CANCELED_) {
-                            // Change order state if order has not already been canceled
-                            $validateOrderResult = true;
-
-                            // Change order state
-                            $history = new OrderHistory();
-                            $history->id_order = (int)$order->id;
-                            $history->changeIdOrderState(_PS_OS_CANCELED_, (int)$order->id);
-                            $history->addWithemail();
-                        }
-                    }
-                }
-            }
-        }
-        if (ob_get_length() > 0) {
-            ob_clean();
-        }
-        die(json_encode(array('result' => $validateOrderResult)));
-    }
-
-    /**
-     * Process order update from NX transaction notification
-     * @param string $idTransaction
-     * @param string $paymentRecordId
-     * @since 2.1.0
-     * @return void
-     */
-    public function processNxNotification($idTransaction, $paymentRecordId)
-    {
-        $notificationResult = false;
-        $transaction = PaylinePaymentGateway::getTransactionInformations($idTransaction);
-        // Wait for a transaction into pending state
-        if (!empty($transaction['payment']['contractNumber'])) {
-            // Get payment record
-            $paymentRecord = PaylinePaymentGateway::getPaymentRecord($transaction['payment']['contractNumber'], $paymentRecordId);
-            if (!PaylinePaymentGateway::isValidResponse($paymentRecord, array('02500'))) {
-                die(json_encode(array(
-                    'result' => $notificationResult,
-                    'error' => 'Invalid paymentRecord response',
-                )));
-            }
-
-            // Retrieve cart
-            $idCart = null;
-            $cart = null;
-            if (isset($transaction['formatedPrivateDataList']) && is_array($transaction['formatedPrivateDataList']) && isset($transaction['formatedPrivateDataList']['id_cart'])) {
-                $idCart = (int)$transaction['formatedPrivateDataList']['id_cart'];
-            } else {
-                // Retrieve id_cart from order reference
-                $idCart = PaylinePaymentGateway::getCartIdFromOrderReference($transaction['order']['ref']);
-            }
-            // Check if cart exists
-            $cart = new Cart($idCart);
-            if (!Validate::isLoadedObject($cart)) {
-                die(json_encode(array(
-                    'result' => $notificationResult,
-                    'error' => 'Invalid Cart ID #'.$idCart.' - Cart does not exists',
-                )));
-            }
-
-            if (isset($transaction['formatedPrivateDataList']) && is_array($transaction['formatedPrivateDataList'])
-                && isset($transaction['formatedPrivateDataList']['id_customer'])
-                && isset($transaction['formatedPrivateDataList']['secure_key'])
-            ) {
-                // OK we can process the order via customer return
-                // Check secure_key and id_customer on the cart, compare it to the transaction
-                if ($cart->secure_key != $transaction['formatedPrivateDataList']['secure_key'] || $cart->id_customer != $transaction['formatedPrivateDataList']['id_customer']) {
-                    die(json_encode(array(
-                        'result' => $notificationResult,
-                        'error' => 'Transaction is not linked to the right Customer for Cart ID #'.$idCart,
-                    )));
-                }
-            }
-
-            // Always clean Cart::orderExists cache before trying to create the order
-            if (class_exists('Cache', false) && method_exists('Cache', 'clean')) {
-                Cache::clean('Cart::orderExists_' . $cart->id);
-            }
-            $orderExists = $cart->OrderExists();
-            if (!$orderExists) {
-                // There is no order for this cart
-                die(json_encode(array(
-                    'result' => $notificationResult,
-                    'error' => 'Invalid Cart ID #'.$idCart.' - Order does not exists',
-                )));
-            }
-
-            // Retrieve order
-            $idOrder = Order::getOrderByCartId($cart->id);
-            $order = new Order($idOrder);
-            if (Validate::isLoadedObject($order)) {
-                // Update payment_record_id
-                if (!PaylineToken::getPaymentRecordIdByIdOrder($order->id)) {
-                    PaylineToken::setPaymentRecordIdByIdOrder($order, $paymentRecordId);
-                }
-
-                // Check if transaction ID is the same
-                $orderPayments = OrderPayment::getByOrderReference($order->reference);
-                if (isset($paymentRecord['billingRecordList']) && is_array($paymentRecord['billingRecordList']) &&
-                    isset($paymentRecord['billingRecordList']['billingRecord']) && is_array($paymentRecord['billingRecordList']['billingRecord'])) {
-                    $validTransactionCount = PaylinePaymentGateway::getValidatedRecurringPayment($paymentRecord);
-
-                    // Check if the recurring is finished and full paid
-                    foreach ($paymentRecord['billingRecordList']['billingRecord'] as $kBillingRecord => $billingRecord) {
-                        // Delayed
-                        if ($billingRecord['calculated_status'] == 4) {
-                            continue;
-                        }
-                        // A transaction has been refused, check if the next transaction has not yet been processed
-                        if ($billingRecord['calculated_status'] == 2) {
-                            $nextBillingRecord = null;
-                            if (isset($paymentRecord['billingRecordList']['billingRecord'][$kBillingRecord+1])) {
-                                $nextBillingRecord = $paymentRecord['billingRecordList']['billingRecord'][$kBillingRecord+1];
-                            }
-                            if ($nextBillingRecord === null || $nextBillingRecord['calculated_status'] != 1) {
-                                // The next transaction has not been processed yet, or is also invalid
-                                // Or there is no more planned transaction for this billingRecord
-                                if (!count($order->getHistory((int)$this->context->language->id, (int)Configuration::get('PAYLINE_ID_STATE_ALERT_SCHEDULE'), true))) {
-                                    // Change order state
-                                    $history = new OrderHistory();
-                                    $history->id_order = (int)$order->id;
-                                    $history->changeIdOrderState((int)Configuration::get('PAYLINE_ID_STATE_ALERT_SCHEDULE'), (int)$order->id);
-                                    $history->addWithemail();
-                                }
-                            }
-                        }
-                    }
-
-                    // Loop on billing list to add payment records on Order
-                    foreach ($paymentRecord['billingRecordList']['billingRecord'] as $billingRecord) {
-                        if ($billingRecord['calculated_status'] == 1) {
-                            // Check if OrderPayment exists for this transaction
-                            $orderPaymentExists = false;
-                            foreach ($orderPayments as $orderPayment) {
-                                if ($orderPayment->transaction_id == $billingRecord['transaction']['id']) {
-                                    $orderPaymentExists = true;
-                                    break;
-                                }
-                            }
-                            if (!$orderPaymentExists) {
-                                // There is OrderPayment for this transaction, add a new order payment to the current order
-                                if ($billingRecord['calculated_status'] == 1) {
-                                    $notificationResult &= $this->addOrderPaymentToOrder($order, Tools::ps_round($billingRecord['amount'] / 100, 2), $billingRecord['transaction']['id'], date('Y-m-d H:i:s', PaylinePaymentGateway::getTimestampFromPaylineDate($billingRecord['transaction']['date'])));
-                                }
-                            }
-                        }
-                    }
-                    if ($validTransactionCount == $paymentRecord['recurring']['billingLeft']) {
-                        // Order is now 100% paid
-                        if (!count($order->getHistory((int)$this->context->language->id, _PS_OS_PAYMENT_, true))) {
-                            // Change order state
-                            $history = new OrderHistory();
-                            $history->id_order = (int)$order->id;
-                            $history->changeIdOrderState(_PS_OS_PAYMENT_, (int)$order->id, true);
-                            $history->addWithemail();
-                        }
-                    }
-                }
-            }
-        }
-        if (ob_get_length() > 0) {
-            ob_clean();
-        }
-        die(json_encode(array('result' => $notificationResult)));
-    }
-
-    /**
-     * Process order update from REC transaction notification
-     * @param string $idTransaction
-     * @param string $paymentRecordId
-     * @since 2.2.0
-     * @return void
-     */
-    public function processRecNotification($idTransaction, $paymentRecordId)
-    {
-        $notificationResult = false;
-        $transaction = PaylinePaymentGateway::getTransactionInformations($idTransaction);
-
-        if (!empty($transaction['formatedPrivateDataList']['payment_method']) && $transaction['formatedPrivateDataList']['payment_method'] == PaylinePaymentGateway::SUBSCRIBE_PAYMENT_METHOD) {
-            // Wait for a transaction into pending state
-            if (!empty($transaction['payment']['contractNumber'])) {
-                // Get payment record
-                $paymentRecord = PaylinePaymentGateway::getPaymentRecord($transaction['payment']['contractNumber'], $paymentRecordId);
-                if (!PaylinePaymentGateway::isValidResponse($paymentRecord, array('02500'))) {
-                    die(json_encode(array(
-                        'result' => $notificationResult,
-                        'error' => 'Invalid paymentRecord response',
-                    )));
-                }
-
-                // Check if an order has already been created for this transaction id
-                $idOrder = PaylineToken::getIdOrderByIdTransaction($transaction['transaction']['id']);
-                if (!empty($idOrder)) {
-                    die(json_encode(array(
-                        'result' => false,
-                        'error' => 'An order already exists for transaction ' . $transaction['transaction']['id'],
-                    )));
-                }
-
-                // Retrieve cart
-                $idCart = null;
-                $cart = null;
-                if (isset($transaction['formatedPrivateDataList']) && is_array($transaction['formatedPrivateDataList']) && isset($transaction['formatedPrivateDataList']['id_cart'])) {
-                    $idCart = (int)$transaction['formatedPrivateDataList']['id_cart'];
-                }
-                // Check if cart original exists
-                $cart = new Cart($idCart);
-                if (!Validate::isLoadedObject($cart)) {
-                    die(json_encode(array(
-                        'result' => $notificationResult,
-                        'error' => 'Invalid Cart ID #'.$idCart.' - Cart does not exists',
-                    )));
-                }
-
-                // Always clean Cart::orderExists cache before trying to create the order
-                if (class_exists('Cache', false) && method_exists('Cache', 'clean')) {
-                    Cache::clean('Cart::orderExists_' . $cart->id);
-                }
-                $orderExists = $cart->OrderExists();
-                if (!$orderExists) {
-                    // There is no order for this cart
-                    die(json_encode(array(
-                        'result' => $notificationResult,
-                        'error' => 'Invalid Cart ID #'.$idCart.' - Original order does not exists',
-                    )));
-                }
-
-                // Retrieve order
-                $idOrder = Order::getOrderByCartId($cart->id);
-                $order = new Order($idOrder);
-                if (Validate::isLoadedObject($order)) {
-                    // Let's duplicate original cart as order exists
-                    $newCartDuplicate = $cart->duplicate();
-                    if (!empty($newCartDuplicate['success']) && isset($newCartDuplicate['cart'])) {
-                        $newCart = $newCartDuplicate['cart'];
-                        // Create the order
-                        list($order, $notificationResult, $errorMessage, $errorCode) = $this->createOrder($newCart, $transaction, '', $paymentRecordId);
-                    }
-                }
-            }
-        }
-        if (ob_get_length() > 0) {
-            ob_clean();
-        }
-        die(json_encode(array('result' => $notificationResult)));
-    }
-
-    /**
-     * Use Order::addOrderPayment(), but retrieve invoice first
-     * @since 2.1.0
-     * @return bool
-     */
-    protected function addOrderPaymentToOrder(Order $order, $amountPaid, $transactionId, $date = null)
-    {
-        // Get first invoice
-        $invoice = $order->getInvoicesCollection()->getFirst();
-        if (!($invoice instanceof OrderInvoice)) {
-            $invoice = null;
-        }
-
-        return $order->addOrderPayment($amountPaid, null, $transactionId, null, $date, $invoice);
-    }
-
     /**
      * @param string $operator
      * @param string $versionToCompare
@@ -3755,5 +3088,61 @@ class payline extends PaymentModule
 
         }
         return $widgetCustomization;
+    }
+
+    /**
+     * @param array $transaction
+     * @return mixed
+     */
+    public function getRemainingRefundAmountFromTransaction(array $transaction): mixed
+    {
+        $remainingRefundAmount = $transaction['payment']['amount'];
+        if (!empty($transaction["associatedTransactionsList"]["associatedTransactions"])
+            //Mix data in associatedTransactions, Grrr :-(
+            && empty($transaction["associatedTransactionsList"]["associatedTransactions"]["transactionId"])
+        ) {
+            foreach ($transaction['associatedTransactionsList']['associatedTransactions'] as $associatedTransaction) {
+                if ($associatedTransaction['status'] == 'OK' && $associatedTransaction['type'] == 'REFUND') {
+                    $remainingRefundAmount -= $associatedTransaction['amount'];
+                }
+            }
+        }
+        return $remainingRefundAmount;
+    }
+
+    /**
+     * @param Order $order
+     * @param string $refundMessage
+     * @return void
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
+    protected function addMessageToOrder(Order $order, string $refundMessage): void
+    {
+        $customer = new Customer($order->id_customer);
+        $customerMessage = new CustomerMessage();
+        $idCustomerThread = CustomerThread::getIdCustomerThreadByEmailAndIdOrder($customer->email, $order->id);
+
+        if (!$idCustomerThread) {
+            $customerThread = new CustomerThread();
+            $customerThread->id_contact = 0;
+            $customerThread->id_customer = (int)$order->id_customer;
+            $customerThread->id_shop = (int)$this->context->shop->id;
+            $customerThread->id_order = (int)$order->id;
+            $customerThread->id_lang = (int)$this->context->language->id;
+            $customerThread->email = $customer->email;
+            $customerThread->status = 'open';
+            $customerThread->token = Tools::passwdGen(12);
+            $customerThread->add();
+        } else {
+            $customerThread = new CustomerThread((int)$idCustomerThread);
+            $customerThread->status = 'open';
+            $customerThread->update();
+        }
+
+        $customerMessage->id_customer_thread = $customerThread->id;
+        $customerMessage->id_employee = $this->context->employee->id;
+        $customerMessage->message = $refundMessage;
+        $customerMessage->add();
     }
 }

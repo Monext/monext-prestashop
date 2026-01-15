@@ -6,11 +6,22 @@
  * @copyright Monext - http://www.payline.com
  */
 
+use PrestaShop\PrestaShop\Core\Domain\Order\Exception\DuplicateOrderCartException;
 class paylineValidationModuleFrontController extends ModuleFrontController
 {
     public $ssl = true;
 
+    /** @var PaylineCallbacks $callbacksHelper */
+    protected  $callbacksHelper;
+
+    public function __construct()
+    {
+        $this->callbacksHelper = new PaylineCallbacks();
+        parent::__construct();
+    }
+
     /**
+     * @throws DuplicateOrderCartException
      * @see FrontController::initContent()
      */
     public function initContent()
@@ -28,7 +39,10 @@ class paylineValidationModuleFrontController extends ModuleFrontController
         }
 
         if (!empty($paylineToken)) {
-            $this->module->processCustomerPaymentReturn($paylineToken);
+            $this->callbacksHelper->processCustomerPaymentReturn($paylineToken);
+        }else{
+            //No token, redirect to homepage
+            Tools::redirect('index');
         }
     }
 }

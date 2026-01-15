@@ -1,5 +1,14 @@
 ## Changelog
 
+###  2.3.13 - 2026-01-08
+* Merge returnUrl and cancelUrl to the same controller (Paypal API REST)
+* Check CGV on widget using the Enter key on the keyboard
+* Check existing Monext refund transaction when using Prestashop refund mechanism (status modification, partial refund or full refund)
+* Add amount column in transaction list on the order page
+
+#### Environment (Development, QA validation)
+* Prestashop version: 8.2.1, 9.0.1
+
 ###  2.3.12 - 2025-11-05
 * Compatibility with prestashop 9
 * Fix crash with use of wallet for guest

@@ -57,7 +57,7 @@ class paylineWalletModuleFrontController extends ModuleFrontController
 
             'notificationURL' => $this->context->link->getModuleLink('payline', 'notification', array(), true),
             'returnURL' => $this->context->link->getModuleLink('payline', 'validation', array(), true),
-            'cancelURL' => $this->context->link->getPageLink('order'),
+            'cancelURL' => $this->context->link->getModuleLink('payline', 'validation', array(), true),
 
         );
 

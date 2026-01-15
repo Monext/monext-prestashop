@@ -18,6 +18,7 @@ $_MODULE['<{payline}prestashop>payline_67e58f8e43b0e9cfbfe1b47ebfda1bb9'] = 'Imp
 $_MODULE['<{payline}prestashop>payline_d9929cf580fefc617ae99f1764d7449b'] = 'Reset depuis le BackOffice PrestaShop';
 $_MODULE['<{payline}prestashop>payline_19f2783285fca5c2b9bd65f172602288'] = 'Impossible de traiter la réinitialisation, Monext a signalé l\'erreur suivante : « %s » (code %s)';
 $_MODULE['<{payline}prestashop>payline_8b96e09d8ec234382491ba1f46883968'] = 'Échéance %s/%s payée';
+$_MODULE['<{payline}prestashop>payline_3f3a9d0ec68c0cbaf6cb0b03ab01aed9'] = 'La transaction Monext avait déjà été remboursée';
 $_MODULE['<{payline}prestashop>payline_f62a27f530dc99c202cfc9f09fa334a2'] = 'Remboursement partiel depuis le BackOffice PrestaShop';
 $_MODULE['<{payline}prestashop>payline_c6d666b841922ea4737805c73b1e7c55'] = 'La commande a été partiellement remboursée avec succès';
 $_MODULE['<{payline}prestashop>payline_a0e34976c480bf253e300a9e38088741'] = 'Paiement simple';
@@ -226,6 +227,7 @@ $_MODULE['<{payline}prestashop>subscriptions_d79cf3f429596f77db95c65074663a54'] 
 $_MODULE['<{payline}prestashop>subscriptions_44749712dbec183e983dcd78a7736c41'] = 'Date';
 $_MODULE['<{payline}prestashop>subscriptions_d02bbc3cb147c272b0445ac5ca7d1a36'] = 'Etat de la commande';
 $_MODULE['<{payline}prestashop>payment_nx_de58f2537bc7462529df701ef30bee7f'] = 'Total à payer maintenant :';
+$_MODULE['<{payline}prestashop>payment_809e9087b6b24abd1c47cd1801257498'] = 'Vous devez accepter les CGVs avant de procéder au paiement';
 $_MODULE['<{payline}prestashop>payment_sub_error_a147cdaee475e8a111bd5b116247eff0'] = 'Votre panier contient des produits qui ne sont pas disponibles par abonnement.';
 $_MODULE['<{payline}prestashop>payment_sub_error_650ff588ba495a7ee46cc718e42e79a2'] = 'Pour pouvoir payer avec Monext, veuillez supprimer ces produits :';
 $_MODULE['<{payline}prestashop>payment_nx_560ccb8a84bfc2cf70bd0ae4698b4d3e'] = 'Total à payer :';
