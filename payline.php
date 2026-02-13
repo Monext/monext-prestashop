@@ -1985,6 +1985,7 @@ class payline extends PaymentModule
                             'name' => 'PAYLINE_ACCESS_KEY',
                             'label' => $this->l('Access key'),
                             'placeholder' => '',
+                            'default' => ($paylineCheckCredentials === false) ? '' : $this->maskAccessKey(Configuration::get('PAYLINE_ACCESS_KEY')),
                         ),
                         array(
                             'form_group_class' => ($paylineCheckCredentials === false ? 'has-error hidden' : 'has-success'),
@@ -2857,7 +2858,7 @@ class payline extends PaymentModule
                 'PAYLINE_API_STATUS' => Configuration::get('PAYLINE_API_STATUS'),
                 'PAYLINE_LIVE_MODE' => Configuration::get('PAYLINE_LIVE_MODE'),
                 'PAYLINE_MERCHANT_ID' => Configuration::get('PAYLINE_MERCHANT_ID'),
-                'PAYLINE_ACCESS_KEY' => Configuration::get('PAYLINE_ACCESS_KEY'),
+                'PAYLINE_ACCESS_KEY' => $this->maskAccessKey(Configuration::get('PAYLINE_ACCESS_KEY')),
                 'PAYLINE_POS' => Configuration::get('PAYLINE_POS'),
                 'PAYLINE_SMARTDISPLAY_PARAM' => Configuration::get('PAYLINE_SMARTDISPLAY_PARAM'),
                 'PAYLINE_PROXY_HOST' => Configuration::get('PAYLINE_PROXY_HOST'),
@@ -2935,6 +2936,18 @@ class payline extends PaymentModule
                 'PAYLINE_WEB_WIDGET_CTA_LABEL'
             );
             foreach (array_keys($form_values) as $key) {
+
+                if ($key === 'PAYLINE_ACCESS_KEY') {
+                    $submittedValue = Tools::getValue($key);
+                    $currentValue = Configuration::get($key);
+                    $maskedValue = $this->maskAccessKey($currentValue);
+                    if ($submittedValue === $maskedValue) {
+                        continue;
+                    }
+                    Configuration::updateValue($key, $submittedValue);
+                    continue;
+                }
+
                 if ($key == 'PAYLINE_CONTRACTS' || $key == 'PAYLINE_ALT_CONTRACTS') {
                     $jsonData = Tools::getValue($key);
                     $jsonData = json_decode($jsonData);
@@ -3018,6 +3031,24 @@ class payline extends PaymentModule
             default:
                 return null;
         }
+    }
+
+    /**
+     * @param string $key
+     * @return string
+     */
+    private function maskAccessKey($key)
+    {
+        if (empty($key)) {
+            return '';
+        }
+        $length = strlen($key);
+        if ($length <= 3) {
+            return $key;
+        }
+        $visible = substr($key, -3);
+        $masked = str_repeat('*', $length - 3);
+        return $masked . $visible;
     }
 
     /**
