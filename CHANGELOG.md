@@ -1,5 +1,11 @@
 ## Changelog
 
+###  2.3.14 - 2026-03-09
+* Fix Paypal error with discount amount 
+
+#### Environment (Development, QA validation)
+* Prestashop version: 8.2.1, 9.0.1
+
 ###  2.3.13 - 2026-01-08
 * Merge returnUrl and cancelUrl to the same controller (Paypal API REST)
 * Check CGV on widget using the Enter key on the keyboard

@@ -533,8 +533,8 @@ class PaylinePaymentGateway
         }
 
         //Allow Klarna with cart discount
-        $adjustment = $params['order']['amount'] - $totalOrderLines - $params['order']['deliveryCharge'];// - $params['order']['discountAmount'];
-        if ($adjustment) {
+        $adjustment = $params['order']['amount'] - $totalOrderLines - $params['order']['deliveryCharge'];
+        if ($adjustment>0) {
             // Calculate the taxes percentage applied to cart products
             $cartProductsTaxes = ($context->cart->getOrderTotal(true, Cart::ONLY_PRODUCTS) / $context->cart->getOrderTotal(false, Cart::ONLY_PRODUCTS) - 1);
             $taxRate = round($cartProductsTaxes * 100 * 100);
@@ -547,6 +547,8 @@ class PaylinePaymentGateway
                 'category' =>  $defaultCategory,
                 'taxRate' => $taxRate,
             ));
+        } elseif ($adjustment<0) {
+            $params['order']['discountAmount'] = abs($adjustment);
         }
 
         // Add private data to the payment request
