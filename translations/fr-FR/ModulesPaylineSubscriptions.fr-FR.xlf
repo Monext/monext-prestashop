@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file original="ModulesPaylineSubscriptions.xlf" source-language="fr-FR" target-language="fr-FR" datatype="plaintext">
+    <body>
+      <trans-unit id="06df33001c1d7187fdd81ea1f5b277aa">
+        <source>Actions</source>
+        <target>Actions</target>
+      </trans-unit>
+      <trans-unit id="b2f40690858b404ed10e62bdf422c704">
+        <source>Amount</source>
+        <target>Montant</target>
+      </trans-unit>
+      <trans-unit id="44749712dbec183e983dcd78a7736c41">
+        <source>Date</source>
+        <target>Date</target>
+      </trans-unit>
+      <trans-unit id="3ec365dd533ddb7ef3d1c111186ce872">
+        <source>Details</source>
+        <target>Détails</target>
+      </trans-unit>
+      <trans-unit id="bcfaccebf745acfd5e75351095a5394a">
+        <source>Disable</source>
+        <target>Désactiver</target>
+      </trans-unit>
+      <trans-unit id="387fe1ae9d10dbc5a5de39f3a4f26836">
+        <source>Disabled on %s</source>
+        <target>Désactivé le %s</target>
+      </trans-unit>
+      <trans-unit id="00d23a76e43b46dae9ec7aa9dcbebb32">
+        <source>Enabled</source>
+        <target>Actif</target>
+      </trans-unit>
+      <trans-unit id="87557f11575c0ad78e4e28abedc13b6e">
+        <source>End</source>
+        <target>Fin</target>
+      </trans-unit>
+      <trans-unit id="d95cf4ab2cbf1dfb63f066b50558b07d">
+        <source>My account</source>
+        <target>Mon compte</target>
+      </trans-unit>
+      <trans-unit id="d79cf3f429596f77db95c65074663a54">
+        <source>Order ID</source>
+        <target>ID Commande</target>
+      </trans-unit>
+      <trans-unit id="d02bbc3cb147c272b0445ac5ca7d1a36">
+        <source>Order state</source>
+        <target>Etat de la commande</target>
+      </trans-unit>
+      <trans-unit id="a6122a65eaa676f700ae68d393054a37">
+        <source>Start</source>
+        <target>Début</target>
+      </trans-unit>
+      <trans-unit id="46a2a41cc6e552044816a2d04634545d">
+        <source>State</source>
+        <target>Etat</target>
+      </trans-unit>
+      <trans-unit id="9bf79c7f10eadd0b612b8c354ad19bdc">
+        <source>Subscription ID</source>
+        <target>N° Abonnement</target>
+      </trans-unit>
+      <trans-unit id="4ca2c509994c2776d0880357b4e8e5be">
+        <source>Subscriptions</source>
+        <target>Abonnements</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

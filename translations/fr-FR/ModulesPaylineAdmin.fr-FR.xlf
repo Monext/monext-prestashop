@@ -1,0 +1,815 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+    <file original="ModulesPaylinePayline.xlf" source-language="fr-FR" target-language="fr-FR" datatype="plaintext">
+        <body>
+            <trans-unit id="c9466d9b846b033c98fe572d56587a3d">
+                <source>0 if you want the payment to take place the same day as the date of the first order</source>
+                <target>Choisissez 0 pour que les prélèvements soient faits le même jour que celui de la première commande</target>
+            </trans-unit>
+            <trans-unit id="bb1a5a2b7eec4f940f8e78abe48d68bf">
+                <source>10%</source>
+                <target>10%</target>
+            </trans-unit>
+            <trans-unit id="a95b98a46ae739145b0a9eba5008e900">
+                <source>20%</source>
+                <target>20%</target>
+            </trans-unit>
+            <trans-unit id="6d56080312bd1fcd461201a7c2778757">
+                <source>30%</source>
+                <target>30%</target>
+            </trans-unit>
+            <trans-unit id="47b84fd1609df93c987377c912e3baf1">
+                <source>Access key</source>
+                <target>Clé d'accès</target>
+            </trans-unit>
+            <trans-unit id="48285828229f3e86a1b23bb790422d90">
+                <source>Added in doWebPayment privateData as display.rule.param</source>
+                <target>Ajouté dans le privateData du doWebPayment en tant que display.rule.param</target>
+            </trans-unit>
+            <trans-unit id="222c3cf1a7c7b87a70345080aa54db77">
+                <source>After a period</source>
+                <target>Après une période</target>
+            </trans-unit>
+            <trans-unit id="2f74ced280a63172cb98ec2cbaf7e07a">
+                <source>After two periods</source>
+                <target>Après deux périodes</target>
+            </trans-unit>
+            <trans-unit id="9ffc9f8b0cd1881a6a54269ec81255be">
+                <source>Allowed product list</source>
+                <target>Produits autorisés</target>
+            </trans-unit>
+            <trans-unit id="347a14f65a8b58e234d86bcd16ccbdc1">
+                <source>Amount under which payment in several times is not displayed</source>
+                <target>Montant en dessous duquel le paiement en plusieurs fois n'est pas proposé</target>
+            </trans-unit>
+            <trans-unit id="4c3ff6843d5de7b8160cf575b893634d">
+                <source>An error occured while trying to cancel your subscription. Please contact us.</source>
+                <target>Une erreur s'est produite lors de l'annulation de votre abonnement. Veuillez nous contacter.</target>
+            </trans-unit>
+            <trans-unit id="338b6e271aed5a56a48fa1fe89dbaaf6">
+                <source>Animals</source>
+                <target>Animaux</target>
+            </trans-unit>
+            <trans-unit id="c4c696d78d97d24ce69ebe19fd7f8483">
+                <source>Annual</source>
+                <target>Annuel</target>
+            </trans-unit>
+            <trans-unit id="5b3008762d9f9569e65a2e6c0302117e">
+                <source>Apply customization created through administration center to the payment page</source>
+                <target>Appliquer une personnalisation à vos pages de paiement, précédemment créée via le centre d'administration</target>
+            </trans-unit>
+            <trans-unit id="f1db2dcda8ad492cc6598a30b9e73dfa">
+                <source>Auction</source>
+                <target>Enchères</target>
+            </trans-unit>
+            <trans-unit id="cfaa3da404dfa53cea2dfa8b0b7b961f">
+                <source>Automatic refund on error order creation</source>
+                <target>Remboursement automatique de la transaction sur erreur de création de commande</target>
+            </trans-unit>
+            <trans-unit id="91805cc77dce0c63b0406bf35a1c65ee">
+                <source>Automatic reset on error order creation</source>
+                <target>Reset automatique de la transaction sur erreur de création de commande</target>
+            </trans-unit>
+            <trans-unit id="7d10ed18e98f096104c84a2f4c041ee6">
+                <source>Automobiles / motorcycles</source>
+                <target>Automobiles / motos</target>
+            </trans-unit>
+            <trans-unit id="ac9f7e6ce059384cc7c79f4aaf18be41">
+                <source>Autorization</source>
+                <target>Autorisation</target>
+            </trans-unit>
+            <trans-unit id="b7554254f0b8aa0332f82ce2ddb83a09">
+                <source>Autorization + Capture</source>
+                <target>Autorisation + Débit</target>
+            </trans-unit>
+            <trans-unit id="b1897515d548a960afe49ecf66a29021">
+                <source>Average</source>
+                <target>Moyen</target>
+            </trans-unit>
+            <trans-unit id="63104d565c1eef40e3ccc7ee25c3286f">
+                <source>Beauty product</source>
+                <target>Produit de beauté</target>
+            </trans-unit>
+            <trans-unit id="68ad27f44d625021a1b1645216e53828">
+                <source>Biannual</source>
+                <target>Bi-annuel</target>
+            </trans-unit>
+            <trans-unit id="d491538da818a2ba11a3195ba035cfd3">
+                <source>Big</source>
+                <target>Grand</target>
+            </trans-unit>
+            <trans-unit id="90023e6ae352edc34bb385006637aa23">
+                <source>Bimonthly</source>
+                <target>Bi-mensuel</target>
+            </trans-unit>
+            <trans-unit id="e90dfb84e30edf611e326eeb04d680de">
+                <source>Black</source>
+                <target>Noir</target>
+            </trans-unit>
+            <trans-unit id="2b1f94ef23b79bf90eb891cae1df7a90">
+                <source>Book</source>
+                <target>Livre</target>
+            </trans-unit>
+            <trans-unit id="b6bc6234dd2b0f9b05c0ce4825c620a8">
+                <source>Border radius</source>
+                <target>Bords arrondis</target>
+            </trans-unit>
+            <trans-unit id="3da6c9631f36e67df5ba5e586047590b">
+                <source>CTA Label</source>
+                <target>Label du CTA</target>
+            </trans-unit>
+            <trans-unit id="5d4b4e1cf47f84eba8153335263a6aa5">
+                <source>CTA color</source>
+                <target>Couleur du CTA</target>
+            </trans-unit>
+            <trans-unit id="ee5ea7bb4378d1f3c1f365bff9b47add">
+                <source>CTA color</source>
+                <target>Couleur de texte du CTA</target>
+            </trans-unit>
+            <trans-unit id="fe012cd9cdd74ad55046df9f363f59df">
+                <source>CTA font size</source>
+                <target>Taille du texte du CTA</target>
+            </trans-unit>
+            <trans-unit id="a8473f7d3cb8dceee64efc4e98b8e910">
+                <source>CTA hexadecimal color</source>
+                <target>Couleur hexadécimale du CTA</target>
+            </trans-unit>
+            <trans-unit id="8a6a446e4d85ab5e586dea305c3a8df5">
+                <source>CTA hover</source>
+                <target>CTA au survol</target>
+            </trans-unit>
+            <trans-unit id="e66edb6f7bf259107d14c60d768a18b1">
+                <source>Capture payment on</source>
+                <target>Capturer la commande quand</target>
+            </trans-unit>
+            <trans-unit id="56338cdf530719270f20600254ce6ec5">
+                <source>Category of item, needed for some contracts</source>
+                <target>Catégorie de l'article (nécessaire pour certain contrats)</target>
+            </trans-unit>
+            <trans-unit id="71efd5400b21e305a6a230d6a67ebe81">
+                <source>Choose wether to customize the widget</source>
+                <target>Choisissez si vous souhaitez personnaliser le widget</target>
+            </trans-unit>
+            <trans-unit id="62aae3e27508e46150b3faa2dec33029">
+                <source>Choose which order status will trigger payment capture</source>
+                <target>Choisissez l'état de commande qui lancera le processus de capture</target>
+            </trans-unit>
+            <trans-unit id="36d0b355485e6de27fd96cba3a6f720b">
+                <source>Computer (hardware and software)</source>
+                <target>Informatique (matériel et logiciel)</target>
+            </trans-unit>
+            <trans-unit id="558b49eb972c3c62a1a4e5b6d91420ae">
+                <source>Configuration saved.</source>
+                <target>Configuration enregistrée.</target>
+            </trans-unit>
+            <trans-unit id="64cc3a139b6530906954685ee463ef7b">
+                <source>Contracts activated through contracts configuration menu are displayed in the checkout. All payment information is filled on our secure user interface.</source>
+                <target>Les contrats activés depuis la configuration sont affichés lors du paiement. Toutes les informations saisies le sont sur un espace sécurisé.</target>
+            </trans-unit>
+            <trans-unit id="2715d06f9a029a951c5c8b66903badd5">
+                <source>Contracts configuration</source>
+                <target>Configuration des contrats</target>
+            </trans-unit>
+            <trans-unit id="2b0d4b9f330e2c0f1808e205d59096b0">
+                <source>Customisation</source>
+                <target>Personnalisation</target>
+            </trans-unit>
+            <trans-unit id="c512b685438f41daa7386329a3b8f8d3">
+                <source>Daily</source>
+                <target>Journalier</target>
+            </trans-unit>
+            <trans-unit id="af5e5b6fe4efe9a2def4b733b165c632">
+                <source>Dark grey</source>
+                <target>Gris foncé</target>
+            </trans-unit>
+            <trans-unit id="22526974c1bca00ee2a90ecc94b8a19a">
+                <source>Darker</source>
+                <target>Plus foncé</target>
+            </trans-unit>
+            <trans-unit id="e7a51f846185590b71231991f358524b">
+                <source>Debit mode</source>
+                <target>Mot de débit</target>
+            </trans-unit>
+            <trans-unit id="a17f5bc22553d897f6363867c0165256">
+                <source>Default category</source>
+                <target>Catégorie par défaut</target>
+            </trans-unit>
+            <trans-unit id="b9f5c797ebbf55adccdd8539a65a0241">
+                <source>Disabled</source>
+                <target>Désactivé</target>
+            </trans-unit>
+            <trans-unit id="0a6552352ed3f127a55190979185634c">
+                <source>Do you really want to remove the module?</source>
+                <target>Souhaitez-vous vraiment supprimer le module ?</target>
+            </trans-unit>
+            <trans-unit id="5ae7422d17afdba8e8d4e8cfe7719ac1">
+                <source>Due day</source>
+                <target>à la commande</target>
+            </trans-unit>
+            <trans-unit id="e634b77728b7eeef7e5c2bb741e19614">
+                <source>Electronics - TV - Hifi</source>
+                <target>Électronique – TV - Hifi</target>
+            </trans-unit>
+            <trans-unit id="817c2e005131c9c448282935007066b3">
+                <source>Enable Nx payment</source>
+                <target>Activer le paiement Nx</target>
+            </trans-unit>
+            <trans-unit id="7ecadda819d0aa7d95bb4a7939ee8cde">
+                <source>Enable recurring payment</source>
+                <target>Activer le paiement récurrent</target>
+            </trans-unit>
+            <trans-unit id="501c036131061be9edc50aed51086295">
+                <source>Enable simple payment</source>
+                <target>Activer le paiement simple</target>
+            </trans-unit>
+            <trans-unit id="00d23a76e43b46dae9ec7aa9dcbebb32">
+                <source>Enabled</source>
+                <target>Activé</target>
+            </trans-unit>
+            <trans-unit id="e20cbb947afcf84cf58de1358ee1068d">
+                <source>Error messages</source>
+                <target>Messages d'erreur</target>
+            </trans-unit>
+            <trans-unit id="4ceece9b738ff6d5594902314f5cdd0c">
+                <source>Error: automatic cancel (cannot create subscription)</source>
+                <target>Erreur : annulation automatique (impossible de créer l'abonnement)</target>
+            </trans-unit>
+            <trans-unit id="4f9857de841fdcf9e2682108c2818567">
+                <source>Fashion Clothing</source>
+                <target>Mode Habillement</target>
+            </trans-unit>
+            <trans-unit id="5e84355eb2e85d7e4a4772993b033bb3">
+                <source>First payment weight</source>
+                <target>Poids de la première échéance</target>
+            </trans-unit>
+            <trans-unit id="0a38e7286ebbb560354992b3ce62be67">
+                <source>Food</source>
+                <target>Alimentation</target>
+            </trans-unit>
+            <trans-unit id="2970b1e490aba1c36f70da251f64e72f">
+                <source>Food TRD eligible products</source>
+                <target>Produits alimentaires éligibles aux TRD</target>
+            </trans-unit>
+            <trans-unit id="c77f2d4af6d52092c936d5dbbf30037e">
+                <source>For example : "Confirm and pay [[amount]]" will display Confirm and pay 142.56 EUR -- [[amount]] is optional - No html tags allowed</source>
+                <target>Par exemple : \"Confirmer et payer [[amount]]\" affichera Confirmer et payer 142.56 EUR -- [[amount]] est optionnel - Pas de tag HTML</target>
+            </trans-unit>
+            <trans-unit id="a0e40ec850518238bff629f18658f201">
+                <source>For example : #123456</source>
+                <target>Par exemple : #123456</target>
+            </trans-unit>
+            <trans-unit id="0dc955026feb5ec30a62a50da4e3d2a6">
+                <source><![CDATA[For example : Clicking on the button automatically implies acceptance of the T&Cs -- No html tags allowed]]></source>
+                <target><![CDATA[Par exemple : En cliquant sur le boutons vous acceptez les CGVs -- Pas de tag HTML]]></target>
+            </trans-unit>
+            <trans-unit id="67204426ac9de2ade3533836fe933da8">
+                <source>Gifts</source>
+                <target>Cadeaux</target>
+            </trans-unit>
+            <trans-unit id="d382816a3cbeed082c9e216e7392eed1">
+                <source>Green</source>
+                <target>Vert</target>
+            </trans-unit>
+            <trans-unit id="848bbc20c37279671fe78723bfa82449">
+                <source>Habitat and garden</source>
+                <target>Chauffage</target>
+            </trans-unit>
+            <trans-unit id="cc14beb3da62bf4e2d90007f8ea42277">
+                <source>Hexadecimal value</source>
+                <target>Valeur hexadécimale</target>
+            </trans-unit>
+            <trans-unit id="6a0401b0a3f6a6e73ef172e2555539db">
+                <source>Hobbies</source>
+                <target>Loisirs</target>
+            </trans-unit>
+            <trans-unit id="efd593bd9811ea0c1ed407b32f68d599">
+                <source>Home appliance</source>
+                <target>Électroménager</target>
+            </trans-unit>
+            <trans-unit id="c2ca16d048ec66e04bca283eab048ec2">
+                <source>Host</source>
+                <target>Hôte</target>
+            </trans-unit>
+            <trans-unit id="8654affe85433a1d502816cfae13895e">
+                <source>If a product from the cart is in this list, only this method will be shown. Else, this method will only be available if a product will be in your cart.</source>
+                <target>Si un des produits est dans le panier, alors seule cette méthode sera affichée. Sinon cette méthode ne sera affichée que lorsqu'un produit de la liste aura été trouvé dans le panier.</target>
+            </trans-unit>
+            <trans-unit id="650ff588ba495a7ee46cc718e42e79a2">
+                <source>In order to be able to pay with Monext, please remove these products:</source>
+                <target>Pour pouvoir payer avec Monext, veuillez supprimer ces produits :</target>
+            </trans-unit>
+            <trans-unit id="565631402af79df42f22a117b0d6f1a5">
+                <source>Jewelry</source>
+                <target>Bijouterie</target>
+            </trans-unit>
+            <trans-unit id="59ec2623a8ed6db5357f9ab3eeec3dab">
+                <source>Lighter</source>
+                <target>Plus clair</target>
+            </trans-unit>
+            <trans-unit id="cebd5bbe0ffdecc270a8a324e5a277dd">
+                <source>Live mode</source>
+                <target>Mode production</target>
+            </trans-unit>
+            <trans-unit id="99dea78007133396a7b8ed70578ac6ae">
+                <source>Login</source>
+                <target>Identifiant</target>
+            </trans-unit>
+            <trans-unit id="22d1048cfe87a51d58880765255282df">
+                <source>Manual capture from PrestaShop BackOffice</source>
+                <target>Capture depuis le BackOffice PrestaShop</target>
+            </trans-unit>
+            <trans-unit id="98743208d8890d26278942fb23b1823a">
+                <source>Manual full refund from PrestaShop BackOffice</source>
+                <target>Remboursement intégral depuis le BackOffice PrestaShop</target>
+            </trans-unit>
+            <trans-unit id="f62a27f530dc99c202cfc9f09fa334a2">
+                <source>Manual partial refund from PrestaShop BackOffice</source>
+                <target>Remboursement partiel depuis le BackOffice PrestaShop</target>
+            </trans-unit>
+            <trans-unit id="1217b26de1c447703ecad16973b9aa44">
+                <source>Manual refund from PrestaShop BackOffice</source>
+                <target>Remboursement depuis le BackOffice PrestaShop</target>
+            </trans-unit>
+            <trans-unit id="d9929cf580fefc617ae99f1764d7449b">
+                <source>Manual reset from PrestaShop BackOffice</source>
+                <target>Reset depuis le BackOffice PrestaShop</target>
+            </trans-unit>
+            <trans-unit id="9ca9046c6da2b6c5c84b069bfb089e45">
+                <source>Merchant Id</source>
+                <target>ID Marchand</target>
+            </trans-unit>
+            <trans-unit id="04f1f0ad42eb6b0ce482124281d36beb">
+                <source>Minimal order total to allow recurring</source>
+                <target>Seuil de déclenchement</target>
+            </trans-unit>
+            <trans-unit id="31e48cdcff5ecbb0144507aef0e5e75e">
+                <source>Monext API credentials</source>
+                <target>Identiants API Monext</target>
+            </trans-unit>
+            <trans-unit id="6e150d7c6c0cbf6620d8b8fd8760bad4">
+                <source>Monext configuration</source>
+                <target>Configuration Monext</target>
+            </trans-unit>
+            <trans-unit id="2fedc532279b2cc261078d1a35e682dc">
+                <source>Monext credentials are invalid, please fix them before continue.</source>
+                <target>Les identifiants Monext ne sont pas valides, veuillez les corriger avant de continuer.</target>
+            </trans-unit>
+            <trans-unit id="0915966c2fc56dea181d0e34899d8540">
+                <source>Monext default</source>
+                <target>Par defaut Monext</target>
+            </trans-unit>
+            <trans-unit id="1c5c4d2df7f568ae2f208c33b4a78480">
+                <source>Monext logs</source>
+                <target>Logs Monext</target>
+            </trans-unit>
+            <trans-unit id="9030e39f00132d583da4122532e509e9">
+                <source>Monthly</source>
+                <target>Mensuel</target>
+            </trans-unit>
+            <trans-unit id="47dcbd834e669233d7eb8a51456ed217">
+                <source>Music</source>
+                <target>Musique</target>
+            </trans-unit>
+            <trans-unit id="bafd7322c6e97d25b6299b5d6fe8920b">
+                <source>No</source>
+                <target>Non</target>
+            </trans-unit>
+            <trans-unit id="af605ea55ee39e54c444f217e346048f">
+                <source>No limit</source>
+                <target>Sans limite</target>
+            </trans-unit>
+            <trans-unit id="6adf97f83acf6453d4a6a4b1070f3754">
+                <source>None</source>
+                <target>Aucun</target>
+            </trans-unit>
+            <trans-unit id="fd1b14d00243b46441ba8253069c6764">
+                <source>Not available on "redirection" user experience mode</source>
+                <target>Non disponible en mode redirection</target>
+            </trans-unit>
+            <trans-unit id="2fb04ff1f9199724651a3b86162737da">
+                <source>Number of payments</source>
+                <target>Nombre d'échéances</target>
+            </trans-unit>
+            <trans-unit id="05b5f2f83115716739690a24ebc980ee">
+                <source>Nx payment</source>
+                <target>Paiement Nx</target>
+            </trans-unit>
+            <trans-unit id="a4c73231758b838203a134ee89f25f22">
+                <source>Order can't be created because paid amount is different than total cart amount.</source>
+                <target>La commande ne peut pas être créée car le montant payé est différent du total de votre panier.</target>
+            </trans-unit>
+            <trans-unit id="b0844ebe9779863a82adc5a740878c5d">
+                <source>Order can't be created because related cart does not exists.</source>
+                <target>La commande ne peut pas être créée car le panier n'existe pas.</target>
+            </trans-unit>
+            <trans-unit id="a4713b78a255b933b1d6b56c7430ce4d">
+                <source>Order can't be created because subscription failed.</source>
+                <target>La commande ne peut pas être créée car la création de l'abonnement a échoué.</target>
+            </trans-unit>
+            <trans-unit id="cad1aaf89cde2f4c2c20ca75b79133da">
+                <source>Order was successfully cancelled (authorization reset)</source>
+                <target>La commande a été annulée avec succès (autorisation annulée)</target>
+            </trans-unit>
+            <trans-unit id="b829d6874e1fe1c1f4103c5725aa52be">
+                <source>Order was successfully captured</source>
+                <target>La commande a été capturée avec succès</target>
+            </trans-unit>
+            <trans-unit id="c6d666b841922ea4737805c73b1e7c55">
+                <source>Order was successfully partially refunded</source>
+                <target>La commande a été partiellement remboursée avec succès</target>
+            </trans-unit>
+            <trans-unit id="a64f230379e93f3e3c093c8de19d15a2">
+                <source>Order was successfully refunded</source>
+                <target>La commande a été remboursée avec succès</target>
+            </trans-unit>
+            <trans-unit id="9a20794b40f161248965b83fbe7488f7">
+                <source>PHP curl extension is missing, please ask your technical contact to enable it before continue.</source>
+                <target>L'extension PHP curl est manquante, veuillez contacter votre prestataire technique afin de l'activer.</target>
+            </trans-unit>
+            <trans-unit id="f7b0202021d995b9f6e1889861793698">
+                <source>PHP openssl extension is missing, please ask your technical contact to enable it before continue.</source>
+                <target>L'extension PHP openssl est manquante, veuillez contacter votre prestataire technique afin de l'activer.</target>
+            </trans-unit>
+            <trans-unit id="5a966c48ee2464f63a78ba82805212c7">
+                <source>PHP soap extension is missing, please ask your technical contact to enable it before continue.</source>
+                <target>L'extension PHP soap est manquante, veuillez contacter votre prestataire technique afin de l'activer.</target>
+            </trans-unit>
+            <trans-unit id="1066162d092ba83c1a53293303a3af8f">
+                <source>Partial refund exist, please continue with partial refund button</source>
+                <target>Un remboursement partiel existe, veuillez continuer avec le bouton de remboursement partiel</target>
+            </trans-unit>
+            <trans-unit id="b0bab4b40f2b9410cac29dec864594fd">
+                <source>Particular services</source>
+                <target>Services aux particuliers</target>
+            </trans-unit>
+            <trans-unit id="dc647eb65e6711e155375218212b3964">
+                <source>Password</source>
+                <target>Mot de passe</target>
+            </trans-unit>
+            <trans-unit id="81f585e94abf8e28c41718294f157807">
+                <source>Pay with secure Monext gateway</source>
+                <target>Payez avec la passerelle sécurisée Monext</target>
+            </trans-unit>
+            <trans-unit id="0f09ad5e62999314a0980edbeb598032">
+                <source>Payment by wallet</source>
+                <target>Paiement par portefeuille</target>
+            </trans-unit>
+            <trans-unit id="cb15bda111d88e5c67857636c04df1d9">
+                <source>Payment page customization ID</source>
+                <target>ID de la page de personnalisation</target>
+            </trans-unit>
+            <trans-unit id="2d7ddecbc16af822929b3c8d76cb52f8">
+                <source>Percentage of total amount for first payment</source>
+                <target>Pourcentage du montant total attribué à la première échéance</target>
+            </trans-unit>
+            <trans-unit id="e20445917c7621aea95cad3a5144971f">
+                <source>Periodicity of payments</source>
+                <target>Périodicité</target>
+            </trans-unit>
+            <trans-unit id="bcc254b55c4a1babdf1dcb82c207506b">
+                <source>Phone</source>
+                <target>Téléphone</target>
+            </trans-unit>
+            <trans-unit id="c03d53b70feba4ea842510abecd6c45e">
+                <source>Photo</source>
+                <target>Photo</target>
+            </trans-unit>
+            <trans-unit id="131e900f19fe2bd0bf7f914dea0a539e">
+                <source>Please try to use another payment method or another credit card.</source>
+                <target>Veuillez essayer une autre méthode de paiement ou une autre carte de crédit.</target>
+            </trans-unit>
+            <trans-unit id="ffc310b89dee4e136402d59d06c6ec4f">
+                <source>Point of sale</source>
+                <target>Point de vente</target>
+            </trans-unit>
+            <trans-unit id="60aaf44d4b562252c04db7f98497e9aa">
+                <source>Port</source>
+                <target>Port</target>
+            </trans-unit>
+            <trans-unit id="e507bdb98979e3376dd8b109cbbb2ec3">
+                <source>Professional Services</source>
+                <target>Services aux professionnels</target>
+            </trans-unit>
+            <trans-unit id="70d0f4b0b16436eb59eba4d0b3b97b81">
+                <source>Proxy configuration</source>
+                <target>Configuration du proxy</target>
+            </trans-unit>
+            <trans-unit id="a80105e0b135cfab08952a0d76be9f90">
+                <source>Quaterly</source>
+                <target>Trimestriel</target>
+            </trans-unit>
+            <trans-unit id="759eb02ce7ceacb6491b51eb65cdec0b">
+                <source>Recurring days</source>
+                <target>Jour du prélèvement</target>
+            </trans-unit>
+            <trans-unit id="d930dbf4a7092e01caddb358c8f20bac">
+                <source>Recurring payment</source>
+                <target>Paiement récurrent</target>
+            </trans-unit>
+            <trans-unit id="ee38e4d5dd68c4e440825018d549cb47">
+                <source>Red</source>
+                <target>Rouge</target>
+            </trans-unit>
+            <trans-unit id="a4b009d29aa561b0e5826683f920c1d0">
+                <source>Redirect customer to secure payment page or display secure form in the checkout</source>
+                <target>Redirige le client vers une page de paiement sécurisé ou affiche le formulaire de paiement</target>
+            </trans-unit>
+            <trans-unit id="02ed26f15480e27b956f1ad163f127e5">
+                <source>Redirect to payment page</source>
+                <target>Rediriger vers la page de paiement</target>
+            </trans-unit>
+            <trans-unit id="c9cc8cce247e49bae79f15173ce97354">
+                <source>Save</source>
+                <target>Enregistrer</target>
+            </trans-unit>
+            <trans-unit id="8b96e09d8ec234382491ba1f46883968">
+                <source>Scheduler %s/%s paid</source>
+                <target>Échéance %s/%s payée</target>
+            </trans-unit>
+            <trans-unit id="bf680207c909a7ffb0ea99d5055b9a3f">
+                <source>Select and sort the alternative contracts</source>
+                <target>Sélectionnez et triez les contrats secondaires</target>
+            </trans-unit>
+            <trans-unit id="1c6ddba6ebafc01b08f21aefd7993899">
+                <source>Select and sort the contracts you want to make available to your customers</source>
+                <target>Sélectionnez et triez les contrats que vous souhaitez rendre disponibles à vos clients</target>
+            </trans-unit>
+            <trans-unit id="9d9633785e11626baa9c6bd9da1d4dd9">
+                <source>Select authorization+capture if you want to charge your customer at order creation. Charge him later with authorization</source>
+                <target>Choisissez autorisation+capture si vous voulez débiter le client dès la création de la commande. Sinon, utilisez autorisation pour le débiter plus tard.</target>
+            </trans-unit>
+            <trans-unit id="765664301a3de7b6233aa02e858e7595">
+                <source>Semiannual</source>
+                <target>Semestriel</target>
+            </trans-unit>
+            <trans-unit id="3eed2a797211f4bd0e456fbdef658ca9">
+                <source>Set the payment as live (real charge) or test mode (no charge)</source>
+                <target>Active le mode production (débits réels) ou le mode homologation (aucun débit)</target>
+            </trans-unit>
+            <trans-unit id="3271b2d499b4e89837558de4398a2615">
+                <source>Set this product list as exclusive</source>
+                <target>Définir cette méthode comme exclusive</target>
+            </trans-unit>
+            <trans-unit id="6201ef1b62afc8279dbe20aaf6dcf3be">
+                <source>Shows</source>
+                <target>Spectacles</target>
+            </trans-unit>
+            <trans-unit id="a0e34976c480bf253e300a9e38088741">
+                <source>Simple payment</source>
+                <target>Paiement simple</target>
+            </trans-unit>
+            <trans-unit id="2660064e68655415da2628c2ae2f7592">
+                <source>Small</source>
+                <target>Petit</target>
+            </trans-unit>
+            <trans-unit id="a3f0fe61da6b69ece4aeb3c2d5a28bea">
+                <source>Smartdisplay parameter</source>
+                <target>Smartdisplay paramètre</target>
+            </trans-unit>
+            <trans-unit id="96faa3e6c45bb5a07bcc0bcd3be37654">
+                <source>Sport</source>
+                <target>Sport</target>
+            </trans-unit>
+            <trans-unit id="787045dd4317bb5f17cf41ad32e2c52c">
+                <source>Start date of scheduler</source>
+                <target>Début de l'échéancier</target>
+            </trans-unit>
+            <trans-unit id="035f4e29da2d6d31303f7d7cfa1be13b">
+                <source>Subtitle</source>
+                <target>Sous-titre</target>
+            </trans-unit>
+            <trans-unit id="3a23b4c94c57db06ea7c6f91583681bb">
+                <source>Text under CTA</source>
+                <target>Texte sous le CTA</target>
+            </trans-unit>
+            <trans-unit id="3f3a9d0ec68c0cbaf6cb0b03ab01aed9">
+                <source>The Monext transaction had already been refunded</source>
+                <target>La transaction Monext avait déjà été remboursée</target>
+            </trans-unit>
+            <trans-unit id="9f137bb29cd3df4bfc38095254dd4762">
+                <source>There was an error while processing your previous payment.</source>
+                <target>Une erreur s'est produite lors de votre tentative de paiement.</target>
+            </trans-unit>
+            <trans-unit id="b78a3223503896721cca1303f776159b">
+                <source>Title</source>
+                <target>Titre</target>
+            </trans-unit>
+            <trans-unit id="66d0af2d5da0109dc2aae67829f7d4d4">
+                <source>Toys</source>
+                <target>Jouets</target>
+            </trans-unit>
+            <trans-unit id="dd7fd670b4eb8ac2b859b815796bee89">
+                <source>Two quaterly</source>
+                <target>Bimestriel</target>
+            </trans-unit>
+            <trans-unit id="36f79e86e971fcac459e9bfa9e9d8231">
+                <source>Type Cancelled</source>
+                <target>Type annulé</target>
+            </trans-unit>
+            <trans-unit id="73aeeca415519b63fd8f4ea669015a03">
+                <source>Type Error</source>
+                <target>Type erreur</target>
+            </trans-unit>
+            <trans-unit id="2d644776e0c11135f248647b7c00c3a2">
+                <source>Type Refused</source>
+                <target>Type refusé</target>
+            </trans-unit>
+            <trans-unit id="1d514c2895c4dcf6ff51370804bc860d">
+                <source>Unable to find any Monext transaction ID on this order</source>
+                <target>Impossible de trouver un identifiant de transaction Monext pour cette commande.</target>
+            </trans-unit>
+            <trans-unit id="67e58f8e43b0e9cfbfe1b47ebfda1bb9">
+                <source>Unable to process the capture, Monext reported the following error: “%s“ (code %s)</source>
+                <target>Impossible de traiter la capture, Monext a signalé l'erreur suivante : « %s » (code %s)</target>
+            </trans-unit>
+            <trans-unit id="84567c3536447c1c7b68ce2988257cb2">
+                <source>Unable to process the refund, Monext reported the following error: “%s“ (code %s)</source>
+                <target>Impossible de traiter le remboursement, Monext a signalé l'erreur suivante : « %s » (code %s)</target>
+            </trans-unit>
+            <trans-unit id="19f2783285fca5c2b9bd65f172602288">
+                <source>Unable to process the reset, Monext reported the following error: “%s“ (code %s)</source>
+                <target>Impossible de traiter la réinitialisation, Monext a signalé l'erreur suivante : « %s » (code %s)</target>
+            </trans-unit>
+            <trans-unit id="a956c42bbbb772474804eeba8c44a43f">
+                <source>Use same alt contracts as main</source>
+                <target>Utiliser les mêmes contrats alternatifs que les principaux</target>
+            </trans-unit>
+            <trans-unit id="3fda4231a6bc890d6be3b9a98f6e0343">
+                <source>User experience</source>
+                <target>Expérience utilisateur</target>
+            </trans-unit>
+            <trans-unit id="aeded3598ea14aeabc5e8ccefa8e2722">
+                <source>Video games</source>
+                <target>Jeux vidéo</target>
+            </trans-unit>
+            <trans-unit id="efb9b04f20bdaf1bb48e4b51ccbad268">
+                <source>Web payment</source>
+                <target>Paiement Web</target>
+            </trans-unit>
+            <trans-unit id="6c25e6a6da95b3d583c6ec4c3f82ed4d">
+                <source>Weekly</source>
+                <target>Hebdomadaire</target>
+            </trans-unit>
+            <trans-unit id="024dfb58d81f6fdd92e1c83335af989f">
+                <source>When editing the URL, please be sure to check all the checkbox below the text input too.</source>
+                <target>Lors de la saisie de l'URL, veillez à cocher toutes les cases se trouvant à la suite.</target>
+            </trans-unit>
+            <trans-unit id="25a81701fbfa4a1efdf660a950c1d006">
+                <source>White</source>
+                <target>Blanc</target>
+            </trans-unit>
+            <trans-unit id="6dc22e1051892908ce85a8713c5a6cf3">
+                <source>Widget backgound</source>
+                <target>Couleur de fond du widget</target>
+            </trans-unit>
+            <trans-unit id="2645b6122feb32b1b0a7edbb5874c157">
+                <source>Widget configuration</source>
+                <target>Configuration du Widget</target>
+            </trans-unit>
+            <trans-unit id="51e6cd92b6c45f9affdc158ecca2b8b8">
+                <source>Yellow</source>
+                <target>Jaune</target>
+            </trans-unit>
+            <trans-unit id="45f0671858e1facb4437cdd64e63fb49">
+                <source>You can retrieve all theses credentials here:</source>
+                <target>Vous pouvez retrouver ces identifiants ici :</target>
+            </trans-unit>
+            <trans-unit id="cc0ca8cd23cacc40345b234594a3df42">
+                <source><![CDATA[You can sort contracts by using drag & drop method]]></source>
+                <target><![CDATA[Vous pouvez trier les contrats en utilisant la méthode glisser & déposer]]></target>
+            </trans-unit>
+            <trans-unit id="42af0ecf606ae5dd141e79c0dd5f5484">
+                <source>You do not have any subscriptions.</source>
+                <target>Vous n'avez aucun abonnement.</target>
+            </trans-unit>
+            <trans-unit id="89f0fbf6f2fe4682c31a50657a52e57f">
+                <source>You must define the notification URL into your point of sale configuration, the current value is empty or invalid. %s The correct URL is: %s %s %s</source>
+                <target>Vous devez définir l'URL pour les notifications dans la configuration de votre point de vente, la valeur actuelle est vide ou incorrecte. %s L'URL à spécifier est : %s %s %s</target>
+            </trans-unit>
+            <trans-unit id="a5ffec2511532fe70db33152b98f3032">
+                <source>You must enable at least one contract.</source>
+                <target>Vous devez activer au moins un contrat.</target>
+            </trans-unit>
+            <trans-unit id="613e47cc93260fc7a8749a9551b0ae87">
+                <source>You must fill each required fields (check %s - %s language).</source>
+                <target>Vous devez remplir chacun des champs obligatoires (cocher %s - %s langue).</target>
+            </trans-unit>
+            <trans-unit id="6a174a2fc3bfe858420185370a21031c">
+                <source>Your PHP version is too old, you must run at least PHP version 5.4.0</source>
+                <target>Votre version de PHP est trop ancienne, vous devez avoir au moins PHP 5.4.0</target>
+            </trans-unit>
+            <trans-unit id="a147cdaee475e8a111bd5b116247eff0">
+                <source>Your cart contains mixed products (recurring products and classic products).</source>
+                <target>Votre panier contient des produits qui ne sont pas disponibles par abonnement.</target>
+            </trans-unit>
+            <trans-unit id="7cccfbbbe926f29228dedf5b436ea7ac">
+                <source>Your subscription has been canceled.</source>
+                <target>Votre abonnement a été annulé.</target>
+            </trans-unit>
+            <trans-unit id="268184c12df027f536154d099d497b31">
+                <source>children</source>
+                <target>Enfants</target>
+            </trans-unit>
+            <trans-unit id="e66026d55affaeea9188e289306bfddb">
+                <source>choose wether to display Monext recurring payment in your checkout or not</source>
+                <target>choisissez d'afficher ou non le paiement récurrent Monext dans le tunnel</target>
+            </trans-unit>
+            <trans-unit id="451b19c58162dda17adfc5f4672d9294">
+                <source>choose wether to display Monext simple payment in your checkout or not</source>
+                <target>choisissez d'afficher ou non le paiement comptant Monext dans le tunnel</target>
+            </trans-unit>
+            <trans-unit id="8a8b0f0818d54f302f57462c0347d0a4">
+                <source>choose wether to display Monext subscribe payment in your checkout or not</source>
+                <target>choisissez d'afficher ou non le paiement par abonnement Monext dans le tunnel</target>
+            </trans-unit>
+            <trans-unit id="ea225ae75583177eba676db77e3af75d">
+                <source>darker</source>
+                <target>plus foncé</target>
+            </trans-unit>
+            <trans-unit id="73b6b9bc685086cc5360259a70b2fdf6">
+                <source>furnishing</source>
+                <target>Ameublement</target>
+            </trans-unit>
+            <trans-unit id="df120c36c9508496e39f10331b5e3bb9">
+                <source>in-shop column</source>
+                <target>in-shop column</target>
+            </trans-unit>
+            <trans-unit id="76bab8bc6e0773ea25865862897c472e">
+                <source>in-shop tab</source>
+                <target>in-shop tab</target>
+            </trans-unit>
+            <trans-unit id="5031056d6ed6c5d836d226a98f306d36">
+                <source>lightbox</source>
+                <target>lightbox</target>
+            </trans-unit>
+            <trans-unit id="6a19bbb52d8327f9149be17eaf420c01">
+                <source>lighter</source>
+                <target>plus clair</target>
+            </trans-unit>
+            <trans-unit id="aa1e6433dc6d8cc4c475849cca2b3ce8">
+                <source>traveling</source>
+                <target>Voyages</target>
+            </trans-unit>
+            <trans-unit id="49f50f2bc94759b22679023576a94add">
+                <source>More information on www.monext.com.</source>
+                <target>Plus d'informations sur www.monext.com.</target>
+            </trans-unit>
+            <trans-unit id="f7399d6d0903fc0b007d76f8beb75e8f">
+                <source>Our features are packed in different offers in order to fit your needs. Star from only 15 euros per month.</source>
+                <target>Nos fonctionnalités sont proposées dans différentes offres afin de couvrir au mieux vos besoins. Nos offres sont disponibles à partir de 15 euros par mois.</target>
+            </trans-unit>
+            <trans-unit id="c89b53fc02cf6a82572925329dbb3ec0">
+                <source>Simply payment</source>
+                <target>Le paiement, tout simplement</target>
+            </trans-unit>
+            <trans-unit id="3abdbc5103bd066a2d8cd663629c3f1d">
+                <source>What is Monext?</source>
+                <target>Qu'est ce que Monext?</target>
+            </trans-unit>
+            <trans-unit id="f3f3b48b887d123c1fef7501e85954e3">
+                <source>With Monext give the best user experience, rely on mobile technology, optimise your financial performance, become a local player in each country, identify your customers and stop fraudsters.</source>
+                <target>Avec Monext offrez la meilleure expérience utilisateur, misez sur la technologie mobile, optimisez votre performance financière, devenez un acteur local dans chaque pays, identifiez vos clients et stoppez les fraudeurs.</target>
+            </trans-unit>
+            <trans-unit id="cb145c15179d76a4607a193b0d8f0fa2">
+                <source>Logs Viewing</source>
+                <target>Visionneur de logs</target>
+            </trans-unit>
+            <trans-unit id="dd0821c4d98fc1a8b1aa15099df1aa92">
+                <source>Please select a log file</source>
+                <target>Veuillez sélectionner un fichier de log</target>
+            </trans-unit>
+            <trans-unit id="7a4ff236cbfab7d0c3c4227f1b550691">
+                <source>Start typing an ID, reference, or product name</source>
+                <target>Commencez à saisir un ID, une référence, ou le nom d'un produit</target>
+            </trans-unit>
+            <trans-unit id="select_log_file">
+                <source>Select a log file</source>
+                <target>Sélectionnez un fichier de log</target>
+            </trans-unit>
+            <trans-unit id="error_loading_log">
+                <source>Error loading log file</source>
+                <target>Erreur lors du chargement du fichier de log</target>
+            </trans-unit>
+            <trans-unit id="no_contracts_available_please">
+                <source>No contracts available. Please configure your API credentials first.</source>
+                <target>Aucun contrat n'est disponible. Veuillez d'abord configurer vos identifiants API.</target>
+            </trans-unit>
+            <trans-unit id="no_contracts_available">
+                <source>No contracts available.</source>
+                <target>Aucun contrat n'est disponible.</target>
+            </trans-unit>
+            <trans-unit id="search_products_min">
+                <source>Search products (min 3 characters)...</source>
+                <target>Rechercher des produits (min. 3 caractères)...</target>
+            </trans-unit>
+            <trans-unit id="contract_on">
+                <source>ON</source>
+                <target>AVEC</target>
+            </trans-unit>
+            <trans-unit id="contract_off">
+                <source>OFF</source>
+                <target>SANS</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

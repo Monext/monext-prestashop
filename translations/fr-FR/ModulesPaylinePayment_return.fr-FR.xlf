@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file original="ModulesPaylinePayment_return.xlf" source-language="fr-FR" target-language="fr-FR" datatype="plaintext">
+    <body>
+      <trans-unit id="11862f1ff7d95d2b54087b29dc12d181">
+        <source>For any questions or for further information, please get in touch our customer service</source>
+        <target>Pour toutes questions ou renseignements, contactez notre service client</target>
+      </trans-unit>
+      <trans-unit id="cab86277b119ee5c065bac81de603c2e">
+        <source>Monext transaction ID: %s</source>
+        <target>Identifiant de transaction Monext : %s</target>
+      </trans-unit>
+      <trans-unit id="ad8538ea959837b8e3a6aab1d2041c3d">
+        <source>Thank you, your order is complete.</source>
+        <target>Merci, votre commande est enregistrée.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

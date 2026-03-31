@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file original="ModulesPaylineConfigure.xlf" source-language="fr-FR" target-language="fr-FR" datatype="plaintext">
+    <body>
+      <trans-unit id="2715d06f9a029a951c5c8b66903badd5">
+        <source>Contracts configuration</source>
+        <target>Configuration des contrats</target>
+      </trans-unit>
+      <trans-unit id="cb145c15179d76a4607a193b0d8f0fa2">
+        <source>Logs Viewing</source>
+        <target>Visionneur de logs</target>
+      </trans-unit>
+      <trans-unit id="6e150d7c6c0cbf6620d8b8fd8760bad4">
+        <source>Monext configuration</source>
+        <target>Configuration Monext	</target>
+      </trans-unit>
+      <trans-unit id="05b5f2f83115716739690a24ebc980ee">
+        <source>Nx payment</source>
+        <target>Paiement Nx</target>
+      </trans-unit>
+      <trans-unit id="d930dbf4a7092e01caddb358c8f20bac">
+        <source>Recurring payment</source>
+        <target>Paiement récurrent</target>
+      </trans-unit>
+      <trans-unit id="a0e34976c480bf253e300a9e38088741">
+        <source>Simple payment</source>
+        <target>Paiement simple</target>
+      </trans-unit>
+      <trans-unit id="3abdbc5103bd066a2d8cd663629c3f1d">
+        <source>What is Monext?</source>
+        <target>Qu'est ce que Monext?	</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

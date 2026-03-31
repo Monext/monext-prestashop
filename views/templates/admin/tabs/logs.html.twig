@@ -1,0 +1,40 @@
+{#
+  Payline module for PrestaShop
+  @author    Monext <support@payline.com>
+  @copyright Monext - http://www.payline.com
+
+  Logs viewing tab.
+#}
+
+{% extends '@Modules/payline/views/templates/admin/_layout.html.twig' %}
+
+{% block tab_content %}
+    <div class="card">
+        <h3 class="card-header">
+            <i class="material-icons">description</i> {{ 'Logs Viewing'|trans({}, 'Modules.Payline.Admin') }}
+        </h3>
+        <div class="card-body">
+            <div class="form-group">
+                <label for="logs-files-list-select">{{ 'Select a log file'|trans({}, 'Modules.Payline.Admin') }}</label>
+                <select name="logs-files-list-select" id="logs-files-list-select" class="form-control">
+                    <option value="">-- {{ 'Please select a log file'|trans({}, 'Modules.Payline.Admin') }} --</option>
+                    {% for logFile in logFiles %}
+                        <option value="{{ logFile }}">{{ logFile }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div id="log_container" class="card mt-3 log_container">
+                <div id="log_display" class="card-body log_display">
+                    <p>{{ 'Please select a log file'|trans({}, 'Modules.Payline.Admin') }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        window.logs_viewer_controller_url = '{{ path('payline_logs_ajax') }}';
+    </script>
+{% endblock %}

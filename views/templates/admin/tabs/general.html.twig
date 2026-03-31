@@ -1,0 +1,114 @@
+{#
+  Payline module for PrestaShop
+  @author    Monext <support@payline.com>
+  @copyright Monext - http://www.payline.com
+
+  Monext configuration tab (credentials).
+#}
+
+{% extends '@Modules/payline/views/templates/admin/_layout.html.twig' %}
+
+{% block tab_content %}
+    {{ form_start(form) }}
+    <div class="card">
+        <h3 class="card-header">
+            <i class="material-icons">vpn_key</i> {{ 'Monext configuration'|trans({}, 'Modules.Payline.Admin') }}
+        </h3>
+        <div class="card-body">
+            <div class="form-wrapper">
+                {# Live mode #}
+                {{ form_row(form.PAYLINE_LIVE_MODE) }}
+
+                {# Section: Monext API credentials #}
+                <div class="form-section">
+                    <h4 class="form-section-title">
+                        <i class="material-icons">key</i>
+                        {{ 'Monext API credentials'|trans({}, 'Modules.Payline.Admin') }}
+                    </h4>
+                    <p class="form-section-description">
+                        {{ 'You can retrieve all theses credentials here:'|trans({}, 'Modules.Payline.Admin') }}
+                        <a href="https://www.monext.com/" target="_blank" rel="noopener">https://www.monext.com/</a>
+                    </p>
+                </div>
+
+                {{ form_row(form.PAYLINE_MERCHANT_ID) }}
+                {{ form_row(form.PAYLINE_ACCESS_KEY) }}
+                {{ form_row(form.PAYLINE_POS) }}
+                {{ form_row(form.PAYLINE_SMARTDISPLAY_PARAM) }}
+
+                {# Section: Proxy configuration #}
+                <div class="form-section">
+                    <h4 class="form-section-title">
+                        <i class="material-icons">router</i>
+                        {{ 'Proxy configuration'|trans({}, 'Modules.Payline.Admin') }}
+                    </h4>
+                </div>
+
+                {{ form_row(form.PAYLINE_PROXY_HOST) }}
+                {{ form_row(form.PAYLINE_PROXY_PORT) }}
+                {{ form_row(form.PAYLINE_PROXY_LOGIN) }}
+                {{ form_row(form.PAYLINE_PROXY_PASSWORD) }}
+
+                {# Section: Error messages #}
+                <div class="form-section">
+                    <h4 class="form-section-title">
+                        <i class="material-icons">error_outline</i>
+                        {{ 'Error messages'|trans({}, 'Modules.Payline.Admin') }}
+                    </h4>
+                </div>
+
+                {{ form_row(form.PAYLINE_ERROR_REFUSED) }}
+                {{ form_row(form.PAYLINE_ERROR_CANCELLED) }}
+                {{ form_row(form.PAYLINE_ERROR_ERROR) }}
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-primary" type="submit">
+                    {{ 'Save'|trans({}, 'Admin.Actions') }}
+                </button>
+            </div>
+        </div>
+    </div>
+    {{ form_end(form) }}
+
+    <style>
+        .form-section {
+            margin: 2rem 0 1.5rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .form-section:first-of-type {
+            margin-top: 1rem;
+        }
+        .form-section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #363a41;
+            margin: 0 0 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .form-section-title .material-icons {
+            font-size: 1.2rem;
+            color: #6c868e;
+        }
+        .form-section-description {
+            margin: 0;
+            color: #6c757d;
+            font-size: 0.875rem;
+        }
+        .form-section-description a {
+            color: #25b9d7;
+        }
+        .has-success .form-control,
+        .has-success .custom-select {
+            border-color: #70b580;
+        }
+        .has-error .form-control,
+        .has-error .custom-select {
+            border-color: #dc3545;
+        }
+    </style>
+{% endblock %}

@@ -1,0 +1,83 @@
+{#
+  Payline module for PrestaShop
+  @author    Monext <support@payline.com>
+  @copyright Monext - http://www.payline.com
+
+  Simple payment (Web payment) configuration tab.
+#}
+
+{% extends '@Modules/payline/views/templates/admin/_layout.html.twig' %}
+
+{% block tab_content %}
+    {{ form_start(form) }}
+    <div class="card" id="web-payment-configuration">
+        <h3 class="card-header">
+            <i class="material-icons">settings</i> {{ 'Simple payment'|trans({}, 'Modules.Payline.Admin') }}
+        </h3>
+        <div class="card-body">
+            <div class="form-wrapper">
+                {# Section: Monext web-payment configuration #}
+                <div class="form-section">
+                    <h3 class="form-section-title">
+{#                        <i class="material-icons">key</i>#}
+                        {{ 'Simple payment'|trans({}, 'Modules.Payline.Admin') }}
+                    </h3>
+                    <p class="form-section-description">
+                        {{ 'Contracts activated through contracts configuration menu are displayed in the checkout. All payment information is filled on our secure user interface.'|trans({}, 'Modules.Payline.Admin') }}
+                    </p>
+                </div>
+                {{ form_row(form.PAYLINE_WEB_CASH_ENABLE) }}
+                {{ form_row(form.PAYLINE_WEB_CASH_TITLE) }}
+                {{ form_row(form.PAYLINE_WEB_CASH_SUBTITLE) }}
+                {{ form_row(form.PAYLINE_WEB_CASH_ACTION) }}
+                <div class="payline-autorization-only">
+                    {{ form_row(form.PAYLINE_WEB_CASH_VALIDATION) }}
+                </div>
+                {{ form_row(form.PAYLINE_WEB_CASH_BY_WALLET) }}
+                {{ form_row(form.PAYLINE_WEB_CASH_UX) }}
+                <div class="payline-redirect-only">
+                    {{ form_row(form.PAYLINE_WEB_CASH_CUSTOM_CODE) }}
+                </div>
+                {{ form_row(form.PAYLINE_DEFAULT_CATEGORY) }}
+
+                {# Section: Monext Widget configuration #}
+                <div class="form-section widget_customization_head">
+                    <h3 class="form-section-title">
+{#                        <i class="material-icons">key</i>#}
+                        {{ 'Widget configuration'|trans({}, 'Modules.Payline.Admin') }}
+                    </h3>
+                    <p class="form-section-description">
+                        {{ 'Not available on "redirection" user experience mode'|trans({}, 'Modules.Payline.Admin') }}
+                    </p>
+
+                {{ form_row(form.PAYLINE_WEB_WIDGET_CUSTOM) }}
+                    <div class="widget_customization">
+                        {{ form_row(form.PAYLINE_WEB_WIDGET_CTA_LABEL) }}
+                        {{ form_row(form.PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR) }}
+                        <div class="hexadecimal-input">
+                            {{ form_row(form.PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HEXADECIMAL) }}
+                        </div>
+                        {{ form_row(form.PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER) }}
+                        {{ form_row(form.PAYLINE_WEB_WIDGET_CSS_CTA_TEXT_COLOR) }}
+                        {{ form_row(form.PAYLINE_WEB_WIDGET_CSS_FONT_SIZE) }}
+                        {{ form_row(form.PAYLINE_WEB_WIDGET_CSS_BORDER_RADIUS) }}
+                        {{ form_row(form.PAYLINE_WEB_WIDGET_CSS_BG_COLOR) }}
+                        {{ form_row(form.PAYLINE_WEB_WIDGET_TEXT_UNDER_CTA) }}
+                        <div>
+                            <div id="paylineCtaPreviewContainer"><button id="paylineCtaPreview" >Payer</button><p></p></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-primary" type="submit">
+                    {{ 'Save'|trans({}, 'Admin.Actions') }}
+                </button>
+            </div>
+        </div>
+    </div>
+    {{ form_end(form) }}
+{% endblock %}

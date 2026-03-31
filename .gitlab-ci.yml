@@ -21,7 +21,7 @@ phpunit:
   cache:
     key: "${CI_JOB_NAME}-${PHP_VERSION}-${CI_COMMIT_REF_SLUG}"
     paths:
-      - lib/
+      - vendor/
       - .composer/cache/
 
   before_script:
@@ -37,7 +37,7 @@ phpunit:
 
   script:
     # run your unit tests; the job (and pipeline) will fail if phpunit exits non-zero
-    - ./lib/bin/phpunit --colors=always
+    - ./vendor/bin/phpunit --colors=always
 
   rules:
     # Run pipeline when a Merge Request is created/updated (GitLab MR ~ GitHub PR)

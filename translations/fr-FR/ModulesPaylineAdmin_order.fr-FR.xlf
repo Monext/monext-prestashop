@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file original="ModulesPaylineAdmin_order.xlf" source-language="fr-FR" target-language="fr-FR" datatype="plaintext">
+    <body>
+      <trans-unit id="004bf6c9a40003140292e97330236c53">
+        <source>Action</source>
+        <target>Action</target>
+      </trans-unit>
+      <trans-unit id="b2f40690858b404ed10e62bdf422c704">
+        <source>Amount</source>
+        <target>Montant</target>
+      </trans-unit>
+      <trans-unit id="d4539bffb6062bdcbd7e7cc1b1228926">
+        <source>CANCELED</source>
+        <target>ANNULÉ</target>
+      </trans-unit>
+      <trans-unit id="44a50f07b4bdc57740901280f9eddaf5">
+        <source>Capture</source>
+        <target>Capturer</target>
+      </trans-unit>
+      <trans-unit id="44749712dbec183e983dcd78a7736c41">
+        <source>Date</source>
+        <target>Date</target>
+      </trans-unit>
+      <trans-unit id="2e79cbc13bbc903d989eab943a2e394f">
+        <source>Due date</source>
+        <target>Débité le</target>
+      </trans-unit>
+      <trans-unit id="c0a3c3e9b5fbd21c505e082644b2220c">
+        <source>Full refund</source>
+        <target>Remboursement intégral</target>
+      </trans-unit>
+      <trans-unit id="e413f403aa8d5253b487d09fc84e47a0">
+        <source>Generate a credit slip</source>
+        <target>Générer un avoir</target>
+      </trans-unit>
+      <trans-unit id="8dc7f049e3266f9d8bbd9347f6d04d68">
+        <source>IN PROGRESS</source>
+        <target>EN COURS</target>
+      </trans-unit>
+      <trans-unit id="91a455b838e4e040ca0d27d6c2c22d75">
+        <source>Monext information</source>
+        <target>Informations Monext </target>
+      </trans-unit>
+      <trans-unit id="382b0f5185773fa0f67a8ed8056c7759">
+        <source>N/A</source>
+        <target>N/D</target>
+      </trans-unit>
+      <trans-unit id="9da9d122fdf01b1db2816592e00f28ad">
+        <source>NOK</source>
+        <target>NOK</target>
+      </trans-unit>
+      <trans-unit id="e0aa021e21dddbd6d8cecec71e9cf564">
+        <source>OK</source>
+        <target>OK</target>
+      </trans-unit>
+      <trans-unit id="d1228f5476d15142b1358ae4b5fa2454">
+        <source>Order #</source>
+        <target>Commande #</target>
+      </trans-unit>
+      <trans-unit id="28693643cb294a3855862310b58a0946">
+        <source>Payment record #%s</source>
+        <target>Dossier de paiement #%s</target>
+      </trans-unit>
+      <trans-unit id="8f2345b10461e88f6532299251b405f4">
+        <source>Recurring information</source>
+        <target>Informations du paiement récurrent</target>
+      </trans-unit>
+      <trans-unit id="526d688f37a86d3c3f27d0c5016eb71d">
+        <source>Reset</source>
+        <target>Reset</target>
+      </trans-unit>
+      <trans-unit id="ec53a8c4f07baed5d8825072c89799be">
+        <source>Status</source>
+        <target>Etat</target>
+      </trans-unit>
+      <trans-unit id="bdef313c9327ac92811a688953e39707">
+        <source>Transaction #</source>
+        <target>Transaction #</target>
+      </trans-unit>
+      <trans-unit id="a1fa27779242b4902f7ae3bdd5c6d508">
+        <source>Type</source>
+        <target>Type</target>
+      </trans-unit>
+      <trans-unit id="1869d56535e8b1449a6da54ff5e11f50">
+        <source>WAITING</source>
+        <target>EN ATTENTE</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

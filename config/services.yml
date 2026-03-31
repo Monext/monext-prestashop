@@ -1,0 +1,176 @@
+services:
+  _defaults:
+    public: true
+
+  # ──────────────────────────────────────────────────────────────────
+  # Controller
+  # ──────────────────────────────────────────────────────────────────
+  PrestaShop\Module\Payline\Controller\Admin\PaylineConfigurationController:
+    class: 'PrestaShop\Module\Payline\Controller\Admin\PaylineConfigurationController'
+    public: true
+    arguments:
+      - '@payline.form.general_form_data_handler'
+      - '@payline.form.web_payment_form_data_handler'
+      - '@payline.form.nx_payment_form_data_handler'
+      - '@payline.form.recurring_payment_form_data_handler'
+      - '@payline.form.contracts_form_data_handler'
+
+  # ──────────────────────────────────────────────────────────────────
+  # Shared Services
+  # ──────────────────────────────────────────────────────────────────
+  payline.service.form_choices_provider:
+    class: 'PrestaShop\Module\Payline\Service\PaylineFormChoicesProvider'
+    arguments:
+      - '@translator'
+      - '@prestashop.adapter.legacy.configuration'
+    public: true
+
+  # ══════════════════════════════════════════════════════════════════
+  # General (credentials) tab
+  # ══════════════════════════════════════════════════════════════════
+  payline.form.type.general:
+    class: 'PrestaShop\Module\Payline\Form\Type\PaylineGeneralFormType'
+    parent: 'form.type.translatable.aware'
+    public: true
+    arguments:
+      $choicesProvider: '@payline.service.form_choices_provider'
+    tags:
+      - { name: form.type }
+
+  payline.form.general_data_configuration:
+    class: 'PrestaShop\Module\Payline\Form\DataConfiguration\PaylineGeneralDataConfiguration'
+    arguments: ['@prestashop.adapter.legacy.configuration']
+
+  payline.form.general_form_data_provider:
+    class: 'PrestaShop\Module\Payline\Form\DataProvider\PaylineGeneralFormDataProvider'
+    arguments:
+      - '@payline.form.general_data_configuration'
+
+  payline.form.general_form_data_handler:
+    class: 'PrestaShop\PrestaShop\Core\Form\Handler'
+    arguments:
+      - '@form.factory'
+      - '@prestashop.core.hook.dispatcher'
+      - '@payline.form.general_form_data_provider'
+      - 'PrestaShop\Module\Payline\Form\Type\PaylineGeneralFormType'
+      - 'PaylineConfiguration'
+
+  # ══════════════════════════════════════════════════════════════════
+  # Web Payment (Simple payment) tab
+  # ══════════════════════════════════════════════════════════════════
+  payline.form.type.web_payment:
+    class: 'PrestaShop\Module\Payline\Form\Type\PaylineWebPaymentFormType'
+    parent: 'form.type.translatable.aware'
+    public: true
+    arguments:
+      $choicesProvider: '@payline.service.form_choices_provider'
+    tags:
+      - { name: form.type }
+
+  payline.form.web_payment_data_configuration:
+    class: 'PrestaShop\Module\Payline\Form\DataConfiguration\PaylineWebPaymentDataConfiguration'
+    arguments: ['@prestashop.adapter.legacy.configuration']
+
+  payline.form.web_payment_form_data_provider:
+    class: 'PrestaShop\Module\Payline\Form\DataProvider\PaylineWebPaymentFormDataProvider'
+    arguments:
+      - '@payline.form.web_payment_data_configuration'
+
+  payline.form.web_payment_form_data_handler:
+    class: 'PrestaShop\PrestaShop\Core\Form\Handler'
+    arguments:
+      - '@form.factory'
+      - '@prestashop.core.hook.dispatcher'
+      - '@payline.form.web_payment_form_data_provider'
+      - 'PrestaShop\Module\Payline\Form\Type\PaylineWebPaymentFormType'
+      - 'PaylineWebPayment'
+
+  # ══════════════════════════════════════════════════════════════════
+  # NX Payment tab
+  # ══════════════════════════════════════════════════════════════════
+  payline.form.type.nx_payment:
+    class: 'PrestaShop\Module\Payline\Form\Type\PaylineNxPaymentFormType'
+    parent: 'form.type.translatable.aware'
+    public: true
+    arguments:
+      $choicesProvider: '@payline.service.form_choices_provider'
+    tags:
+      - { name: form.type }
+
+  payline.form.nx_payment_data_configuration:
+    class: 'PrestaShop\Module\Payline\Form\DataConfiguration\PaylineNxPaymentDataConfiguration'
+    arguments: ['@prestashop.adapter.legacy.configuration']
+
+  payline.form.nx_payment_form_data_provider:
+    class: 'PrestaShop\Module\Payline\Form\DataProvider\PaylineNxPaymentFormDataProvider'
+    arguments:
+      - '@payline.form.nx_payment_data_configuration'
+
+  payline.form.nx_payment_form_data_handler:
+    class: 'PrestaShop\PrestaShop\Core\Form\Handler'
+    arguments:
+      - '@form.factory'
+      - '@prestashop.core.hook.dispatcher'
+      - '@payline.form.nx_payment_form_data_provider'
+      - 'PrestaShop\Module\Payline\Form\Type\PaylineNxPaymentFormType'
+      - 'PaylineNxPayment'
+
+  # ══════════════════════════════════════════════════════════════════
+  # Recurring Payment tab
+  # ══════════════════════════════════════════════════════════════════
+  payline.form.type.recurring_payment:
+    class: 'PrestaShop\Module\Payline\Form\Type\PaylineRecurringPaymentFormType'
+    parent: 'form.type.translatable.aware'
+    public: true
+    arguments:
+      $choicesProvider: '@payline.service.form_choices_provider'
+      $router: '@router'
+      $legacyContext: '@prestashop.adapter.legacy.context'
+    tags:
+      - { name: form.type }
+
+  payline.form.recurring_payment_data_configuration:
+    class: 'PrestaShop\Module\Payline\Form\DataConfiguration\PaylineRecurringPaymentDataConfiguration'
+    arguments: ['@prestashop.adapter.legacy.configuration']
+
+  payline.form.recurring_payment_form_data_provider:
+    class: 'PrestaShop\Module\Payline\Form\DataProvider\PaylineRecurringPaymentFormDataProvider'
+    arguments:
+      - '@payline.form.recurring_payment_data_configuration'
+
+  payline.form.recurring_payment_form_data_handler:
+    class: 'PrestaShop\PrestaShop\Core\Form\Handler'
+    arguments:
+      - '@form.factory'
+      - '@prestashop.core.hook.dispatcher'
+      - '@payline.form.recurring_payment_form_data_provider'
+      - 'PrestaShop\Module\Payline\Form\Type\PaylineRecurringPaymentFormType'
+      - 'PaylineRecurringPayment'
+
+  # ══════════════════════════════════════════════════════════════════
+  # Contracts tab
+  # ══════════════════════════════════════════════════════════════════
+  payline.form.type.contracts:
+    class: 'PrestaShop\Module\Payline\Form\Type\PaylineContractsFormType'
+    parent: 'form.type.translatable.aware'
+    public: true
+    tags:
+      - { name: form.type }
+
+  payline.form.contracts_data_configuration:
+    class: 'PrestaShop\Module\Payline\Form\DataConfiguration\PaylineContractsDataConfiguration'
+    arguments: ['@prestashop.adapter.legacy.configuration']
+
+  payline.form.contracts_form_data_provider:
+    class: 'PrestaShop\Module\Payline\Form\DataProvider\PaylineContractsFormDataProvider'
+    arguments:
+      - '@payline.form.contracts_data_configuration'
+
+  payline.form.contracts_form_data_handler:
+    class: 'PrestaShop\PrestaShop\Core\Form\Handler'
+    arguments:
+      - '@form.factory'
+      - '@prestashop.core.hook.dispatcher'
+      - '@payline.form.contracts_form_data_provider'
+      - 'PrestaShop\Module\Payline\Form\Type\PaylineContractsFormType'
+      - 'PaylineContracts'

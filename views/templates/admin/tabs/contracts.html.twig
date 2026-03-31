@@ -1,0 +1,68 @@
+{#
+  Payline module for PrestaShop
+  @author    Monext <support@payline.com>
+  @copyright Monext - http://www.payline.com
+
+  Contracts configuration tab.
+#}
+
+{% extends '@Modules/payline/views/templates/admin/_layout.html.twig' %}
+
+{% block tab_content %}
+{{ form_start(form) }}
+<div class="card">
+    <h3 class="card-header">
+        <i class="material-icons">credit_card</i> {{ 'Contracts configuration'|trans({}, 'Modules.Payline.Admin') }}
+    </h3>
+    <div class="card-body">
+        <h4>{{ 'Select and sort the contracts you want to make available to your customers'|trans({}, 'Modules.Payline.Admin') }}</h4>
+        <p class="text-muted">{{ 'You can sort contracts by using drag & drop method'|trans({}, 'Modules.Payline.Admin') }}</p>
+
+        {# Hidden input to store enabled contracts - rendered via Symfony form with custom ID #}
+        {{ form_widget(form.PAYLINE_CONTRACTS, {
+            'id': 'PAYLINE_CONTRACTS'
+        }) }}
+
+        {# Main contracts list - using reusable component #}
+        {% include '@Modules/payline/views/templates/admin/tabs/_contracts_list.html.twig' with {
+            'inputId': 'PAYLINE_CONTRACTS',
+            'idPrefix': '',
+            'contracts': contractsList,
+            'enabledContracts': enabledContracts,
+            'modulePath': modulePath,
+            'emptyMessage': 'No contracts available. Please configure your API credentials first.'|trans({}, 'Modules.Payline.Admin')
+        } %}
+
+        {{ form_row(form.PAYLINE_ALT_CONTRACTS_AS_MAIN) }}
+
+        {# Hidden input to store enabled alternative contracts #}
+        {{ form_widget(form.PAYLINE_ALT_CONTRACTS, {
+            'id': 'PAYLINE_ALT_CONTRACTS'
+        }) }}
+
+        {# Alternative contracts section - shown only when NOT using main contracts #}
+        <div id="alt-contracts-section" style="display: none;">
+            <hr class="my-4">
+            <h4>{{ 'Select and sort the alternative contracts'|trans({}, 'Modules.Payline.Admin') }}</h4>
+
+            {% include '@Modules/payline/views/templates/admin/tabs/_contracts_list.html.twig' with {
+                'inputId': 'PAYLINE_ALT_CONTRACTS',
+                'idPrefix': 'alt-',
+                'contracts': fallbackContractsList,
+                'enabledContracts': enabledAltContracts,
+                'modulePath': modulePath
+            } %}
+        </div>
+
+    </div>
+    <div class="card-footer">
+        <div class="d-flex justify-content-end">
+            <button class="btn btn-primary" type="submit">
+                <i class="material-icons">save</i>
+                {{ 'Save'|trans({}, 'Admin.Actions') }}
+            </button>
+        </div>
+    </div>
+</div>
+{{ form_end(form) }}
+{% endblock %}

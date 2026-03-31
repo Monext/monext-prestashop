@@ -1,0 +1,63 @@
+{#
+  Payline module for PrestaShop
+  @author    Monext <support@payline.com>
+  @copyright Monext - http://www.payline.com
+
+  Reusable contracts list component.
+
+  Parameters:
+  - inputId: string - ID of the hidden input field (e.g., 'PAYLINE_CONTRACTS')
+  - idPrefix: string - Prefix for HTML IDs to avoid conflicts (e.g., '', 'alt-')
+  - contracts: array - List of contracts to display
+  - enabledContracts: array - List of enabled contract IDs
+  - modulePath: string - Path to the module
+  - emptyMessage: string (optional) - Message to display when no contracts available
+#}
+
+<ol id="payline-contracts-list-{{ inputId }}"
+    class="list-group payline-contracts-list"
+    data-input-id="{{ inputId }}">
+    {% for contract in contracts %}
+        {% set contractId = contract.cardType ~ '-' ~ contract.contractNumber %}
+        {% set isEnabled = contractId in enabledContracts %}
+        <li class="list-group-item{% if isEnabled %} payline-active-contract{% endif %}"
+            id="{{ idPrefix }}{{ contractId }}"
+            data-contract-id="{% if isEnabled %}{{ contractId }}{% endif %}">
+            <div class="row">
+                <div class="col-md-9 d-flex align-items-center">
+                    <img src="{{ modulePath }}views/img/contracts/{{ contract.logo }}"
+                         alt="{{ contract.label }}"
+                         onerror="this.style.display='none'">
+                    {{ contract.label }}
+                    <small class="text-muted ml-2">({{ contract.contractNumber }})</small>
+                </div>
+                <div class="col-md-3 input-group">
+                    <span class="ps-switch prestashop-switch fixed-width-lg payline-contract-switch">
+                        <input data-input-id="{{ inputId }}"
+                               data-contract-id="{{ contractId }}"
+                               type="radio"
+                               name="{{ idPrefix }}{{ contractId }}-{{ inputId }}-toggle"
+                               id="{{ idPrefix }}{{ contractId }}-{{ inputId }}-toggle_off"
+                               class="ps-switch"
+                               value="0"{% if not isEnabled %} checked="checked"{% endif %}>
+                        <label for="{{ idPrefix }}{{ contractId }}-{{ inputId }}-toggle_off">{{ 'OFF'|trans({}, 'Modules.Payline.Admin') }}</label>
+                        <input data-input-id="{{ inputId }}"
+                               data-contract-id="{{ contractId }}"
+                               type="radio"
+                               name="{{ idPrefix }}{{ contractId }}-{{ inputId }}-toggle"
+                               id="{{ idPrefix }}{{ contractId }}-{{ inputId }}-toggle_on"
+                               class="ps-switch"
+                               value="1"{% if isEnabled %} checked="checked"{% endif %}>
+                        <label for="{{ idPrefix }}{{ contractId }}-{{ inputId }}-toggle_on">{{ 'ON'|trans({}, 'Modules.Payline.Admin') }}</label>
+                        <span class="slide-button"></span>
+                    </span>
+                </div>
+            </div>
+        </li>
+    {% else %}
+        <li class="list-group-item text-muted">
+            <i class="material-icons">warning</i>
+            {{ emptyMessage|default('No contracts available.'|trans({}, 'Modules.Payline.Admin')) }}
+        </li>
+    {% endfor %}
+</ol>

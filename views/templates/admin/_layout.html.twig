@@ -1,0 +1,63 @@
+{% extends '@PrestaShop/Admin/layout.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('../modules/payline/views/css/back.css') }}" type="text/css">
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('../modules/payline/views/js/back.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    {# Menu latéral #}
+    <div class="col-md-2">
+        <nav class="list-group">
+            <a class="list-group-item {{ activeTab == 'landing' ? 'active' : '' }}"
+               href="{{ path('payline_configuration_landing') }}">
+                <i class="material-icons">help</i>
+                {{ 'What is Monext?'|trans({}, 'Modules.Payline.Admin') }}
+            </a>
+            <a class="list-group-item {{ activeTab == 'general' ? 'active' : '' }}{{ not apiStatus ? ' list-group-item-danger' : '' }}"
+               href="{{ path('payline_configuration_general') }}">
+                <i class="material-icons">store</i>{# account_balance #}
+                {{ 'Monext configuration'|trans({}, 'Modules.Payline.Admin') }}
+            </a>
+            <a class="list-group-item {{ activeTab == 'web' ? 'active' : '' }}"
+               href="{{ path('payline_configuration_web') }}">
+                <i class="material-icons">settings</i>
+                {{ 'Simple payment'|trans({}, 'Modules.Payline.Admin') }}
+            </a>
+            <a class="list-group-item {{ activeTab == 'nx' ? 'active' : '' }}"
+               href="{{ path('payline_configuration_nx') }}">
+                <i class="material-icons">settings</i>
+                {{ 'Nx payment'|trans({}, 'Modules.Payline.Admin') }}
+            </a>
+            <a class="list-group-item {{ activeTab == 'recurring' ? 'active' : '' }}"
+               href="{{ path('payline_configuration_recurring') }}">
+                <i class="material-icons">settings</i>
+                {{ 'Recurring payment'|trans({}, 'Modules.Payline.Admin') }}
+            </a>
+            {% if apiStatus %}
+            <a class="list-group-item {{ activeTab == 'contracts' ? 'active' : '' }}{{ contractsErrors ? ' list-group-item-warning' : '' }}"
+               href="{{ path('payline_configuration_contracts') }}">
+                <i class="material-icons">credit_card</i>
+                {{ 'Contracts configuration'|trans({}, 'Modules.Payline.Admin') }}
+            </a>
+            {% endif %}
+            <a class="list-group-item {{ activeTab == 'logs' ? 'active' : '' }}"
+               href="{{ path('payline_configuration_logs') }}">
+                <i class="material-icons">description</i>
+                {{ 'Logs Viewing'|trans({}, 'Modules.Payline.Admin') }}
+            </a>
+        </nav>
+    </div>
+
+    {# Contenu principal #}
+    <div class="col-md-10">
+        {% block tab_content %}{% endblock %}
+    </div>
+</div>
+{% endblock %}

@@ -132,7 +132,7 @@ class PaylineCallbacks
                 }
             } catch (Exception $e) {
                 $errorCode = payline::ORDER_CREATION_ERROR;
-                if(!empty($paymentInfos['transaction']['id'])) {
+                if(!empty($paymentInfos['transaction']['id']) && $paymentInfos['result']['shortMessage'] == 'ACCEPTED') {
                     $idTransaction = $paymentInfos['transaction']['id'];
                     $reset = PaylinePaymentGateway::resetTransaction($idTransaction, $this->module->l('Automatic reset on error order creation'));
                     if (!PaylinePaymentGateway::isValidResponse($reset)) {
