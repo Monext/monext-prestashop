@@ -4,7 +4,7 @@
  *
  * @author    Monext <support@payline.com>
  * @copyright Monext - http://www.payline.com
- * @version   2.3.14
+ * @version   2.4.0
  */
 
 use PrestaShop\PrestaShop\Core\Domain\Order\Exception\DuplicateOrderCartException;
@@ -119,7 +119,7 @@ class payline extends PaymentModule
         $this->name = 'payline';
         $this->tab = 'payments_gateways';
         $this->module_key = '';
-        $this->version = '2.3.14';
+        $this->version = '2.4.0';
         $this->ps_versions_compliancy = array('min' => '1.7.1.0', 'max' => _PS_VERSION_);
         $this->author = 'Monext';
 
