@@ -65,7 +65,7 @@ class paylineWalletModuleFrontController extends ModuleFrontController
 
         $this->context->smarty->assign(array(
             'payline_token' => $manageWebWalletRequest['token'],
-            'payline_ux_mode' => Configuration::get('PAYLINE_WEB_CASH_UX'),
+            'payline_ux_mode' => 'column',
         ));
 
         $this->setTemplate('module:payline/views/templates/front/wallet.tpl');

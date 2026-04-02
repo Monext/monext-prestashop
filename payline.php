@@ -4,7 +4,7 @@
  *
  * @author    Monext <support@payline.com>
  * @copyright Monext - http://www.payline.com
- * @version   2.3.14
+ * @version   2.4.0
  */
 
 use PrestaShop\PrestaShop\Core\Domain\Order\Exception\DuplicateOrderCartException;
@@ -119,7 +119,7 @@ class payline extends PaymentModule
         $this->name = 'payline';
         $this->tab = 'payments_gateways';
         $this->module_key = '';
-        $this->version = '2.3.14';
+        $this->version = '2.4.0';
         $this->ps_versions_compliancy = array('min' => '1.7.1.0', 'max' => _PS_VERSION_);
         $this->author = 'Monext';
 
@@ -645,16 +645,19 @@ class payline extends PaymentModule
     public function hookDisplayCustomerAccount($params)
     {
         $output = '';
-
+        $themeName = $this->context->shop->theme->getName();
+        
         $this->context->smarty->assign(array(
             'subscriptionControllerLink' => $this->context->link->getModuleLink('payline', 'subscriptions', array(), true),
             'walletControllerLink' => $this->context->link->getModuleLink('payline', 'wallet', array(), true),
             'walletIsEnable' => Configuration::get('PAYLINE_WEB_CASH_BY_WALLET'),
         ));
-        if ($this->prestaVersionCompare()) {
-            $output .= $this->context->smarty->fetch($this->local_path.'views/templates/hook/1.7/customer_account.tpl');
+      
+        /* @TODO Best solution for the moment, update when it will be available */
+        if ($themeName === 'hummingbird') {
+            $output .= $this->context->smarty->fetch($this->local_path.'views/templates/hook/hummingbird/customer_account.tpl');
         } else {
-            $output .= $this->display(__FILE__, 'customer_account.tpl');
+            $output .= $this->context->smarty->fetch($this->local_path.'views/templates/hook/customer_account.tpl');
         }
 
         return $output;
@@ -1982,6 +1985,7 @@ class payline extends PaymentModule
                             'name' => 'PAYLINE_ACCESS_KEY',
                             'label' => $this->l('Access key'),
                             'placeholder' => '',
+                            'default' => ($paylineCheckCredentials === false) ? '' : $this->maskAccessKey(Configuration::get('PAYLINE_ACCESS_KEY')),
                         ),
                         array(
                             'form_group_class' => ($paylineCheckCredentials === false ? 'has-error hidden' : 'has-success'),
@@ -2854,7 +2858,7 @@ class payline extends PaymentModule
                 'PAYLINE_API_STATUS' => Configuration::get('PAYLINE_API_STATUS'),
                 'PAYLINE_LIVE_MODE' => Configuration::get('PAYLINE_LIVE_MODE'),
                 'PAYLINE_MERCHANT_ID' => Configuration::get('PAYLINE_MERCHANT_ID'),
-                'PAYLINE_ACCESS_KEY' => Configuration::get('PAYLINE_ACCESS_KEY'),
+                'PAYLINE_ACCESS_KEY' => $this->maskAccessKey(Configuration::get('PAYLINE_ACCESS_KEY')),
                 'PAYLINE_POS' => Configuration::get('PAYLINE_POS'),
                 'PAYLINE_SMARTDISPLAY_PARAM' => Configuration::get('PAYLINE_SMARTDISPLAY_PARAM'),
                 'PAYLINE_PROXY_HOST' => Configuration::get('PAYLINE_PROXY_HOST'),
@@ -2932,6 +2936,18 @@ class payline extends PaymentModule
                 'PAYLINE_WEB_WIDGET_CTA_LABEL'
             );
             foreach (array_keys($form_values) as $key) {
+
+                if ($key === 'PAYLINE_ACCESS_KEY') {
+                    $submittedValue = Tools::getValue($key);
+                    $currentValue = Configuration::get($key);
+                    $maskedValue = $this->maskAccessKey($currentValue);
+                    if ($submittedValue === $maskedValue) {
+                        continue;
+                    }
+                    Configuration::updateValue($key, $submittedValue);
+                    continue;
+                }
+
                 if ($key == 'PAYLINE_CONTRACTS' || $key == 'PAYLINE_ALT_CONTRACTS') {
                     $jsonData = Tools::getValue($key);
                     $jsonData = json_decode($jsonData);
@@ -3015,6 +3031,24 @@ class payline extends PaymentModule
             default:
                 return null;
         }
+    }
+
+    /**
+     * @param string $key
+     * @return string
+     */
+    private function maskAccessKey($key)
+    {
+        if (empty($key)) {
+            return '';
+        }
+        $length = strlen($key);
+        if ($length <= 3) {
+            return $key;
+        }
+        $visible = substr($key, -3);
+        $masked = str_repeat('*', $length - 3);
+        return $masked . $visible;
     }
 
     /**

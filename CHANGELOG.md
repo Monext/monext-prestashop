@@ -1,5 +1,15 @@
 ## Changelog
 
+###  2.4.0 - 2026-03-31
+* Support Hummingbird theme
+* Add Phpunit test
+* Obfuscation of the secret_key field in the configuration
+* Fix CGV checkbox behavior
+
+#### Environment (Development, QA validation)
+* Prestashop version: 8.2.1, 9.0.1
+
+
 ###  2.3.14 - 2026-03-09
 * Fix Paypal error with discount amount 
 
