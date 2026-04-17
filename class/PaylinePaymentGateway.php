@@ -460,9 +460,9 @@ class PaylinePaymentGateway
                 'email' => $context->customer->email,
                 'customerId' => $context->customer->id,
                 'mobilePhone' => null,
-                'birthDate' => (Validate::isDate($context->customer->birthday) ? $context->customer->birthday : null),
+                'birthDate' => (!empty($context->customer->birthday) && Validate::isDate($context->customer->birthday) ? $context->customer->birthday : null),
                 'ip' => Tools::getRemoteAddr(),
-                'accountCreateDate' => (strtotime($context->customer->date_add) ? date('d/m/y', strtotime($context->customer->date_add)) : null),
+                'accountCreateDate' => (!empty($context->customer->date_add) ? date('d/m/y', strtotime($context->customer->date_add)) : null),
                 'accountOrderCount' => (int)Order::getCustomerNbOrders($context->customer->id),
             ),
             'shippingAddress' => self::formatAddressForPaymentRequest($deliveryAddress),
@@ -767,18 +767,18 @@ class PaylinePaymentGateway
         }
 
         return array(
-            'name' => substr($address->alias, 0, 100),
-            'firstName' => substr($address->firstname, 0, 100),
-            'lastName' => substr($address->lastname, 0, 100),
-            'street1' => substr($address->address1, 0, 100),
-            'street2' => substr($address->address2, 0, 100),
+            'name' => substr($address->alias ?? '', 0, 100),
+            'firstName' => substr($address->firstnameMethod ?? '', 0, 100),
+            'lastName' => substr($address->lastnameMethod ?? '', 0, 100),
+            'street1' => substr($address->address1Method ?? '', 0, 100),
+            'street2' => substr($address->address2 ?? '', 0, 100),
             'cityName' => substr($address->city, 0, 40),
-            'zipCode' => substr($address->postcode, 0, 12),
+            'zipCode' => substr($address->postcode ?? '', 0, 12),
             'country' => substr($countryIsoCode, 0, 15),
             'state' => substr($stateIsoCode, 0, 15),
             'phoneType' => 1,
-            'phone' => substr(str_replace(array(' ', '.', '(', ')', '-'), '', $address->phone), 0, 15),
-            'mobilePhone' => substr(str_replace(array(' ', '.', '(', ')', '-'), '', $address->phone_mobile), 0, 15),
+            'phone' => substr(str_replace(array(' ', '.', '(', ')', '-'), '', $address->phone ?? ''), 0, 15),
+            'mobilePhone' => substr(str_replace(array(' ', '.', '(', ')', '-'), '', $address->phone_mobile ?? ''), 0, 15),
         );
     }
 
