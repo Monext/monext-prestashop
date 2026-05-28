@@ -897,6 +897,11 @@ class PaylinePaymentGateway
                 $additionalData['paymentRecordId'] = $result['paymentRecordId'];
             }
 
+            $transactionId = $result['transaction']['id'];
+            if(isset($result['billingRecordList']['billingRecord'][0]['transaction']['id'])){
+                $transactionId = $result['billingRecordList']['billingRecord'][0]['transaction']['id'];
+            }
+
             PaylinePayment::insert(
                 self::getCartIdFromOrderReference($result['order']['ref']),
                 $token,
@@ -904,7 +909,7 @@ class PaylinePaymentGateway
                 $result['result']['shortMessage'],
                 'payment',
                 $result['contractNumber'],
-                $result['transaction']['id'],
+                $transactionId,
                 $additionalData
             );
         }
