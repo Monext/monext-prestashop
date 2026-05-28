@@ -26,12 +26,74 @@
 {include file="modules/payline/views/templates/front/1.7/widget_js_customization.tpl" payline_widget_customization=$payline_widget_customization }
 
 <script>
+    let widgetHasBeenClosedBefore       = false;
+    let widgetDidShowState              = false;
+    let paymentOptionID                 = false;
+
+    const confirmationButtonSelector    = '#payment-confirmation button[type="submit"]';
+    const lightboxCloseSelector         = '#pl-container-lightbox-close';
+
     function onDidShowState(event) {
         if (event.state !== 'PAYMENT_METHODS_LIST') {
             return;
         }
+        const selectedPaymentOption = document.querySelector('input[name="payment-option"]:checked');
+        if (selectedPaymentOption) {
+            paymentOptionID = selectedPaymentOption.getAttribute('id');
+        }
+        widgetDidShowState = true;
         customizeWidget();
     }
+
+    function isPaylineCptCurrentPaymentOption() {
+        const selectedPaymentOption = document.querySelector('input[name="payment-option"]:checked');
+
+        if ( !paymentOptionID || !selectedPaymentOption ) {
+            return false;
+        }
+
+        if (selectedPaymentOption) {
+            return paymentOptionID === selectedPaymentOption.getAttribute('id');
+        }
+    }
+
+    function onCloseLightBoxHandler() {
+        widgetDidShowState = false;
+        const confirmationButton = document.querySelector(confirmationButtonSelector);
+
+        if (confirmationButton) {
+            confirmationButton.classList.remove('disabled');
+            widgetHasBeenClosedBefore = true;
+        }
+    };
+
+    //--> Close lightbox with ESC key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && widgetDidShowState === true) {
+            onCloseLightBoxHandler();
+        }
+    })
+
+    
+    document.addEventListener('click', (e) => {
+        //--> Reset Widget if user click on confirmation button
+        if (e.target.closest(confirmationButtonSelector) && isPaylineCptCurrentPaymentOption() === true) {
+            if (!widgetHasBeenClosedBefore) {
+                return true;
+            }
+
+            try {
+                Payline.Api.reset();
+            } catch (error) {
+                console.error('Error resetting Payline widget:', error);
+            }
+        }
+
+        //--> Close lightbox when clicking on close button
+        if (e.target.closest(lightboxCloseSelector)) {
+            onCloseLightBoxHandler();
+        }
+    });
 </script>
 
 {include file="modules/payline/views/templates/front/1.7/widget_css_customization.tpl" payline_widget_customization=$payline_widget_customization }
