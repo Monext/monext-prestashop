@@ -1,0 +1,52 @@
+{#
+  Payline module for PrestaShop
+  @author    Monext <support@payline.com>
+  @copyright Monext - http://www.payline.com
+
+  NX payment configuration tab.
+#}
+
+{% extends '@Modules/payline/views/templates/admin/_layout.html.twig' %}
+
+{% block tab_content %}
+    {{ form_start(form) }}
+    <div class="card" id="recurring-payment-configuration">
+        <h3 class="card-header">
+            <i class="material-icons">settings</i> {{ 'Nx payment'|trans({}, 'Modules.Payline.Admin') }}
+        </h3>
+        <div class="card-body">
+            <div class="form-wrapper">
+                {# Section: Monext recurring-web-payment configuration #}
+                <div class="form-section">
+                    <h3 class="form-section-title">
+                        {{ 'Nx payment'|trans({}, 'Modules.Payline.Admin') }}
+                    </h3>
+                    <p class="form-section-description">
+                        {{ 'Contracts activated through contracts configuration menu are displayed in the checkout. All payment information is filled on our secure user interface.'|trans({}, 'Modules.Payline.Admin') }}
+                    </p>
+                </div>
+                {{ form_row(form.PAYLINE_RECURRING_ENABLE) }}
+                {{ form_row(form.PAYLINE_RECURRING_TITLE) }}
+                {{ form_row(form.PAYLINE_RECURRING_SUBTITLE) }}
+                {{ form_row(form.PAYLINE_RECURRING_TRIGGER) }}
+                {{ form_row(form.PAYLINE_RECURRING_NUMBER) }}
+                {{ form_row(form.PAYLINE_RECURRING_PERIODICITY) }}
+                {{ form_row(form.PAYLINE_RECURRING_FIRST_WEIGHT) }}
+                {{ form_row(form.PAYLINE_WEB_CASH_BY_WALLET) }}
+                {{ form_row(form.PAYLINE_RECURRING_UX) }}
+                <div class="payline-redirect-only">
+                    {{ form_row(form.PAYLINE_RECURRING_CUSTOM_CODE) }}
+                </div>
+
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-primary" type="submit">
+                    {{ 'Save'|trans({}, 'Admin.Actions') }}
+                </button>
+            </div>
+        </div>
+    </div>
+    {{ form_end(form) }}
+{% endblock %}

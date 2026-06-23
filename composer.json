@@ -3,19 +3,41 @@
     "description": "PrestaShop module payline",
     "type": "prestashop-module",
     "config": {
-        "vendor-dir": "lib",
-        "prepend-autoloader": false
+        "optimize-autoloader": true,
+        "prepend-autoloader": false,
+        "preferred-install": "dist"
     },
     "autoload-dev": {
         "psr-4": {
             "Monext\\Tests\\Unit\\": "tests/Unit/"
         }
     },
-    "require" : {
+    "require": {
+        "php": ">=7.4",
         "monext/monext-php": "25.9",
         "ddtraceweb/monolog-parser": "^1.3"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.5"
+    },
+    "provide": {
+        "symfony/cache": "*",
+        "symfony/cache-contracts": "*",
+        "symfony/service-contracts": "*",
+        "symfony/var-exporter": "*",
+        "psr/cache": "*",
+        "psr/container": "*",
+        "psr/log": "*",
+        "monolog/monolog": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "PrestaShop\\Module\\Payline\\": "src/"
+        },
+        "classmap": [
+            "payline.php",
+            "class/"
+        ],
+        "exclude-from-classmap": []
     }
 }

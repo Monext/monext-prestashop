@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file original="ModulesPaylineCustomer_account.xlf" source-language="fr-FR" target-language="fr-FR" datatype="plaintext">
+    <body>
+      <trans-unit id="80e4c6c1fb6b5b508b93789074eb6ff4">
+        <source>My wallet</source>
+        <target>Mon portefeuille</target>
+      </trans-unit>
+      <trans-unit id="4ca2c509994c2776d0880357b4e8e5be">
+        <source>Subscriptions</source>
+        <target>Abonnements</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

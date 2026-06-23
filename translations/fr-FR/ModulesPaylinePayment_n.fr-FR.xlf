@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file original="ModulesPaylinePayment_nx.xlf" source-language="fr-FR" target-language="fr-FR" datatype="plaintext">
+    <body>
+      <trans-unit id="b4b9cff7cddfe396a3927b93282ebcde">
+        <source>Amount of the %s following payments:</source>
+        <target>Montant des %s prochaines échéances :</target>
+      </trans-unit>
+      <trans-unit id="0557fa923dcee4d0f86b1409f5c2167f">
+        <source>Back</source>
+        <target>Retour</target>
+      </trans-unit>
+      <trans-unit id="de58f2537bc7462529df701ef30bee7f">
+        <source>Total to pay now:</source>
+        <target>Total à payer maintenant :</target>
+      </trans-unit>
+      <trans-unit id="560ccb8a84bfc2cf70bd0ae4698b4d3e">
+        <source>Total to pay:</source>
+        <target>Total à payer :</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

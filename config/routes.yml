@@ -1,0 +1,69 @@
+# Landing page (What is Monext?)
+payline_configuration_landing:
+  path: /payline/configuration
+  methods: [GET]
+  defaults:
+    _controller: 'PrestaShop\Module\Payline\Controller\Admin\PaylineConfigurationController::landing'
+    _legacy_controller: AdminModules
+    _legacy_link: AdminModules:configure:payline
+
+# General configuration (credentials)
+payline_configuration_general:
+  path: /payline/configuration/general
+  methods: [GET, POST]
+  defaults:
+    _controller: 'PrestaShop\Module\Payline\Controller\Admin\PaylineConfigurationController::general'
+    _legacy_controller: AdminModules
+    _legacy_link: AdminModules:configure:payline
+
+# Simple payment (web payment)
+payline_configuration_web:
+  path: /payline/configuration/web
+  methods: [GET, POST]
+  defaults:
+    _controller: 'PrestaShop\Module\Payline\Controller\Admin\PaylineConfigurationController::webPayment'
+    _legacy_controller: AdminModules
+    _legacy_link: AdminModules:configure:payline
+
+# NX payment
+payline_configuration_nx:
+  path: /payline/configuration/nx
+  methods: [GET, POST]
+  defaults:
+    _controller: 'PrestaShop\Module\Payline\Controller\Admin\PaylineConfigurationController::nxPayment'
+    _legacy_controller: AdminModules
+    _legacy_link: AdminModules:configure:payline
+
+# Recurring payment
+payline_configuration_recurring:
+  path: /payline/configuration/recurring
+  methods: [GET, POST]
+  defaults:
+    _controller: 'PrestaShop\Module\Payline\Controller\Admin\PaylineConfigurationController::recurringPayment'
+    _legacy_controller: AdminModules
+    _legacy_link: AdminModules:configure:payline
+
+# Contracts configuration
+payline_configuration_contracts:
+  path: /payline/configuration/contracts
+  methods: [GET, POST]
+  defaults:
+    _controller: 'PrestaShop\Module\Payline\Controller\Admin\PaylineConfigurationController::contracts'
+    _legacy_controller: AdminModules
+    _legacy_link: AdminModules:configure:payline
+
+# Logs viewing
+payline_configuration_logs:
+  path: /payline/configuration/logs
+  methods: [GET]
+  defaults:
+    _controller: 'PrestaShop\Module\Payline\Controller\Admin\PaylineConfigurationController::logs'
+    _legacy_controller: AdminModules
+    _legacy_link: AdminModules:configure:payline
+
+# Logs AJAX endpoint
+payline_logs_ajax:
+  path: /payline/logs/ajax
+  methods: [GET]
+  defaults:
+    _controller: 'PrestaShop\Module\Payline\Controller\Admin\PaylineConfigurationController::logsAjax'

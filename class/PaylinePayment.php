@@ -24,7 +24,7 @@ class PaylinePayment
     {
         return Db::getInstance()->execute('
             INSERT IGNORE INTO `'._DB_PREFIX_.'payline_web_payment` (`id_cart`, `token`, `result_code`, `message`, `type`, `contract_number`, `transaction_id`, `additional_data`, `date_add`)
-            VALUES('.(int)$idCart.',"'.$token.'","'.$resultCode.'","'.$message.'","'.$type.'",'.$contractNumber.',"'.$transactionId.'",\''.json_encode($additionalData).'\', NOW())');
+            VALUES('.(int)$idCart.',"'.pSQL($token).'", "'.pSQL($resultCode).'", "'.pSQL($message).'", "'.pSQL($type).'","'.pSQL($contractNumber).'", "'.pSQL($transactionId).'", "'.pSQL(json_encode($additionalData)).'", NOW() )');
     }
 
     /**

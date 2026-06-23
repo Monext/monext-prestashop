@@ -16,9 +16,9 @@
 				{$payline_title}
 				{if isset($payline_subtitle) && strlen($payline_subtitle)}<br />{$payline_subtitle}{/if}
 			</div>
-			<div class="card-body">
-				<h4 class="mb-1">{l s='Total to pay now:' mod='payline'}&nbsp;{$payline_first_amount}</h4>
-				<h3 class="mb-1">{l s='Amount of the %s following payments:' sprintf=[$payline_billing_left] mod='payline'}&nbsp;{$payline_next_amount}</h3>
+			<div class="card-body p-1">
+				<p class="mb-1">{l s='Total to pay now:' mod='payline'}&nbsp;<strong>{$payline_first_amount}</strong></p>
+				<p class="mb-1">{l s='Amount of the %s following payments:' sprintf=[$payline_billing_left] mod='payline'}&nbsp;<strong>{$payline_next_amount}</strong></p>
 
 				<div
 					id="PaylineWidget"

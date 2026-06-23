@@ -113,8 +113,13 @@ class PaylineCallbacks
                             throw new Exception('payline::createOrder - order is in error state');
                         }
 
+                        $transactionId = $paymentInfos['transaction']['id'];
+                        if(isset($paymentInfos['billingRecordList']['billingRecord'][0]['transaction']['id'])){
+                            $transactionId = $paymentInfos['billingRecordList']['billingRecord'][0]['transaction']['id'];
+                        }
+
                         // Save token and payment record id (if defined) for later usage
-                        PaylineToken::insert($order, $cart, $token, $paymentRecordId, $paymentInfos['transaction']['id']);
+                        PaylineToken::insert($order, $cart, $token, $paymentRecordId, $transactionId);
 
                         if ($fixOrderPayment) {
                             // We need to fix the total paid real amount here
@@ -132,7 +137,7 @@ class PaylineCallbacks
                 }
             } catch (Exception $e) {
                 $errorCode = payline::ORDER_CREATION_ERROR;
-                if(!empty($paymentInfos['transaction']['id'])) {
+                if(!empty($paymentInfos['transaction']['id']) && $paymentInfos['result']['shortMessage'] == 'ACCEPTED') {
                     $idTransaction = $paymentInfos['transaction']['id'];
                     $reset = PaylinePaymentGateway::resetTransaction($idTransaction, $this->module->l('Automatic reset on error order creation'));
                     if (!PaylinePaymentGateway::isValidResponse($reset)) {

@@ -9,6 +9,7 @@
 	margin-bottom: 10px;
 	border-radius: 5px;
 	cursor: move;
+    border-top-width: 1px;
 }
 #payline-contracts-list li.payline-active-contract {
 	border-color: #00aff0;
@@ -31,7 +32,10 @@
   margin: 0;
   padding: 6px;
   background: black;
-  color: #2EC029EC
+}
+
+#log_display * {
+    color: #2EC029EC
 }
 
 #log_display details[open] {
@@ -60,4 +64,10 @@
 #paylineCtaPreview:hover {
   background-color: #1c7b27;
   text-decoration: underline;
+}
+
+.form-group:has(input.hidden) {display: none;}
+
+.hidden {
+    display: none;
 }

@@ -1,0 +1,29 @@
+{#
+  Payline module for PrestaShop
+  @author    Monext <support@payline.com>
+  @copyright Monext - http://www.payline.com
+
+  Landing page - What is Monext?
+#}
+
+{% extends '@Modules/payline/views/templates/admin/_layout.html.twig' %}
+
+{% block tab_content %}
+<div class="card">
+    <h3 class="card-header">
+        <i class="material-icons">help</i> {{ 'What is Monext?'|trans({}, 'Modules.Payline.Admin') }}
+    </h3>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <h4>{{ 'Simply payment'|trans({}, 'Modules.Payline.Admin') }}</h4>
+                    <p>{{ 'With Monext give the best user experience, rely on mobile technology, optimise your financial performance, become a local player in each country, identify your customers and stop fraudsters.'|trans({}, 'Modules.Payline.Admin') }}</p>
+                    <p>{{ 'Our features are packed in different offers in order to fit your needs. Star from only 15 euros per month.'|trans({}, 'Modules.Payline.Admin') }}</p>
+                    <p>{{ 'More information on www.monext.com.'|trans({}, 'Modules.Payline.Admin') }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

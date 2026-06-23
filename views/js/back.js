@@ -5,186 +5,42 @@
  * @copyright Monext - http://www.payline.com
  */
 
-let myExtraParams = {};
-
-function payline_initProductsAutocomplete()
-{
-      const autocompleteInput = $('#product_autocomplete_input');
-
-      myExtraParams = {
-        search_phrase: () => {
-          return autocompleteInput.val();
-        },
-        token: () => {
-          return autocompleteInput.attr('data-token');
-        }
-      };
-
-      const ajaxUrl = window.admin_base_link + "/sell/orders/products/search";
-
-      autocompleteInput.autocomplete(ajaxUrl, {
-        minLength: 2,
-        minChars: 1,
-        // Disable to prevent json to be displayed as autocompletion
-        autoFill: true,
-        max: 10,
-        matchContains: true,
-        mustMatch: false,
-        scroll: false,
-        cacheLength: 0,
-        extraParams : {
-          ...myExtraParams
-        },
-        parse: function(data) {
-            var parsed = [];
-            if (payline_isPrestaShop16) {
-                var rows = data.split("\n");
-                for (var index in rows) {
-                    var row = rows[index].split("|");
-                    if (row.length == 2) {
-                        parsed[parsed.length] = {
-                            data: row,
-                            value: row[0],
-                            result: row
-                        };
-                    }
-                }
-            } else {
-                let rows = [];
-                if(data.products){
-                  rows = data.products
-                }
-
-                const excludedProductsID = payline_getProductsIds().split(',').filter(item => item !== '').map(item => parseInt(item, 10));
-                const filtredRows = rows.filter(row => !excludedProductsID.includes(row.productId));
-
-                for (var index in filtredRows) {
-                  var row = filtredRows[index];
-
-                  //--> Add image link, not present in data
-                  row.image = '/' + row.productId + '-small_default/' + formatFileName(row.name) + '.jpg';
-
-                  parsed[parsed.length] = {
-                    data: row,
-                    value: row.name,
-                    result: row
-                  };
-                }
-            }
-            return parsed;
-        },
-        formatItem: function(item) {
-            if (payline_isPrestaShop16) {
-                return item[1] + ' - ' + item[0];
-            } else {
-                return '<div style="margin-right: 10px;float:left;"><img width=45 height=45 src="'+ item.image +'" /></div>' + '<h4 class="media-heading">' + item.name + '</h4>';
-            }
-        }
-    }).result(payline_addProduct);
-
-    $('#product_autocomplete_input').setOptions({
-      extraParams: {
-        ...myExtraParams,
-        excludeIds: payline_getProductsIds(),
-        exclude_packs : 0
-      },
-    });
-};
-
-function payline_getProductsIds()
-{
-    if ($('#PAYLINE_SUBSCRIBE_PLIST').val() === "") {
-        $('#PAYLINE_SUBSCRIBE_PLIST').val(',');
-        $('#PAYLINE_SUBSCRIBE_PLIST_PRODUCTS').val('¤');
+function toggleWidgetCustomizationGroup() {
+    if($('select#form_PAYLINE_WEB_CASH_UX').val() != 'redirect') {
+        $('.widget_customization_head').show();
+    }else {
+        $('.widget_customization_head').hide();
     }
-    return $('#PAYLINE_SUBSCRIBE_PLIST').val();
-}
-
-function payline_addProduct(event, data, formatted)
-{
-    if (data == null) {
-        return false;
-    }
-
-    if (payline_isPrestaShop16) {
-        var productId = data[1];
-        var productName = data[0];
-        var productImage = '../img/tmp/product_mini_' + productId + '_' + payline_idShop + '.jpg';
-    } else {
-        var productId = data.productId;
-        var productName = data.name;
-        var productImage = data.image;
-    }
-
-    var $divProducts = $('#PAYLINE_SUBSCRIBE_PLIST_CONTAINER');
-    var $inputProducts = $('#PAYLINE_SUBSCRIBE_PLIST');
-    var $nameProducts = $('#PAYLINE_SUBSCRIBE_PLIST_PRODUCTS');
-
-    /* delete product from select + add product line to the div, input_name, input_ids elements */
-    $divProducts.html($divProducts.html() + '<div id="PAYLINE_SUBSCRIBE_PLIST-PRODUCT-'+ productId +'" class="form-control-static"><button type="button" class="btn btn-default" onclick="payline_delProduct('+ productId +')" name="' + productId + '"><i class="icon-remove text-danger"></i></button><img width=45 height=45 src="' + productImage + '" />&nbsp;' + productName +'</div>');
-    $nameProducts.val($nameProducts.val() + productName + '¤');
-    $inputProducts.val($inputProducts.val() + productId + ',');
-    $('#product_autocomplete_input').val('');
-    $('#product_autocomplete_input').setOptions({
-      extraParams: {
-        ...myExtraParams,
-        excludeIds : payline_getProductsIds(),
-        exclude_packs : 0
-      }
-    });
-};
-
-function payline_delProduct(id)
-{
-    var input = getE('PAYLINE_SUBSCRIBE_PLIST');
-    var name = getE('PAYLINE_SUBSCRIBE_PLIST_PRODUCTS');
-
-    // Cut hidden fields in array
-    var inputCut = input.value.split(',');
-    var nameCut = name.value.split('¤');
-
-    if (inputCut.length != nameCut.length) {
-        return jAlert('Bad size');
-    }
-
-    // Reset all hidden fields
-    input.value = '';
-    name.value = '';
-
-    for (i in inputCut) {
-        // If empty, error, next
-        if (!inputCut[i] || !nameCut[i]) {
-            continue;
-        }
-        if (inputCut[i] == '' && nameCut[i] == '') {
-            continue;
-        }
-
-        // Add to hidden fields no selected products OR add to select field selected product
-        if (inputCut[i] != id) {
-            input.value += inputCut[i] + ',';
-            name.value += nameCut[i] + '¤';
-        }
-    }
-
-    // Remove div containing the product from the list
-    $("#PAYLINE_SUBSCRIBE_PLIST-PRODUCT-" + id).remove();
-
-    $('#product_autocomplete_input').setOptions({
-      extraParams: {
-        ...myExtraParams,
-        excludeIds : payline_getProductsIds(),
-        exclude_packs : 0
-      }
-    });
-};
-
-function toggleWidgetCustomizationGroup()
-{
-    if($('#PAYLINE_WEB_WIDGET_CUSTOM_on').is(':checked') && $('select#PAYLINE_WEB_CASH_UX').val() != 'redirect') {
+    if($('#form_PAYLINE_WEB_WIDGET_CUSTOM_1').is(':checked')) {
         $('#web-payment-configuration div.widget_customization').removeClass('hidden');
     } else {
         $('#web-payment-configuration div.widget_customization').addClass('hidden');
+    }
+}
+
+function toggleRedirectOnly() {
+    if($('select.ux_field').val() != 'redirect') {
+        $('div.payline-redirect-only').addClass('hidden');
+    }else {
+        $('div.payline-redirect-only').removeClass('hidden');
+    }
+}
+
+function toogleCashAction() {
+    const $select = $("#form_PAYLINE_WEB_CASH_ACTION")
+    if ($select.val() === '100') {
+        $('#web-payment-configuration div.payline-autorization-only').removeClass('hidden');
+    } else {
+        $('#web-payment-configuration div.payline-autorization-only').addClass('hidden');
+    }
+}
+
+function initializeProductSearch() {
+    // Modern approach: EntitySearchInput for ProductSearchType (PS 8.x/9.x)
+    if (window.prestashop && window.prestashop.component && window.prestashop.component.EntitySearchInput) {
+        $('.entity-search-widget').each(function () {
+            new window.prestashop.component.EntitySearchInput($(this), {});
+        });
     }
 }
 
@@ -206,31 +62,22 @@ $(document).ready(function() {
         $(this).addClass('active');
         $('input[name=selected_tab]').val($(this).data('identifier'));
     });
-    $(document).on('change', 'select#PAYLINE_WEB_CASH_ACTION', function() {
-        $('#web-payment-configuration div.payline-autorization-only').toggleClass('hidden');
+    $(document).on('change', 'select#form_PAYLINE_WEB_CASH_ACTION', function() {
+        toogleCashAction();
     });
-    $(document).on('change', 'select#PAYLINE_WEB_CASH_UX', function() {
-        if ($(this).val() == 'redirect') {
-            $('#web-payment-configuration div.payline-redirect-only').removeClass('hidden');
-            $('.widget_customization_head').hide();
-        } else {
-            $('#web-payment-configuration div.payline-redirect-only').addClass('hidden');
-            $('.widget_customization_head').show();
-        }
+    $(document).on('change', 'select#form_PAYLINE_WEB_CASH_UX', function() {
         toggleWidgetCustomizationGroup();
     });
-    $(document).on('change', 'select#PAYLINE_RECURRING_UX', function() {
-        if ($(this).val() == 'redirect') {
-            $('#recurring-payment-configuration div.payline-redirect-only').removeClass('hidden');
-        } else {
-            $('#recurring-payment-configuration div.payline-redirect-only').addClass('hidden');
-        }
+    $(document).on('change', 'select.ux_field', function() {
+        toggleRedirectOnly();
     });
-    $(document).on('change', 'input[name="PAYLINE_WEB_WIDGET_CUSTOM"]', function() {
+    $(document).on('change', 'input[name="form[PAYLINE_WEB_WIDGET_CUSTOM]"]', function() {
         toggleWidgetCustomizationGroup();
     });
 
     toggleWidgetCustomizationGroup();
+    toogleCashAction();
+    toggleRedirectOnly();
 
     // Contracts
     $('.payline-contracts-list').sortable({
@@ -254,42 +101,73 @@ $(document).ready(function() {
         $('#' + inputId).val(JSON.stringify($('#payline-contracts-list-' + inputId).sortable('toArray', {attribute: 'data-contract-id'})));
     });
 
-    $(document).on('change', 'select#logs-files-list-select', function() {
-      $('#log_display').html("<p>Loading...</p>");
+    // Toggle alternative contracts section based on switch
+    function toggleAltContractsSection() {
+        const $altContractsSwitch = $('input[name="form[PAYLINE_ALT_CONTRACTS_AS_MAIN]"]');
+        if ($altContractsSwitch.length === 0) {
+            return; // Not on contracts page
+        }
 
-      $.ajax({
-        url: window.logs_viewer_controller_url,
-        type: 'GET',
-        dataType: 'JSON',
-        data: {
-          action: 'getLogsLines',
-          logfile: $('#logs-files-list-select').val(),
-          ajax: true,
-        },
-        success: (data) => {
-          $('#log_display').html("");
+        const useMainContracts = $altContractsSwitch.filter(':checked').val() === '1';
+        if (useMainContracts) {
+            $('#alt-contracts-section').hide();
+        } else {
+            $('#alt-contracts-section').show();
+        }
+    }
 
-            data.message.forEach((logLine) => {
-            let html = "<p>" + logLine.date + " - " + logLine.logger + " " + logLine.level + " : " + logLine.message;
+    // Initialize alternative contracts section visibility on page load
+    toggleAltContractsSection();
 
-            if (logLine['context'].length !== 0) {
-              html += "<details><summary>[ View Context ]</summary><div style='white-space: pre'>"
-                + JSON.stringify(logLine.context, null, 2)
-                + "</div></details>";
-            }
-
-            html += "</p>";
-            $('#log_display').append(html);
-          })
-        },
-          error: (xhr, textstatus ,error) => {
-            $('#log_display').html("<p>Cannot show this log file, because : " + textstatus + "</p>");
-          }
-      });
+    // Listen for changes on the PAYLINE_ALT_CONTRACTS_AS_MAIN switch
+    $(document).on('change', 'input[name="form[PAYLINE_ALT_CONTRACTS_AS_MAIN]"]', function() {
+        toggleAltContractsSection();
     });
 
-    // Product autocomplete
-    payline_initProductsAutocomplete();
+    // Logs Viewer
+    $(document).on('change', 'select#logs-files-list-select', function () {
+        $('#log_display').html("<p>Loading...</p>");
+
+        $.ajax({
+            url: window.logs_viewer_controller_url,
+            type: 'GET',
+            data: {
+                logfile: $('#logs-files-list-select').val(),
+                ajax: true,
+            },
+            success: (data) => {
+                $('#log_display').html("");
+                const resultArray = JSON.parse(data);
+                resultArray.forEach((logLine) => {
+                    let html = "<p>" + logLine.date + " - " + logLine.logger + " " + logLine.level + " : " + logLine.message;
+
+                    if (logLine['context'].length !== 0) {
+                        html += "<details><summary>[ View Context ]</summary><div style='white-space: pre'>"
+                            + JSON.stringify(logLine.context, null, 2)
+                            + "</div></details>";
+                    }
+
+                    html += "</p>";
+                    $('#log_display').append(html);
+                })
+            },
+            error: (xhr, textstatus, error) => {
+                debugger;
+                $('#log_display').html("<p>Cannot show this log file, because : " + textstatus + "</p>");
+            }
+        });
+    });
+
+    // Suppression directe sans modale pour TypeaheadProductCollectionType
+    $(document).on('click', '#form_PAYLINE_SUBSCRIBE_PLIST-data .delete', function(e) {
+        e.preventDefault();
+        e.stopPropagation(); // Empêche product_page.bundle.js de l'attraper
+
+        $(this).closest('li').hide(300, function() {
+            $(this).remove();
+        });
+    });
+    initializeProductSearch();
 
     /*
     * Preview payline CTA
@@ -298,17 +176,17 @@ $(document).ready(function() {
     const previewContainer = document.getElementById("paylineCtaPreviewContainer");
     const previewButton = document.getElementById('paylineCtaPreview');
     const previewTextUnderCta = document.querySelector('#paylineCtaPreviewContainer p');
-    const ctaBgColorSelect = document.getElementById("PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR");
-    const ctaBgColorHexadecimalSelect = document.querySelector('input[name="PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HEXADECIMAL"]');
-    const ctaHoverSelect = document.getElementById("PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HOVER");
-    const ctaColorSelect = document.getElementById("PAYLINE_WEB_WIDGET_CSS_CTA_TEXT_COLOR");
-    const ctaFontSizeSelect = document.getElementById("PAYLINE_WEB_WIDGET_CSS_FONT_SIZE");
-    const ctaBorderRadiusSelect = document.getElementById("PAYLINE_WEB_WIDGET_CSS_BORDER_RADIUS");
-    const widgetContainerBgColorSelect = document.getElementById("PAYLINE_WEB_WIDGET_CSS_BG_COLOR");
-    
-    //--> Champs multilingues
-    const inputCtaText = document.querySelectorAll("[id^='PAYLINE_WEB_WIDGET_CTA_LABEL_']");
-    const ctaTextUnder = document.querySelectorAll("[id^='PAYLINE_WEB_WIDGET_TEXT_UNDER_CTA_']");
+    const ctaBgColorSelect = document.getElementById("form_PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR");
+    const ctaBgColorHexadecimalSelect = document.querySelector('input[name="form[PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HEXADECIMAL]"]');
+    const ctaHoverSelect = document.getElementById("form_PAYLINE_WEPAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR_HEXADECIMALB_WIDGET_CSS_CTA_BG_COLOR_HOVER");
+    const ctaColorSelect = document.getElementById("form_PAYLINE_WEB_WIDGET_CSS_CTA_TEXT_COLOR");
+    const ctaFontSizeSelect = document.getElementById("form_PAYLINE_WEB_WIDGET_CSS_FONT_SIZE");
+    const ctaBorderRadiusSelect = document.getElementById("form_PAYLINE_WEB_WIDGET_CSS_BORDER_RADIUS");
+    const widgetContainerBgColorSelect = document.getElementById("form_PAYLINE_WEB_WIDGET_CSS_BG_COLOR");
+
+    // //--> Champs multilingues
+    let inputCtaText = document.querySelectorAll("[id*='PAYLINE_WEB_WIDGET_CTA_LABEL']");
+    let ctaTextUnder = document.querySelectorAll("[id*='PAYLINE_WEB_WIDGET_TEXT_UNDER_CTA']");
 
     const MLElements = [];
     inputCtaText.forEach(element => MLElements.push(element));
@@ -506,7 +384,7 @@ $(document).ready(function() {
     }
 
     function toggleHexInputOnColorChange() {
-        const $select = $('select[name="PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR"]');
+        const $select = $('select[name="form[PAYLINE_WEB_WIDGET_CSS_CTA_BG_COLOR]"]');
         const $hexInputGroup = $('.hexadecimal-input');
         const $hexInput = $hexInputGroup.find('input');
 
@@ -516,13 +394,19 @@ $(document).ready(function() {
             } else {
                 $hexInputGroup.hide();
                 $hexInput.val('');
-                previewButton.style.backgroundColor = $select.val();
+                if (previewButton) {
+                    previewButton.style.backgroundColor = $select.val();
+                }
             }
         }
 
-        toggleHexInput();
-        $select.on('change', toggleHexInput);
-        $hexInput.on('change', updateWidgetPreview);
+        if ($select.length > 0) {
+            toggleHexInput();
+            $select.on('change', toggleHexInput);
+        }
+        if ($hexInput.length > 0) {
+            $hexInput.on('change', updateWidgetPreview);
+        }
     }
 
     toggleHexInputOnColorChange();

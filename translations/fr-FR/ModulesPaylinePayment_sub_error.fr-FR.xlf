@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file original="ModulesPaylinePayment_sub_error.xlf" source-language="fr-FR" target-language="fr-FR" datatype="plaintext">
+    <body>
+      <trans-unit id="650ff588ba495a7ee46cc718e42e79a2">
+        <source>In order to be able to pay with Monext, please remove these products:</source>
+        <target>Pour pouvoir payer avec Monext, veuillez supprimer ces produits :</target>
+      </trans-unit>
+      <trans-unit id="a147cdaee475e8a111bd5b116247eff0">
+        <source>Your cart contains mixed products (recurring products and classic products).</source>
+        <target>Votre panier contient des produits qui ne sont pas disponibles par abonnement.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

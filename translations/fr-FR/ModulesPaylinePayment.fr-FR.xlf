@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file original="ModulesPaylinePayment.xlf" source-language="fr-FR" target-language="fr-FR" datatype="plaintext">
+    <body>
+      <trans-unit id="0557fa923dcee4d0f86b1409f5c2167f">
+        <source>Back</source>
+        <target>Retour</target>
+      </trans-unit>
+      <trans-unit id="809e9087b6b24abd1c47cd1801257498">
+        <source>Please accept the Terms and Conditions to proceed with payment.</source>
+        <target>Vous devez accepter les CGVs avant de procéder au paiement</target>
+      </trans-unit>
+      <trans-unit id="560ccb8a84bfc2cf70bd0ae4698b4d3e">
+        <source>Total to pay:</source>
+        <target>Total à payer :</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

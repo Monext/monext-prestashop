@@ -30,12 +30,12 @@ jobs:
       - name: Validate composer.json
         run: composer validate --no-check-publish || true
 
-      - name: Cache Composer and lib
+      - name: Cache Composer and vendors
         uses: actions/cache@v4
         with:
           path: |
             ~/.composer/cache
-            lib
+            vendor
           key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-composer-${{ matrix.php }}-
@@ -45,4 +45,4 @@ jobs:
         run: composer install --prefer-dist --no-progress --no-suggest --no-interaction
 
       - name: Run PHPUnit
-        run: ./lib/bin/phpunit --colors=always
+        run: ./vendor/bin/phpunit --colors=always
