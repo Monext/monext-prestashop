@@ -1,5 +1,18 @@
 ## Changelog
 
+
+###  2.4.1 - 2026-06-23
+* Add support for Symfony forms in backend
+* Remove vendors form repository
+* Css cleaning on NX page
+* Fix bug on widget lightbox button
+* Fix on SQLSTATE error on backend order screen
+* Fix order state to refused on payment error
+
+#### Environment (Development, QA validation)
+* Prestashop version: 8.2.1, 9.0.1
+
+
 ###  2.4.0 - 2026-03-31
 * Support Hummingbird theme
 * Add Phpunit test
