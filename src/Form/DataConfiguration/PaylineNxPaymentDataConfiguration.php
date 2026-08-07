@@ -12,6 +12,10 @@ namespace PrestaShop\Module\Payline\Form\DataConfiguration;
 
 use Configuration;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 class PaylineNxPaymentDataConfiguration extends AbstractDataConfiguration
 {
 

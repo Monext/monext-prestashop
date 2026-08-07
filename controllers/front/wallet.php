@@ -6,6 +6,10 @@
  * @copyright Monext - http://www.payline.com
  */
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 class paylineWalletModuleFrontController extends ModuleFrontController
 {
     public $auth = true;

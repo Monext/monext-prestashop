@@ -2,6 +2,10 @@
 
 use PrestaShop\PrestaShop\Core\Domain\Order\Exception\DuplicateOrderCartException;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 class PaylineCallbacks
 {
     /** @var payline */

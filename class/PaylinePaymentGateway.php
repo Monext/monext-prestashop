@@ -8,6 +8,10 @@
 
 use \Payline\PaylineSDK as PaylineSDK;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 class PaylinePaymentGateway
 {
     private static $merchantSettings = null;

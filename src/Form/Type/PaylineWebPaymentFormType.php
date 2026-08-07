@@ -23,6 +23,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\When;
 use PrestaShopBundle\Translation\TranslatorInterface;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 class PaylineWebPaymentFormType extends TranslatorAwareType
 {
     const PAYLINE_WIDGET_CTA_MAX_LENGTH = 255;

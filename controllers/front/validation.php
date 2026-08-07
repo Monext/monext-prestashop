@@ -6,6 +6,10 @@
  * @copyright Monext - http://www.payline.com
  */
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 use PrestaShop\PrestaShop\Core\Domain\Order\Exception\DuplicateOrderCartException;
 class paylineValidationModuleFrontController extends ModuleFrontController
 {

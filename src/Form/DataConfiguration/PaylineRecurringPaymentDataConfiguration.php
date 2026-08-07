@@ -15,6 +15,10 @@ use Context;
 use Product;
 use Validate;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 class PaylineRecurringPaymentDataConfiguration extends AbstractDataConfiguration
 {
 

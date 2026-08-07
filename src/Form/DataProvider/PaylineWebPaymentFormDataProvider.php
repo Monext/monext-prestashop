@@ -10,6 +10,10 @@ declare(strict_types=1);
 
 namespace PrestaShop\Module\Payline\Form\DataProvider;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 class PaylineWebPaymentFormDataProvider extends AbstractPaylineFormDataProvider
 {
 }

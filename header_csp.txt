@@ -1,0 +1,1 @@
+payment.payline.com;payment-2.payline.com;homologation-payment.payline.com;homologation-payment-2.payline.com;payment.cdn.payline.com;homologation-payment.cdn.payline.com

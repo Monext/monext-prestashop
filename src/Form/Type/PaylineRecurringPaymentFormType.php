@@ -21,6 +21,10 @@ use PrestaShopBundle\Form\Admin\Type\ProductSearchType;
 use Symfony\Component\Form\FormBuilderInterface;
 use PrestaShopBundle\Translation\TranslatorInterface;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 class PaylineRecurringPaymentFormType extends TranslatorAwareType
 {
     private PaylineFormChoicesProvider $choicesProvider;
