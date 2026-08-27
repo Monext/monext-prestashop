@@ -4,7 +4,8 @@ payline_configuration_landing:
   methods: [GET]
   defaults:
     _controller: 'PrestaShop\Module\Payline\Controller\Admin\PaylineConfigurationController::landing'
-    _legacy_controller: AdminModules
+    _legacy_controller: PaylineConfigurationController
+    _legacy_link: PaylineConfigurationController
 
 # General configuration (credentials)
 payline_configuration_general:
@@ -12,7 +13,8 @@ payline_configuration_general:
   methods: [GET, POST]
   defaults:
     _controller: 'PrestaShop\Module\Payline\Controller\Admin\PaylineConfigurationController::general'
-    _legacy_controller: AdminModules
+    _legacy_controller: PaylineConfigurationController
+    _legacy_link: PaylineConfigurationController
 
 # Simple payment (web payment)
 payline_configuration_web:
@@ -20,7 +22,8 @@ payline_configuration_web:
   methods: [GET, POST]
   defaults:
     _controller: 'PrestaShop\Module\Payline\Controller\Admin\PaylineConfigurationController::webPayment'
-    _legacy_controller: AdminModules
+    _legacy_controller: PaylineConfigurationController
+    _legacy_link: PaylineConfigurationController
 
 # NX payment
 payline_configuration_nx:
@@ -28,7 +31,8 @@ payline_configuration_nx:
   methods: [GET, POST]
   defaults:
     _controller: 'PrestaShop\Module\Payline\Controller\Admin\PaylineConfigurationController::nxPayment'
-    _legacy_controller: AdminModules
+    _legacy_controller: PaylineConfigurationController
+    _legacy_link: PaylineConfigurationController
 
 # Recurring payment
 payline_configuration_recurring:
@@ -36,7 +40,8 @@ payline_configuration_recurring:
   methods: [GET, POST]
   defaults:
     _controller: 'PrestaShop\Module\Payline\Controller\Admin\PaylineConfigurationController::recurringPayment'
-    _legacy_controller: AdminModules
+    _legacy_controller: PaylineConfigurationController
+    _legacy_link: PaylineConfigurationController
 
 # Contracts configuration
 payline_configuration_contracts:
@@ -44,7 +49,8 @@ payline_configuration_contracts:
   methods: [GET, POST]
   defaults:
     _controller: 'PrestaShop\Module\Payline\Controller\Admin\PaylineConfigurationController::contracts'
-    _legacy_controller: AdminModules
+    _legacy_controller: PaylineConfigurationController
+    _legacy_link: PaylineConfigurationController
 
 # Logs viewing
 payline_configuration_logs:
@@ -52,7 +58,8 @@ payline_configuration_logs:
   methods: [GET]
   defaults:
     _controller: 'PrestaShop\Module\Payline\Controller\Admin\PaylineConfigurationController::logs'
-    _legacy_controller: AdminModules
+    _legacy_controller: PaylineConfigurationController
+    _legacy_link: PaylineConfigurationController
 
 # Logs AJAX endpoint
 payline_logs_ajax:
