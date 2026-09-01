@@ -93,6 +93,11 @@ To learn more about how the API used by the plugin and how to modify or use Pres
 
 This plugin's source code is completely free and released under the terms of the MIT license.
 
+
+## Known limitation
+
+* In PrestaShop back office, refund amounts entered above the calculated maximum (quantity × unit price) may be silently adjusted by PrestaShop itself, independent of this module.
+
 ## Contact and support
 
 If you want to contact us, the best way is through [this page on our website](https://www.monext.fr/gardons-le-contact) and send us your question(s).
