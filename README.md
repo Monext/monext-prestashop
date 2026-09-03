@@ -20,7 +20,6 @@
 
 This plugin allows you to use the Monext payment system with a Prestashop ecommerce application.
 
-
 ## Features
 
 This plugin integrate with native Prestashop orders' workflow and provides the following features:
@@ -38,13 +37,11 @@ You can also check [our documentation](https://docs.monext.fr/display/DT/Payment
 
 ### Requirements
 
-* Prestashop 8 (1.7 may be compatible but no more supported).
+* Prestashop 8 and Prestashop 9.x.
 * Php 7.3
 * This extension has a dependency with  <a href="https://github.com/PaylineByMonext/payline-php-sdk">payline-php-sdk</a>, make sure your environment is compliant
 
 If you already use 1.7.* version of our module, uninstall it (save your access key before that)</li>
-
-
 
 ### Installation process
 
