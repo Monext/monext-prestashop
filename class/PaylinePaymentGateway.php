@@ -68,7 +68,7 @@ class PaylinePaymentGateway
             );
             // Expose Payline module version for API calls
             $paylineModuleInstance = Module::getInstanceByName('payline');
-            $instance->usedBy('PS v' . $paylineModuleInstance->version);
+            $instance->usedBy('PS ' . _PS_VERSION_ . ' - v' . $paylineModuleInstance->version);
         }
 
         return $instance;
@@ -455,8 +455,8 @@ class PaylinePaymentGateway
             'secondContracts' => (sizeof($secondContracts) ? $secondContracts : null),
             'buyer' => array(
                 'title' => null,
-                'lastName' => $context->customer->lastname,
-                'firstName' => $context->customer->firstname,
+                'lastName' => $context->customer->lastname ?: $deliveryAddress->lastname,
+                'firstName' => $context->customer->firstname ?: $deliveryAddress->firstname,
                 'email' => $context->customer->email,
                 'customerId' => $context->customer->id,
                 'mobilePhone' => null,
@@ -768,9 +768,9 @@ class PaylinePaymentGateway
 
         return array(
             'name' => substr($address->alias ?? '', 0, 100),
-            'firstName' => substr($address->firstnameMethod ?? '', 0, 100),
-            'lastName' => substr($address->lastnameMethod ?? '', 0, 100),
-            'street1' => substr($address->address1Method ?? '', 0, 100),
+            'firstName' => substr($address->firstname ?? '', 0, 100),
+            'lastName' => substr($address->lastname ?? '', 0, 100),
+            'street1' => substr($address->address1 ?? '', 0, 100),
             'street2' => substr($address->address2 ?? '', 0, 100),
             'cityName' => substr($address->city, 0, 40),
             'zipCode' => substr($address->postcode ?? '', 0, 12),
