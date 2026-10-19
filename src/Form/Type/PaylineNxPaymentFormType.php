@@ -62,7 +62,7 @@ class PaylineNxPaymentFormType extends TranslatorAwareType
             ])
             ->add('PAYLINE_RECURRING_NUMBER', ChoiceType::class, [
                 'label' => $this->trans('Number of payments', 'Modules.Payline.Admin'),
-                'choices' =>  $this->choicesProvider->getRecurringPeriodsChoices(true),
+                'choices' =>  $this->choicesProvider->getRecurringPeriodsChoices(),
             ])
             ->add('PAYLINE_RECURRING_PERIODICITY', ChoiceType::class, [
                 'label' => $this->trans('Periodicity of payments', 'Modules.Payline.Admin'),
