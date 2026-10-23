@@ -1,5 +1,15 @@
 ## Changelog
 
+###  2.4.3 - 2026-10-22
+* Clean controller route
+* Add CSP
+* Clean code to respect Prestashop good practices
+* Add known limitation in README.md
+* Fix Floa issue on adresses structure
+
+#### Environment (Development, QA validation)
+* Prestashop version: 9.0.1, 9.2.0
+
 ###  2.4.2 - 2026-08-18
 * Prevent using the session cartId when creating an order
 * Remove the Symfony _legacy_link route, fix #15

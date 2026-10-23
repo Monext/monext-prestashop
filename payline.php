@@ -4,7 +4,7 @@
  *
  * @author    Monext <support@payline.com>
  * @copyright Monext - http://www.payline.com
- * @version   2.4.2
+ * @version   2.4.3
  */
 
 use PrestaShop\PrestaShop\Adapter\SymfonyContainer;
