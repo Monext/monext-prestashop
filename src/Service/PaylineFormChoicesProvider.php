@@ -16,6 +16,9 @@ use PaylinePaymentGateway;
 use PrestaShopBundle\Translation\TranslatorInterface;
 use PrestaShop\PrestaShop\Core\ConfigurationInterface;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 
 /**
  * Provides dynamic choices for Payline configuration forms.

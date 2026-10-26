@@ -4,7 +4,7 @@
  *
  * @author    Monext <support@payline.com>
  * @copyright Monext - http://www.payline.com
- * @version   2.4.2
+ * @version   2.4.3
  */
 
 use PrestaShop\PrestaShop\Adapter\SymfonyContainer;
@@ -123,7 +123,7 @@ class payline extends PaymentModule
         $this->name = 'payline';
         $this->tab = 'payments_gateways';
         $this->module_key = '';
-        $this->version = '2.4.2';
+        $this->version = '2.4.3';
         $this->ps_versions_compliancy = array('min' => '1.7.8', 'max' => _PS_VERSION_);
         $this->author = 'Monext';
 
@@ -287,16 +287,27 @@ class payline extends PaymentModule
      */
     public function installTab()
     {
-        $tab = new Tab();
-        $tab->class_name = 'AdminPaylineLogsAjax';
-        $tab->module = $this->name;
-        $tab->active = true;
-        $tab->id_parent = -1;
-        $tab->name = array_fill_keys(
-            Language::getIDs(false),
-            $this->displayName
-        );
-        return $tab->add();
+        $tabs = [
+            'AdminPaylineLogsAjax',
+            'PaylineConfigurationController',
+        ];
+
+        $result = true;
+        foreach ($tabs as $controller_name) {
+            $tab = new Tab();
+            $tab->class_name = $controller_name;
+            $tab->module = $this->name;
+            $tab->active = true;
+            $tab->id_parent = -1;
+            $tab->name = array_fill_keys(
+                Language::getIDs(false),
+                $this->displayName
+            );
+            $result = $result && $tab->add();
+        }
+
+        return $result;
+
     }
 
     /**

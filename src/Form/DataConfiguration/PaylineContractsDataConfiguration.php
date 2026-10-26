@@ -10,6 +10,10 @@ declare(strict_types=1);
 
 namespace PrestaShop\Module\Payline\Form\DataConfiguration;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 class PaylineContractsDataConfiguration extends AbstractDataConfiguration
 {
 

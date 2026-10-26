@@ -13,6 +13,10 @@ namespace PrestaShop\Module\Payline\Form\DataProvider;
 use PrestaShop\PrestaShop\Core\Configuration\DataConfigurationInterface;
 use PrestaShop\PrestaShop\Core\Form\FormDataProviderInterface;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 /**
  * Abstract base class for Payline form data providers.
  * Provides common implementation for all form data providers that delegate

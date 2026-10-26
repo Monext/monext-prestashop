@@ -13,6 +13,10 @@ namespace PrestaShop\Module\Payline\Form\DataConfiguration;
 use PrestaShop\PrestaShop\Core\Configuration\DataConfigurationInterface;
 use PrestaShop\PrestaShop\Core\ConfigurationInterface;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 abstract class AbstractDataConfiguration implements DataConfigurationInterface
 {
 

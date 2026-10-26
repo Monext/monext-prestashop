@@ -21,6 +21,10 @@ use Symfony\Component\Form\FormBuilderInterface;
 use PrestaShop\Module\Payline\Service\PaylineFormChoicesProvider;
 use PrestaShopBundle\Translation\TranslatorInterface;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 class PaylineNxPaymentFormType extends TranslatorAwareType
 {
     private PaylineFormChoicesProvider $choicesProvider;
