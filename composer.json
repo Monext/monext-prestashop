@@ -26,6 +26,16 @@
         "prestashop/autoindex": "^3.0",
         "squizlabs/php_codesniffer": "^4.0"
     },
+    "provide": {
+        "symfony/cache": "*",
+        "symfony/cache-contracts": "*",
+        "symfony/service-contracts": "*",
+        "symfony/var-exporter": "*",
+        "psr/cache": "*",
+        "psr/container": "*",
+        "psr/log": "*",
+        "monolog/monolog": "*"
+    },
     "autoload": {
         "psr-4": {
             "PrestaShop\\Module\\Payline\\": "src/"
