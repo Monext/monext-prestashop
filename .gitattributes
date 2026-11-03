@@ -11,3 +11,4 @@ composer-setup.php export-ignore
 .gitlab-ci.yml export-ignore
 sonar-project.properties export-ignore
 phpunit.xml export-ignore
+.composer export-ignore
