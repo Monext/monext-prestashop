@@ -20,11 +20,11 @@
     "require-dev": {
         "phpunit/phpunit": "^8.5",
         "prestashop/php-dev-tools": "^5.0",
-        "friendsofphp/php-cs-fixer": "^3.9",
         "phpstan/phpstan": "^2.2",
         "prestashop/header-stamp": "^3.1",
         "prestashop/autoindex": "^3.0",
-        "squizlabs/php_codesniffer": "^4.0"
+        "squizlabs/php_codesniffer": "^4.0",
+        "friendsofphp/php-cs-fixer": "^3.4"
     },
     "provide": {
         "symfony/cache": "*",
