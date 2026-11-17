@@ -73,6 +73,8 @@ class PaylinePaymentGateway
             // Expose Payline module version for API calls
             $paylineModuleInstance = Module::getInstanceByName('payline');
             $instance->usedBy('PS ' . _PS_VERSION_ . ' - v' . $paylineModuleInstance->version);
+        }else{
+            $instance->reset();
         }
 
         return $instance;
