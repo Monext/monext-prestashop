@@ -4,7 +4,7 @@
  *
  * @author    Monext <support@payline.com>
  * @copyright Monext - http://www.payline.com
- * @version   2.4.3
+ * @version   2.4.4
  */
 
 use PrestaShop\PrestaShop\Adapter\SymfonyContainer;
@@ -123,7 +123,7 @@ class payline extends PaymentModule
         $this->name = 'payline';
         $this->tab = 'payments_gateways';
         $this->module_key = '';
-        $this->version = '2.4.3';
+        $this->version = '2.4.4';
         $this->ps_versions_compliancy = array('min' => '1.7.8', 'max' => _PS_VERSION_);
         $this->author = 'Monext';
 
@@ -1071,7 +1071,7 @@ class payline extends PaymentModule
         // Check if module is enabled and payment gateway is configured for at least one payment method
         // Check if current cart currency is allowed
         if (!$this->isPaymentAvailable()) {
-            return;
+            return [];
         }
 
         $paymentMethodList = array();
@@ -1139,6 +1139,11 @@ class payline extends PaymentModule
                     ));
 
                     $webCash->setAdditionalInformation($this->fetch('module:payline/views/templates/front/1.7/payment.tpl'));
+                    /* Permet de masquer le bouton de validation du checkout de Prestashop
+                     * Sert initialement à remplacer le bouton de Prestashop par un bouton généré par un executable
+                     * https://devdocs.prestashop-project.org/9/modules/checkout/module-developers/#self-submitting-binary-payment-options
+                     */
+                    $webCash->setBinary(true);
                 } else {
                     $webCash = null;
                 }

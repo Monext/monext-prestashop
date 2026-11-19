@@ -42,24 +42,26 @@ class PaylineCallbacks
         $amountPaid = ($baseAmountPaid / 100);
 
         // Set right order state depending on defined payment action
-        if ($paymentInfos['payment']['action'] == 100) {
-            $idOrderState = (int)Configuration::get('PAYLINE_ID_STATE_AUTOR');
-        } else {
-            if (PaylinePaymentGateway::isValidResponse($paymentInfos, PaylinePaymentGateway::$approvedResponseCode)) {
+        if (PaylinePaymentGateway::isValidResponse($paymentInfos, PaylinePaymentGateway::$approvedResponseCode)) {
+            if ($paymentInfos['payment']['action'] == 100) {
+                // Transaction accepted but waiting capture
+                $idOrderState = (int)Configuration::get('PAYLINE_ID_STATE_AUTOR');
+            } else {
                 // Transaction accepted
                 $idOrderState = (int)Configuration::get('PS_OS_PAYMENT');
-            } else if (PaylinePaymentGateway::isValidResponse($paymentInfos, PaylinePaymentGateway::$pendingResponseCode)) {
-                // Transaction is pending
-                $idOrderState = (int)Configuration::get('PAYLINE_ID_STATE_PENDING');
+            }
+        } else if (PaylinePaymentGateway::isValidResponse($paymentInfos, PaylinePaymentGateway::$pendingResponseCode)) {
+            // Transaction is pending
+            $idOrderState = (int)Configuration::get('PAYLINE_ID_STATE_PENDING');
+        }else{
+            if($paymentInfos['result']['shortMessage'] == 'CANCELLED'){
+                $idOrderState = (int)Configuration::get('PS_OS_CANCELED');
             }else{
-                if($paymentInfos['result']['shortMessage'] == 'CANCELLED'){
-                    $idOrderState = (int)Configuration::get('PS_OS_CANCELED');
-                }else{
-                    // Transaction error
-                    $idOrderState = (int)Configuration::get('PS_OS_ERROR');
-                }
+                // Transaction error
+                $idOrderState = (int)Configuration::get('PS_OS_ERROR');
             }
         }
+
         $paymentMethod = 'Payline';
         $orderMessage = 'Transaction #' . $paymentInfos['transaction']['id'];
         $extraVars = array(
@@ -162,8 +164,17 @@ class PaylineCallbacks
                 if (false === $result || !isset($result['cart'])) {
                     throw new DuplicateOrderCartException(sprintf('Cannot duplicate cart from order "%s"', $order->reference));
                 } else {
-                    $this->context->cart = $result['cart'];
-                    $this->context->cookie->id_cart = $result['cart']->id;
+                    $oldCartRules = $cart->getCartRules();
+                    /** @var Cart $newCart */
+                    $newCart = $result['cart'];
+                    foreach ($oldCartRules as $oldCartRule) {
+                        if (!empty($oldCartRule['id_cart_rule'])) {
+                            $newCart->addCartRule($oldCartRule['id_cart_rule']);
+                        }
+                    }
+
+                    $this->context->cart = $newCart;
+                    $this->context->cookie->id_cart = $newCart->id;
                     $this->context->cookie->write();
                 }
 

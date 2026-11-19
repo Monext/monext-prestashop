@@ -73,6 +73,8 @@ class PaylinePaymentGateway
             // Expose Payline module version for API calls
             $paylineModuleInstance = Module::getInstanceByName('payline');
             $instance->usedBy('PS ' . _PS_VERSION_ . ' - v' . $paylineModuleInstance->version);
+        }else{
+            $instance->reset();
         }
 
         return $instance;
@@ -449,7 +451,7 @@ class PaylinePaymentGateway
                 'ref' => 'cart' . (int)$context->cart->id . (!empty($context->cookie->pl_try) ? 'try' . $context->cookie->pl_try : ''),
                 'country' => $invoiceCountry->iso_code,
                 'amount' => round($orderTotalWt * 100),
-                'taxes' => round(($orderTaxes - $shippingTaxes) * 100),
+                'taxes' => round($orderTaxes * 100),
                 'date' => date('d/m/Y H:i'),
                 'currency' => $context->currency->iso_code_num,
                 'deliveryMode' => 1,

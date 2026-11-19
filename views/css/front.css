@@ -42,3 +42,8 @@
 body .PaylineWidget .pl-wallet-layout .pl-wallets .pl-pay-btn-container {
 	max-height: unset;
 }
+
+/* Fix lightBox mode on onepage */
+.one-page-checkout__section .PaylineWidget.pl-container-lightbox { 
+    position: fixed; 
+}

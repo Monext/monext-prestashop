@@ -67,12 +67,12 @@
       setPaylineWidgetState();
     });
 
-    let paymentConfirmationOriginalVisibity = '';
+    // let paymentConfirmationOriginalVisibity = '';
     let wasPaylineBefore = false;
 
-    if (paymentConfirmation) {
+    /*if (paymentConfirmation) {
       paymentConfirmationOriginalVisibity = paymentConfirmation.style.visibility;
-    }
+    }*/
 
     const areAggreementsAccepted = () => {
       let isChecked = true;
@@ -116,38 +116,34 @@
         });
         document.dispatchEvent(event);
       });
+
+      if (paymentMethodRadio.checked && paymentMethodRadio.id === paylineOptionID) {
+        //--> Si payline est cochée au chargement de la page on trigger un changement
+        //--> pour que payline:paymentOptionChanged soit pris en compte
+        paymentMethodRadio.dispatchEvent(new Event('change', { bubbles: true }));
+      }
     });
 
     document.addEventListener("payline:paymentOptionChanged", function(e) {
         if (e.detail.optionID === paylineOptionID) {
             wasPaylineBefore = true;
 
-            //--> Hide the command button
-            if (paymentConfirmation) {
-            paymentConfirmation.style.visibility = "hidden";
-            }
-
             //--> Init payment buttons state
-          setPaylineWidgetState();
+            setPaylineWidgetState();
 
             //--> Add event listener to agreements
             Array.from(agreements).forEach(agreement => {
-            agreement.addEventListener('change', setPaylineWidgetState);
+                agreement.addEventListener('change', setPaylineWidgetState);
             });
         } else {
             //--> Clean up
             if ( wasPaylineBefore === true ) {
 
-            //--> Restore the command button
-            if (paymentConfirmation) {
-                paymentConfirmation.style.visibility = paymentConfirmationOriginalVisibity;
-            }
-
-            //--> Remove event listener to agreements
-            Array.from(agreements).forEach(agreement => {
-              agreement.removeEventListener('change', setPaylineWidgetState);
-            });
-            wasPaylineBefore = false;
+                //--> Remove event listener to agreements
+                Array.from(agreements).forEach(agreement => {
+                    agreement.removeEventListener('change', setPaylineWidgetState);
+                });
+                wasPaylineBefore = false;
             }
         }
     });
