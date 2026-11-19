@@ -1,5 +1,18 @@
 ## Changelog
 
+###  2.4.4 - 2026-11-19
+* Clean reuse of SDK instance
+* Fix order tax send to doWebPayment request, fix #19
+* Manage payment interaction between prestashop payment button, widget payment button and agreements
+* Fix Symfony Cache conflict, fix #18
+* Keep discount context on cart renew
+* Fix pipelines and build process
+* Remove "no limit" period on NX payment
+
+#### Environment (Development, QA validation)
+* Prestashop version: 9.0.1, 9.2.0
+
+
 ###  2.4.3 - 2026-10-22
 * Clean controller route
 * Add CSP
